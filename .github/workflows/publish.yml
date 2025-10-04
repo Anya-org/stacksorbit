@@ -46,7 +46,7 @@ jobs:
           pip install -e .
       
       - name: Install Node dependencies
-        run: npm ci
+        run: npm install
       
       - name: Run Python tests
         run: pytest tests/ -v --cov=stacksorbit --cov-report=xml
@@ -90,7 +90,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       
       - name: Build package
         run: npm run prepare

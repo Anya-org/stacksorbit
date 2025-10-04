@@ -1,7 +1,7 @@
 # StacksOrbit v1.0.0 - Release Checklist
 
 **Release Date**: 2025-10-04  
-**Repository**: https://github.com/Anya-org/stacksorbit  
+**Repository**: <https://github.com/Anya-org/stacksorbit>  
 **Status**: ✅ **READY TO PUBLISH**
 
 ---
@@ -9,6 +9,7 @@
 ## ✅ Pre-Release Checklist
 
 ### Code & Repository
+
 - [x] Code complete and tested
 - [x] All tests passing (17/17)
 - [x] Documentation complete
@@ -19,6 +20,7 @@
 - [x] Repository published to GitHub
 
 ### Package Configuration
+
 - [x] package.json configured
 - [x] setup.py configured
 - [x] requirements.txt added
@@ -26,12 +28,14 @@
 - [x] Version: 1.0.0 in all files
 
 ### CI/CD
+
 - [x] GitHub Actions workflows configured
 - [x] publish.yml (publishing automation)
 - [x] Multi-OS testing setup
 - [x] Test matrix (Python 3.8-3.11)
 
 ### Documentation
+
 - [x] README with installation & usage
 - [x] PUBLISHING.md with token setup
 - [x] CONTRIBUTING.md with guidelines
@@ -46,14 +50,14 @@
 **Required GitHub Secrets**:
 
 1. **NPM_TOKEN**
-   - Go to: https://www.npmjs.com/settings/[username]/tokens
+   - Go to: <https://www.npmjs.com/settings/[username]/tokens>
    - Generate "Automation" token
-   - Add to: https://github.com/Anya-org/stacksorbit/settings/secrets/actions
+   - Add to: <https://github.com/Anya-org/stacksorbit/settings/secrets/actions>
 
 2. **PYPI_API_TOKEN**
-   - Go to: https://pypi.org/manage/account/token/
+   - Go to: <https://pypi.org/manage/account/token/>
    - Generate token for stacksorbit
-   - Add to: https://github.com/Anya-org/stacksorbit/settings/secrets/actions
+   - Add to: <https://github.com/Anya-org/stacksorbit/settings/secrets/actions>
 
 ### Step 2: Tag Release ✅
 
@@ -67,7 +71,7 @@ git push origin v1.0.0
 
 ### Step 3: Verify GitHub Actions ⏳
 
-- Go to: https://github.com/Anya-org/stacksorbit/actions
+- Go to: <https://github.com/Anya-org/stacksorbit/actions>
 - Check "Publish StacksOrbit" workflow
 - Verify tests pass
 - Confirm publishing (after tokens configured)
@@ -75,6 +79,7 @@ git push origin v1.0.0
 ### Step 4: Verify Packages ⏳
 
 **npm**:
+
 ```bash
 npm view stacksorbit
 npm install -g stacksorbit
@@ -82,6 +87,7 @@ stacksorbit --version
 ```
 
 **PyPI**:
+
 ```bash
 pip install stacksorbit
 python -c "import stacksorbit; print('OK')"
@@ -90,7 +96,7 @@ stacksorbit --version
 
 ### Step 5: Create GitHub Release ⏳
 
-- Go to: https://github.com/Anya-org/stacksorbit/releases/new
+- Go to: <https://github.com/Anya-org/stacksorbit/releases/new>
 - Tag: v1.0.0
 - Title: "StacksOrbit v1.0.0 - Initial Release"
 - Description: See template below
@@ -122,6 +128,7 @@ npm install -g stacksorbit
 ```
 
 ### PyPI
+
 ```bash
 pip install stacksorbit
 ```
@@ -147,9 +154,9 @@ stacksorbit
 
 ## 🔗 Links
 
-- **Repository**: https://github.com/Anya-org/stacksorbit
-- **npm**: https://www.npmjs.com/package/stacksorbit
-- **PyPI**: https://pypi.org/project/stacksorbit/
+- **Repository**: <https://github.com/Anya-org/stacksorbit>
+- **npm**: <https://www.npmjs.com/package/stacksorbit>
+- **PyPI**: <https://pypi.org/project/stacksorbit/>
 
 ## 🙏 Credits
 
@@ -160,6 +167,7 @@ Built with ❤️ by Anya Chain Labs for the Conxian DeFi Protocol.
 **What's Next?**
 
 See our [roadmap](README.md#roadmap) for planned features in v1.1.0 and v2.0.0.
+
 ```
 
 ---
