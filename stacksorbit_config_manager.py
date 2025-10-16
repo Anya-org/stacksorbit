@@ -1,0 +1,52 @@
+import os
+import toml
+from dotenv import load_dotenv
+
+class ConfigManager:
+    def __init__(self, base_path):
+        self.base_path = base_path
+        self.config = {}
+
+    def scan_and_load_configs(self):
+        """
+        Scans the base_path for .env and .toml files and loads their contents.
+        """
+        print(f"Scanning for configuration files in: {self.base_path}")
+
+        # Load .env files
+        env_path = os.path.join(self.base_path, '.env')
+        if os.path.exists(env_path):
+            load_dotenv(dotenv_path=env_path)
+            print(f"Loaded .env file from: {env_path}")
+            # For demonstration, we'll just store a flag that it was loaded
+            self.config['env_loaded'] = True
+        else:
+            print(f"No .env file found at: {env_path}")
+
+        # Load .toml files (e.g., Clarinet.toml)
+        for root, _, files in os.walk(self.base_path):
+            for file in files:
+                if file == 'Clarinet.toml':
+                    toml_path = os.path.join(root, file)
+                    try:
+                        with open(toml_path, 'r', encoding='utf-8') as f:
+                            toml_config = toml.load(f)
+                        self.config['Clarinet.toml'] = toml_config
+                        print(f"Loaded Clarinet.toml from: {toml_path}")
+                    except Exception as e:
+                        print(f"Error loading {file} from {toml_path}: {e}")
+        return self.config
+
+    def get_config(self):
+        return self.config
+
+if __name__ == "__main__":
+    # Example usage:
+    # Assuming this script is in C:\Users\bmokoka\anyachainlabs\stacksorbit
+    # and we want to scan that directory.
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    config_manager = ConfigManager(current_dir)
+    loaded_configs = config_manager.scan_and_load_configs()
+    print("\n--- Loaded Configurations ---")
+    for key, value in loaded_configs.items():
+        print(f"{key}: {value}")

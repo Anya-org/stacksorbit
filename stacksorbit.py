@@ -15,22 +15,22 @@ Notes
 - Designed for Windows (PowerShell + Clarinet + Node/NPM on PATH).
 """
 import os
-import sys
-import json
-import threading
 import subprocess
-import queue
-from pathlib import Path
 import tkinter as tk
-from tkinter import ttk
-from tkinter.scrolledtext import ScrolledText
+from tkinter import ttk, scrolledtext, messagebox
+import urllib.request
+import json
+import time
+from pathlib import Path
+
+from stacksorbit_config_manager import ConfigManager # Import the ConfigManager
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
 
 class GuiDeployer(tk.Tk):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.title("Conxian GUI Deployer - Enhanced Control")
         self.geometry("1200x700")
         self.log_queue = queue.Queue()
@@ -40,9 +40,12 @@ class GuiDeployer(tk.Tk):
         self.failure_log_path = ROOT / 'logs' / f'deployment_failure_{self._timestamp()}.log'
         self.is_running = False  # Track if process is running
 
-        # Auto-load .env first
-        self._auto_load_env()
-        
+        # Auto-load .env and other configs using ConfigManager
+        self.config_manager = ConfigManager(ROOT)
+        self.loaded_configs = self.config_manager.scan_and_load_configs()
+        self._auto_load_env() # This will now use the ConfigManager
+        self._process_clarinet_config() # Process Clarinet.toml
+
         # State vars with auto-detection
         self.network = tk.StringVar(value="testnet")
         initial_api = os.environ.get("CORE_API_URL") or os.environ.get("STACKS_API_BASE") or self._default_core_api_url("testnet")
@@ -74,21 +77,31 @@ class GuiDeployer(tk.Tk):
         self._log(f"ℹ️  Click 'Run Pre-Checks' to validate deployment readiness\n\n")
 
     def _auto_load_env(self):
-        """Automatically load .env on startup"""
-        env_path = ROOT / '.env'
-        if env_path.exists():
-            try:
-                for line in env_path.read_text(encoding='utf-8').splitlines():
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-                    if '=' in line:
-                        k, v = line.split('=', 1)
-                        v = v.strip().strip('"')
-                        os.environ[k.strip()] = v
-            except:
-                pass
-    
+        """Automatically load .env on startup using ConfigManager"""
+        # The ConfigManager's scan_and_load_configs already handles loading .env into os.environ
+        if os.environ.get("DEPLOYER_PRIVKEY") or os.environ.get("STACKS_DEPLOYER_PRIVKEY"):
+            self._log(f"✅ Environment variables (including .env) loaded.\n")
+        else:
+            self._log(f"ℹ️ No .env file found or essential environment variables not set.\n")
+
+    def _process_clarinet_config(self):
+        """Process Clarinet.toml to extract deployment settings."""
+        if 'Clarinet.toml' in self.loaded_configs:
+            clarinet_config = self.loaded_configs['Clarinet.toml']
+            self._log(f"✅ Clarinet.toml loaded.\n")
+
+            # Example: Set default network from Clarinet.toml if available
+            # This is a placeholder; actual logic might be more complex
+            if 'network' in clarinet_config and 'default' in clarinet_config['network']:
+                default_network = clarinet_config['network']['default']
+                self.network.set(default_network)
+                self._log(f"ℹ️ Default network set from Clarinet.toml: {default_network}\n")
+
+            # You can extract other information here, e.g., project name, contracts, dependencies
+            # For now, we'll just log its presence.
+        else:
+            self._log(f"ℹ️ Clarinet.toml not found or loaded.\n")
+
     def _count_contracts(self):
         """Auto-detect total number of contracts"""
         try:
@@ -596,6 +609,94 @@ class GuiDeployer(tk.Tk):
             cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
         else:
             cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
+        
+        stdout, stderr = self._run(cmd, env=env) # Capture output
+
+        if self.devnet_dry_run.get():
+            self._log("\n--- DRY RUN FEEDBACK ---\n")
+            self._log(f"STDOUT:\n{stdout}\n")
+            if stderr:
+                self._log(f"STDERR:\n{stderr}\n")
+            self._log("------------------------\n")
+            self._log("ℹ️  This was a dry run. No contracts were actually deployed.\n")
+
+        # Set deployment mode based on pre-checks
+        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
+            env["SKIP_DEPLOYED"] = "1"
+            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
+        
+        if self.contract_filter.get().strip():
+            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
+        if self.deploy_mode.get() == "sdk":
+            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
+        else:
+            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
+        
+        stdout, stderr = self._run(cmd, env=env) # Capture output
+
+        # For testnet, we assume it's always a live deployment, so no specific dry-run feedback block needed
+        # However, we can still log the output for debugging/auditing purposes
+        self._log("\n--- TESTNET DEPLOYMENT OUTPUT ---\n")
+        self._log(f"STDOUT:\n{stdout}\n")
+        if stderr:
+            self._log(f"STDERR:\n{stderr}\n")
+        self._log("----------------------------------\n")
+
+        # Set deployment mode based on pre-checks
+        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
+            env["SKIP_DEPLOYED"] = "1"
+            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
+        
+        if self.contract_filter.get().strip():
+            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
+        if self.deploy_mode.get() == "sdk":
+            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
+        else:
+            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
+        
+        stdout, stderr = self._run(cmd, env=env) # Capture output
+
+        # For testnet, we assume it's always a live deployment, so no specific dry-run feedback block needed
+        # However, we can still log the output for debugging/auditing purposes
+        self._log("\n--- TESTNET DEPLOYMENT OUTPUT ---\n")
+        self._log(f"STDOUT:\n{stdout}\n")
+        if stderr:
+            self._log(f"STDERR:\n{stderr}\n")
+        self._log("----------------------------------\n")
+
+        # Set deployment mode based on pre-checks
+        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
+            env["SKIP_DEPLOYED"] = "1"
+            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
+        
+        if self.contract_filter.get().strip():
+            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
+        if self.deploy_mode.get() == "sdk":
+            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
+        else:
+            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
+        
+        stdout, stderr = self._run(cmd, env=env) # Capture output
+
+        # For testnet, we assume it's always a live deployment, so no specific dry-run feedback block needed
+        # However, we can still log the output for debugging/auditing purposes
+        self._log("\n--- TESTNET DEPLOYMENT OUTPUT ---\n")
+        self._log(f"STDOUT:\n{stdout}\n")
+        if stderr:
+            self._log(f"STDERR:\n{stderr}\n")
+        self._log("----------------------------------\n")
+
+        # Set deployment mode based on pre-checks
+        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
+            env["SKIP_DEPLOYED"] = "1"
+            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
+        
+        if self.contract_filter.get().strip():
+            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
+        if self.deploy_mode.get() == "sdk":
+            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
+        else:
+            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
         self._run(cmd, env=env)
 
     def on_pre_checks(self):
@@ -622,6 +723,28 @@ class GuiDeployer(tk.Tk):
             self._log("[abort] DEPLOYER_PRIVKEY is required for testnet deploy\n")
             return
         
+        # Set deployment mode based on pre-checks
+        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
+            env["SKIP_DEPLOYED"] = "1"
+            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
+        
+        if self.contract_filter.get().strip():
+            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
+        if self.deploy_mode.get() == "sdk":
+            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
+        else:
+            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
+        
+        stdout, stderr = self._run(cmd, env=env) # Capture output
+
+        # For testnet, we assume it's always a live deployment, so no specific dry-run feedback block needed
+        # However, we can still log the output for debugging/auditing purposes
+        self._log("\n--- TESTNET DEPLOYMENT OUTPUT ---\n")
+        self._log(f"STDOUT:\n{stdout}\n")
+        if stderr:
+            self._log(f"STDERR:\n{stderr}\n")
+        self._log("----------------------------------\n")
+
         # Set deployment mode based on pre-checks
         if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
             env["SKIP_DEPLOYED"] = "1"
