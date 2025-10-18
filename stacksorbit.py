@@ -675,28 +675,6 @@ class GuiDeployer(tk.Tk):
             cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
         else:
             cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
-        
-        stdout, stderr = self._run(cmd, env=env) # Capture output
-
-        # For testnet, we assume it's always a live deployment, so no specific dry-run feedback block needed
-        # However, we can still log the output for debugging/auditing purposes
-        self._log("\n--- TESTNET DEPLOYMENT OUTPUT ---\n")
-        self._log(f"STDOUT:\n{stdout}\n")
-        if stderr:
-            self._log(f"STDERR:\n{stderr}\n")
-        self._log("----------------------------------\n")
-
-        # Set deployment mode based on pre-checks
-        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
-            env["SKIP_DEPLOYED"] = "1"
-            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
-        
-        if self.contract_filter.get().strip():
-            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
-        if self.deploy_mode.get() == "sdk":
-            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
-        else:
-            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
         self._run(cmd, env=env)
 
     def on_pre_checks(self):
