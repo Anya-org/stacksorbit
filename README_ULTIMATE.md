@@ -1,6 +1,6 @@
 # 🚀 StacksOrbit - Ultimate Deployment Tool
 
-> **The most advanced deployment tool for Stacks blockchain with full CLI capabilities, Hiro API integration, comprehensive monitoring, chainhooks support, and user-friendly experience for everyone.**
+> **The most advanced deployment tool for Stacks blockchain with full CLI capabilities, Hiro API integration, comprehensive monitoring, and user-friendly experience for everyone.**
 
 [![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/Anya-org/stacksorbit)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
@@ -14,7 +14,6 @@
 ## ✨ Enhanced Features
 
 ### 🎯 **Smart Category Recognition**
-
 - **Base Layer**: Foundational contracts (traits, utilities, libraries)
 - **Core Infrastructure**: Essential protocol components (engines, managers, risk systems)
 - **Token System**: All token contracts (CXD, CXLP, governance tokens)
@@ -27,45 +26,39 @@
 - **Enterprise**: Enterprise features and compliance
 
 ### 🔗 **Chainhooks Integration**
-
 - Automatic chainhooks detection in contracts
 - Chainhooks.toml configuration management
 - Real-time hook monitoring and validation
 - Integration with Stacks chainhook service
 
 ### 📊 **Advanced Monitoring Dashboard**
-
-- Real-time deployment tracking with multiple views
-- Network health monitoring and performance analytics
-- Interactive dashboard with comprehensive metrics
-- Gas usage tracking and account monitoring
+- Real-time deployment tracking
+- Network health monitoring
 - Transaction confirmation waiting
-- Contract verification and status checking
+- Gas usage analytics
+- Account balance monitoring
+- Contract verification
+- Performance metrics
 
-### 🧪 **Comprehensive Testing & Verification**
+### 🧪 **Comprehensive Testing**
+- Pre-deployment validation
+- Post-deployment verification
+- Network connectivity testing
+- Configuration validation
+- Contract compilation checking
 
-- Pre-deployment validation and checks
-- Post-deployment verification and testing
-- Network connectivity and API testing
-- Configuration validation and diagnostics
-- Contract compilation and functionality testing
-- Automated error detection and recovery
-
-### 🔍 **Enhanced Auto-Detection System**
-
-- **Directory Change Handling**: Automatically detects when opened in new directories
-- **Multi-Method Contract Discovery**: Clarinet.toml parsing, directory scanning, deployment manifests
-- **Intelligent Deployment Planning**: Determines full vs upgrade deployment modes
-- **Contract Status Tracking**: Tracks which contracts are deployed vs pending
-- **Deployment State Persistence**: Maintains state across sessions and directory changes
-- **Auto-Recovery System**: Automatically recovers from deployment failures
+### 🎨 **User-Friendly Experience**
+- Interactive setup wizard
+- Step-by-step guidance
+- Deployment templates
+- Comprehensive help system
+- Error recovery guides
 
 ---
 
 ## 📦 Installation
 
 ### Quick Install
-
 ```bash
 # Clone and setup
 git clone https://github.com/Anya-org/stacksorbit.git
@@ -80,123 +73,82 @@ python setup_wizard.py
 ```
 
 ### Prerequisites
-
 - **Python 3.8+** with pip
 - **Node.js 14+** with npm
 - **Clarinet** (for contract compilation)
 - **Stacks account** with STX tokens
-
-### Package Installation
-
-```bash
-# Via npm (recommended)
-npm install -g stacksorbit
-
-# Via pip
-pip install stacksorbit
-
-# From source
-git clone https://github.com/Anya-org/stacksorbit.git
-cd stacksorbit
-pip install -r requirements.txt
-```
 
 ---
 
 ## 🚀 Quick Start Guide
 
 ### 1. **Setup (5 minutes)**
-
 ```bash
 # Interactive setup wizard
 python setup_wizard.py
 
 # Or use the enhanced CLI
 npm run setup
-
-# Quick setup with template
-python ultimate_stacksorbit.py deploy --template testnet_quick_start
 ```
 
 ### 2. **Test Everything (2 minutes)**
-
 ```bash
 # Comprehensive system check
 npm run diagnose
 
 # Or check specific components
 python ultimate_stacksorbit.py check --verbose
-
-# Validate configuration
-python ultimate_stacksorbit.py check --env-only --network-only
 ```
 
 ### 3. **Deploy to Testnet (10 minutes)**
-
 ```bash
 # Dry run first (recommended)
 python ultimate_stacksorbit.py deploy --dry-run
 
-# Deploy specific category
+# Deploy with monitoring
 python ultimate_stacksorbit.py deploy --category core
 
-# Full deployment with monitoring
+# Full deployment with all features
 python ultimate_stacksorbit.py deploy --batch-size 5 --parallel
-
-# Deploy with chainhooks
-python ultimate_stacksorbit.py deploy --category chainhooks
 ```
 
 ### 4. **Monitor in Real-Time**
-
 ```bash
 # Launch enhanced dashboard
 python enhanced_dashboard.py
 
-# Command-line monitoring
+# Or command-line monitoring
 python ultimate_stacksorbit.py monitor --follow
-
-# API status monitoring
-python ultimate_stacksorbit.py monitor --api-only
 ```
 
 ### 5. **Verify Deployment**
-
 ```bash
 # Comprehensive verification
 python ultimate_stacksorbit.py verify --comprehensive
 
 # Verify specific contracts
 python ultimate_stacksorbit.py verify --contracts all-traits cxd-token dex-factory
-
-# Contract functionality testing
-python deployment_verifier.py --comprehensive
 ```
 
 ---
 
 ## 📖 Complete Usage Guide
 
-### CLI Commands
+### Enhanced CLI Commands
 
-#### **Setup & Configuration**
-
+#### 🎯 **Setup & Configuration**
 ```bash
 # Interactive setup wizard
 python setup_wizard.py
 
-# Quick setup with wallet generation
+# Quick setup with template
+python ultimate_stacksorbit.py deploy --template testnet_quick_start
+
+# Initialize with wallet generation
 python setup_wizard.py --generate-wallet --network testnet
-
-# Initialize configuration
-python ultimate_stacksorbit.py config init
-
-# Validate configuration
-python ultimate_stacksorbit.py config validate
 ```
 
-#### **Deployment Commands**
-
+#### 🚀 **Deployment Commands**
 ```bash
 # Basic deployment
 python ultimate_stacksorbit.py deploy
@@ -205,19 +157,16 @@ python ultimate_stacksorbit.py deploy
 python ultimate_stacksorbit.py deploy --category base
 python ultimate_stacksorbit.py deploy --category tokens
 python ultimate_stacksorbit.py deploy --category dex
-python ultimate_stacksorbit.py deploy --category dimensional
 
 # Advanced deployment options
 python ultimate_stacksorbit.py deploy --batch-size 3 --parallel --verbose
-python ultimate_stacksorbit.py deploy --dry-run --category core
-python ultimate_stacksorbit.py deploy --template mainnet_production
+python ultimate_stacksorbit.py deploy --dry-run --category dimensional
 
 # Deploy with chainhooks
 python ultimate_stacksorbit.py deploy --category chainhooks
 ```
 
-#### **Monitoring Commands**
-
+#### 📊 **Monitoring Commands**
 ```bash
 # Real-time dashboard
 python enhanced_dashboard.py
@@ -230,13 +179,9 @@ python ultimate_stacksorbit.py monitor --api-only
 
 # Network health monitoring
 python deployment_monitor.py --follow --verbose
-
-# Custom monitoring setup
-python enhanced_dashboard.py --update-interval 1 --verbose
 ```
 
-#### **Verification Commands**
-
+#### 🔍 **Verification Commands**
 ```bash
 # Comprehensive verification
 python ultimate_stacksorbit.py verify --comprehensive
@@ -246,13 +191,9 @@ python ultimate_stacksorbit.py verify --contracts all-traits cxd-token
 
 # Contract functionality testing
 python deployment_verifier.py --comprehensive
-
-# Network verification
-python ultimate_stacksorbit.py check --network-only
 ```
 
-#### **Diagnostic Commands**
-
+#### 🔧 **Diagnostic Commands**
 ```bash
 # Full system diagnosis
 python ultimate_stacksorbit.py diagnose --verbose
@@ -260,76 +201,43 @@ python ultimate_stacksorbit.py diagnose --verbose
 # Configuration validation
 python ultimate_stacksorbit.py check
 
-# Individual component checks
-python ultimate_stacksorbit.py check --env-only
-python ultimate_stacksorbit.py check --compile-only
-python ultimate_stacksorbit.py check --deployment-only
-```
-
-### GUI Interface
-
-#### **Original GUI (Python Tkinter)**
-
-```bash
-# Launch original GUI
-python stacksorbit.py
-
-# Or via npm
-npm run gui
-
-# GUI with enhanced features
-node bin/enhanced-stacksorbit.js gui
-```
-
-#### **Enhanced Dashboard**
-
-```bash
-# Interactive monitoring dashboard
-python enhanced_dashboard.py
-
-# Dashboard with custom settings
-python enhanced_dashboard.py --update-interval 1 --verbose
+# Network diagnostics
+python ultimate_stacksorbit.py check --network-only
 ```
 
 ### Category-Based Deployment
 
 #### **Base Layer (Foundation)**
-
 ```bash
 python ultimate_stacksorbit.py deploy --category base
 # Deploys: all-traits, utils-encoding, utils-utils, lib-error-codes
 ```
 
 #### **Core Infrastructure**
-
 ```bash
 python ultimate_stacksorbit.py deploy --category core
 # Deploys: dimensional-engine, position-manager, risk systems
 ```
 
 #### **Token System**
-
 ```bash
 python ultimate_stacksorbit.py deploy --category tokens
 # Deploys: CXD, CXLP, CXVG, governance tokens
 ```
 
 #### **DEX System**
-
 ```bash
 python ultimate_stacksorbit.py deploy --category dex
 # Deploys: factory, router, pools, vaults, MEV protection
 ```
 
 #### **Dimensional System**
-
 ```bash
 python ultimate_stacksorbit.py deploy --category dimensional
 # Deploys: concentrated liquidity, positions, advanced routing
 ```
 
 #### **Chainhooks Integration**
-
 ```bash
 python ultimate_stacksorbit.py deploy --category chainhooks
 # Deploys: automation, batch processors, triggers
@@ -338,36 +246,21 @@ python ultimate_stacksorbit.py deploy --category chainhooks
 ### Deployment Templates
 
 #### **Testnet Quick Start**
-
 Perfect for development and testing
-
 ```bash
 python ultimate_stacksorbit.py deploy --template testnet_quick_start
 ```
 
 #### **Mainnet Production**
-
 Production deployment with full validation
-
 ```bash
 python ultimate_stacksorbit.py deploy --template mainnet_production
 ```
 
 #### **Emergency Update**
-
 Quick deployment for critical fixes
-
 ```bash
 python ultimate_stacksorbit.py deploy --template emergency_update
-```
-
-#### **Core Infrastructure Only**
-
-Deploy only essential contracts
-
-```bash
-python ultimate_stacksorbit.py deploy --category base
-python ultimate_stacksorbit.py deploy --category core
 ```
 
 ---
@@ -375,34 +268,28 @@ python ultimate_stacksorbit.py deploy --category core
 ## 🌐 Network Support
 
 ### **Devnet (Local Testing)**
-
 ```bash
 # Deploy to local devnet
 python ultimate_stacksorbit.py deploy --network devnet
 
 # Prerequisites: Local Stacks node + Clarinet devnet
 clarinet devnet start
-python ultimate_stacksorbit.py deploy --network devnet --parallel
 ```
 
 ### **Testnet (Public Testing)**
-
 ```bash
 # Deploy to testnet
 python ultimate_stacksorbit.py deploy --network testnet
 
-# Get free STX from faucet: https://explorer.stacks.co/sandbox
-python ultimate_stacksorbit.py deploy --network testnet --batch-size 5
+# Get free STX: https://explorer.stacks.co/sandbox
 ```
 
 ### **Mainnet (Production)**
-
 ```bash
 # Deploy to mainnet (uses real STX!)
 python ultimate_stacksorbit.py deploy --network mainnet --batch-size 1
 
 # ⚠️ WARNING: This costs real STX tokens!
-python ultimate_stacksorbit.py deploy --network mainnet --template mainnet_production
 ```
 
 ---
@@ -410,37 +297,27 @@ python ultimate_stacksorbit.py deploy --network mainnet --template mainnet_produ
 ## 🔗 Chainhooks Integration
 
 ### **Automatic Detection**
-
 StacksOrbit automatically detects chainhooks in your contracts:
-
 - Contract-embedded hooks
 - chainhooks.toml configuration
 - Hook dependencies and requirements
 
 ### **Chainhooks Deployment**
-
 ```bash
 # Deploy chainhooks with contracts
 python ultimate_stacksorbit.py deploy --category chainhooks
 
 # Monitor chainhooks activity
 python deployment_monitor.py --follow --verbose
-
-# Validate chainhooks
-python ultimate_stacksorbit.py check --chainhooks-only
 ```
 
-### **Chainhooks Management**
-
+### **Chainhooks Validation**
 ```bash
-# Analyze chainhooks
-python deployment_monitor.py --api-status
+# Validate chainhooks configuration
+python ultimate_stacksorbit.py check --chainhooks-only
 
 # Test chainhooks functionality
 python deployment_verifier.py --chainhooks-test
-
-# Monitor hook triggers
-python enhanced_dashboard.py
 ```
 
 ---
@@ -448,33 +325,27 @@ python enhanced_dashboard.py
 ## 📊 Enhanced Monitoring Dashboard
 
 ### **Real-Time Features**
-
-- Live deployment tracking with progress indicators
-- Network health monitoring and performance analytics
-- Transaction monitoring and confirmation tracking
-- Gas usage analytics and cost estimation
-- Account balance monitoring and alerts
-- Contract status verification and testing
+- Live deployment tracking
+- Network health indicators
+- Transaction monitoring
+- Gas usage analytics
+- Account balance alerts
+- Contract status verification
 
 ### **Dashboard Views**
-
 - **Overview**: System status at a glance
-- **Contracts**: Contract deployment status and categorization
-- **Network**: Network health, performance, and connectivity
-- **Transactions**: Recent transaction history and status
-- **Analytics**: Performance metrics, error rates, and insights
+- **Contracts**: Contract deployment status
+- **Network**: Network health and performance
+- **Transactions**: Recent transaction history
+- **Analytics**: Performance metrics and insights
 
 ### **Dashboard Commands**
-
 ```bash
 # Launch interactive dashboard
 python enhanced_dashboard.py
 
 # Dashboard with custom settings
 python enhanced_dashboard.py --update-interval 1 --verbose
-
-# Save dashboard snapshots
-python enhanced_dashboard.py --save-snapshots
 ```
 
 ---
@@ -482,7 +353,6 @@ python enhanced_dashboard.py --save-snapshots
 ## 🧪 Testing & Verification
 
 ### **Automated Testing**
-
 ```bash
 # Run all tests
 npm test
@@ -492,13 +362,9 @@ python test_enhanced_features.py
 
 # Test specific components
 python -m pytest tests/ -v
-
-# Run comprehensive test suite
-npm run test:enhanced
 ```
 
 ### **Pre-Deployment Checks**
-
 ```bash
 # Comprehensive validation
 python ultimate_stacksorbit.py check --comprehensive
@@ -507,20 +373,52 @@ python ultimate_stacksorbit.py check --comprehensive
 python ultimate_stacksorbit.py check --env-only
 python ultimate_stacksorbit.py check --network-only
 python ultimate_stacksorbit.py check --compile-only
-python ultimate_stacksorbit.py check --deployment-only
 ```
 
 ### **Post-Deployment Verification**
-
 ```bash
 # Full verification
 python ultimate_stacksorbit.py verify --comprehensive
 
 # Verify specific categories
 python ultimate_stacksorbit.py verify --contracts all-traits cxd-token dex-factory
+```
 
-# Contract functionality testing
-python deployment_verifier.py --comprehensive
+---
+
+## 🎨 User Experience Features
+
+### **Interactive Setup Wizard**
+```bash
+python setup_wizard.py
+```
+- Step-by-step configuration
+- Network selection guidance
+- Wallet setup assistance
+- Contract analysis
+- Template selection
+
+### **Smart Error Handling**
+- User-friendly error messages
+- Automatic error recovery
+- Troubleshooting guides
+- Configuration validation
+
+### **Deployment Templates**
+```bash
+# List available templates
+python ultimate_stacksorbit.py template
+
+# Apply template
+python ultimate_stacksorbit.py deploy --template testnet_quick_start
+```
+
+### **Comprehensive Help**
+```bash
+# Get help for any command
+python ultimate_stacksorbit.py --help
+python setup_wizard.py --help
+python enhanced_dashboard.py --help
 ```
 
 ---
@@ -528,38 +426,21 @@ python deployment_verifier.py --comprehensive
 ## 📋 Configuration
 
 ### **Environment Variables**
-
-Create a `.env` file in your project root:
-
 ```env
-# Required Variables
+# Required
 DEPLOYER_PRIVKEY=your_private_key_here
 SYSTEM_ADDRESS=your_stacks_address_here
 NETWORK=testnet
 
-# Optional Variables (Recommended)
+# Optional (Recommended)
 HIRO_API_KEY=your_hiro_api_key
 CORE_API_URL=https://api.testnet.hiro.so
-STACKS_API_BASE=https://api.testnet.hiro.so
-
-# Deployment Configuration
-DEPLOYMENT_MODE=full
 BATCH_SIZE=5
 PARALLEL_DEPLOY=false
-CONTRACT_FILTER=
-
-# Monitoring Configuration
 MONITORING_ENABLED=true
-LOG_LEVEL=INFO
-SAVE_LOGS=true
-
-# Validation
-VALIDATE_TRANSACTIONS=true
-CONFIRMATION_TIMEOUT=300
 ```
 
 ### **Configuration Management**
-
 ```bash
 # Initialize configuration
 python setup_wizard.py
@@ -569,7 +450,6 @@ python ultimate_stacksorbit.py check
 
 # Update configuration
 python ultimate_stacksorbit.py config init
-python ultimate_stacksorbit.py config validate
 ```
 
 ---
@@ -577,39 +457,27 @@ python ultimate_stacksorbit.py config validate
 ## 🔧 Advanced Features
 
 ### **Gas Optimization**
-
 ```bash
 # Enable gas optimization
 python ultimate_stacksorbit.py deploy --gas-optimization
 
-# Custom batch sizing for gas efficiency
+# Custom batch sizing
 python ultimate_stacksorbit.py deploy --batch-size 3
-
-# Monitor gas usage in real-time
-python enhanced_dashboard.py
 ```
 
 ### **Parallel Deployment**
-
 ```bash
 # Enable parallel deployment (experimental)
 python ultimate_stacksorbit.py deploy --parallel --batch-size 10
-
-# Parallel deployment with monitoring
-python ultimate_stacksorbit.py deploy --parallel --batch-size 5 --verbose
 ```
 
 ### **Custom Monitoring**
-
 ```bash
 # Custom monitoring setup
 python enhanced_dashboard.py --update-interval 1 --verbose
 
-# Save monitoring data and snapshots
+# Save monitoring data
 python deployment_monitor.py --save-snapshots
-
-# Real-time monitoring with custom alerts
-python deployment_monitor.py --follow --alerts
 ```
 
 ---
@@ -619,68 +487,47 @@ python deployment_monitor.py --follow --alerts
 ### **Common Issues**
 
 #### **Configuration Problems**
-
 ```bash
-# Diagnose configuration issues
+# Diagnose configuration
 python ultimate_stacksorbit.py diagnose
 
-# Validate configuration specifically
+# Validate configuration
 python ultimate_stacksorbit.py check --env-only
-
-# Check network connectivity
-python ultimate_stacksorbit.py check --network-only
 ```
 
 #### **Network Issues**
-
 ```bash
-# Check network connectivity and API status
+# Check network connectivity
 python ultimate_stacksorbit.py check --network-only
 
-# Monitor API status in real-time
+# Monitor API status
 python ultimate_stacksorbit.py monitor --api-status
-
-# Check network health
-python enhanced_dashboard.py
 ```
 
 #### **Deployment Failures**
-
 ```bash
 # Run comprehensive diagnosis
 python ultimate_stacksorbit.py diagnose --verbose
 
-# Check deployment logs and monitoring
+# Check deployment logs
 python deployment_monitor.py --follow
 
 # Verify contract compilation
 clarinet check
-
-# Check account balance and transactions
-python ultimate_stacksorbit.py check --account-only
 ```
 
 ### **Recovery Steps**
-
-1. **Diagnose**: Run `python ultimate_stacksorbit.py diagnose`
-2. **Check Network**: Verify connectivity and API status
-3. **Validate Config**: Ensure configuration is correct
-4. **Review Logs**: Check deployment logs and error messages
-5. **Contact Support**: If issues persist, contact support
-
-### **Error Messages**
-
-- **Configuration validation failed**: Check your .env file and required variables
-- **Network connectivity failed**: Check internet connection and API endpoints
-- **Deployment failed**: Check account balance, gas costs, and contract compilation
-- **Transaction timeout**: Wait for confirmation or check network congestion
+1. Run: `python ultimate_stacksorbit.py diagnose`
+2. Check: Network connectivity and API status
+3. Verify: Configuration and account balance
+4. Review: Deployment logs and error messages
+5. Contact: Support if issues persist
 
 ---
 
 ## 📚 API Reference
 
 ### **Enhanced Deployer**
-
 ```python
 from enhanced_conxian_deployment import EnhancedConxianDeployer
 
@@ -689,7 +536,6 @@ results = deployer.deploy_conxian(category='core', dry_run=False)
 ```
 
 ### **Deployment Monitor**
-
 ```python
 from deployment_monitor import DeploymentMonitor
 
@@ -699,7 +545,6 @@ contracts = monitor.get_deployed_contracts(address)
 ```
 
 ### **Chainhooks Manager**
-
 ```python
 from chainhooks_manager import ChainhooksManager
 
@@ -713,7 +558,6 @@ results = manager.deployChainhooks(chainhooks)
 ## 🎯 Deployment Categories
 
 ### **Base Layer (Foundation)**
-
 - `all-traits` - Centralized trait definitions
 - `utils-encoding` - Encoding utilities
 - `utils-utils` - General utilities
@@ -722,7 +566,6 @@ results = manager.deployChainhooks(chainhooks)
 - `fixed-point-math` - Fixed point calculations
 
 ### **Core Infrastructure**
-
 - `core-dimensional-engine` - Core dimensional engine
 - `core-position-manager` - Position management
 - `core-oracle-oracle-adapter` - Oracle adapter
@@ -731,7 +574,6 @@ results = manager.deployChainhooks(chainhooks)
 - `risk-funding-calculator` - Funding calculations
 
 ### **Token System**
-
 - `cxd-token` - CXD governance token
 - `cxlp-token` - CXLP liquidity token
 - `cxvg-token` - CXVG utility token
@@ -741,7 +583,6 @@ results = manager.deployChainhooks(chainhooks)
 - `token-system-coordinator` - Token coordination
 
 ### **DEX System**
-
 - `dex-factory` - DEX factory
 - `dex-factory-v2` - Enhanced DEX factory
 - `dex-router` - DEX router
@@ -752,7 +593,6 @@ results = manager.deployChainhooks(chainhooks)
 - `mev-protector` - MEV protection
 
 ### **Dimensional System**
-
 - `dim-registry` - Dimensional registry
 - `dim-metrics` - Dimensional metrics
 - `position-nft` - Position NFTs
@@ -765,44 +605,33 @@ results = manager.deployChainhooks(chainhooks)
 ## 🏆 Success Stories
 
 ### **Development Workflow**
-
-1. **Setup**: 5 minutes with interactive wizard
-2. **Testing**: 2 minutes with comprehensive checks
-3. **Deployment**: 10 minutes to testnet with monitoring
-4. **Verification**: Real-time dashboard and comprehensive testing
-5. **Monitoring**: 24/7 deployment tracking and alerts
+1. **Setup**: 5 minutes with wizard
+2. **Testing**: 2 minutes with dry-run
+3. **Deployment**: 10 minutes to testnet
+4. **Monitoring**: Real-time dashboard
+5. **Verification**: Comprehensive validation
 
 ### **Production Deployment**
-
-1. **Validation**: Full system diagnosis and validation
-2. **Testing**: Multiple dry runs and staging deployments
-3. **Deployment**: Batched deployment with real-time monitoring
-4. **Verification**: Complete contract testing and functionality validation
-5. **Monitoring**: Production monitoring with alerts and analytics
+1. **Validation**: Full system diagnosis
+2. **Testing**: Multiple dry runs
+3. **Deployment**: Batched with monitoring
+4. **Verification**: Complete contract testing
+5. **Monitoring**: 24/7 dashboard monitoring
 
 ---
 
 ## 🤝 Contributing
 
 ### **Development Setup**
-
 ```bash
 git clone https://github.com/Anya-org/stacksorbit.git
 cd stacksorbit
-
-# Install dependencies
 pip install -r requirements.txt
 npm install
-
-# Run tests
-npm run test:enhanced
-
-# Start development
-npm run setup
+npm run test
 ```
 
 ### **Testing**
-
 ```bash
 # Run all tests
 npm test
@@ -811,10 +640,7 @@ npm test
 python test_enhanced_features.py
 
 # Test specific features
-python -m pytest tests/unit/ tests/integration/
-
-# Run GUI tests
-python tests/test_gui.py
+python -m pytest tests/unit/
 ```
 
 ---
@@ -832,7 +658,6 @@ MIT License - see [LICENSE](LICENSE) file for details
 - **Issues**: <https://github.com/Anya-org/stacksorbit/issues>
 - **Discussions**: <https://github.com/Anya-org/stacksorbit/discussions>
 - **NPM**: <https://www.npmjs.com/package/stacksorbit>
-- **PyPI**: <https://pypi.org/project/stacksorbit/>
 
 ---
 
@@ -848,48 +673,42 @@ MIT License - see [LICENSE](LICENSE) file for details
 ## 🎯 What's New in v1.1.0
 
 ### **Enhanced CLI System**
-
 - ✅ Full command-line interface with comprehensive options
-- ✅ Interactive setup wizard with step-by-step guidance
+- ✅ Interactive setup wizard with guidance
 - ✅ Deployment templates for different scenarios
-- ✅ Advanced configuration management and validation
+- ✅ Advanced configuration management
 
 ### **Smart Category Recognition**
-
-- ✅ Automatic contract categorization (base, core, tokens, DEX, dimensional, etc.)
+- ✅ Automatic contract categorization (base, core, tokens, etc.)
 - ✅ Dependency-aware deployment ordering
-- ✅ Category-specific optimization and batching
+- ✅ Category-specific optimization
 
 ### **Chainhooks Integration**
-
-- ✅ Automatic chainhooks detection in contracts
+- ✅ Automatic chainhooks detection
 - ✅ Chainhooks.toml configuration management
-- ✅ Real-time hook monitoring and validation
-- ✅ Integration with Stacks chainhook service
+- ✅ Real-time hook monitoring
+- ✅ Hook validation and testing
 
 ### **Advanced Monitoring Dashboard**
+- ✅ Real-time deployment tracking
+- ✅ Interactive dashboard with multiple views
+- ✅ Network health monitoring
+- ✅ Performance analytics
+- ✅ Gas usage tracking
 
-- ✅ Real-time deployment tracking with multiple views
-- ✅ Interactive dashboard with overview, contracts, network, transactions, analytics
-- ✅ Network health monitoring and performance analytics
-- ✅ Gas usage tracking and account monitoring
-- ✅ Transaction confirmation waiting and alerts
-
-### **Comprehensive Testing & Verification**
-
-- ✅ Pre-deployment validation and comprehensive checks
-- ✅ Post-deployment verification and functionality testing
-- ✅ Network connectivity and API testing
-- ✅ Configuration validation and diagnostics
-- ✅ Contract compilation and error detection
+### **Comprehensive Testing**
+- ✅ Pre-deployment validation
+- ✅ Post-deployment verification
+- ✅ Network connectivity testing
+- ✅ Configuration validation
+- ✅ Contract functionality testing
 
 ### **User Experience Improvements**
-
-- ✅ Interactive setup wizard for any skill level
-- ✅ User-friendly error messages and recovery guides
-- ✅ Comprehensive help system and documentation
-- ✅ Deployment templates and guided workflows
-- ✅ Troubleshooting guides and automated diagnostics
+- ✅ Step-by-step setup wizard
+- ✅ User-friendly error messages
+- ✅ Comprehensive help system
+- ✅ Deployment templates
+- ✅ Troubleshooting guides
 
 ---
 
@@ -901,43 +720,32 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 🚀 **Ready to Deploy?**
 
-**For Complete Beginners:**
-
+**For Beginners:**
 ```bash
-# 1. Interactive setup (5 minutes)
+# 1. Interactive setup
 python setup_wizard.py
 
-# 2. Test everything (2 minutes)
+# 2. Test everything
 python ultimate_stacksorbit.py check
 
-# 3. Safe deployment test (10 minutes)
+# 3. Deploy to testnet
 python ultimate_stacksorbit.py deploy --dry-run
-
-# 4. Deploy to testnet (10 minutes)
 python ultimate_stacksorbit.py deploy
-
-# 5. Monitor in real-time
-python enhanced_dashboard.py
 ```
 
 **For Developers:**
-
 ```bash
-# 1. Quick setup with template
+# 1. Quick setup
 npm run setup
 
-# 2. Deploy with enhanced features
+# 2. Deploy with monitoring
 npm run deploy
 
-# 3. Monitor with dashboard
+# 3. Monitor in real-time
 npm run dashboard
-
-# 4. Verify everything
-npm run verify
 ```
 
 **For Production:**
-
 ```bash
 # 1. Comprehensive validation
 npm run diagnose
@@ -945,9 +753,8 @@ npm run diagnose
 # 2. Production deployment
 python ultimate_stacksorbit.py deploy --template mainnet_production
 
-# 3. Full verification and monitoring
+# 3. Full verification
 python ultimate_stacksorbit.py verify --comprehensive
-python enhanced_dashboard.py
 ```
 
 **🎉 Happy Deploying!**

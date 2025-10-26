@@ -21,9 +21,8 @@ from tkinter import ttk, scrolledtext, messagebox
 import urllib.request
 import json
 import time
-from pathlib import Path
-
-from stacksorbit_config_manager import ConfigManager # Import the ConfigManager
+import threading
+import queue
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
@@ -444,43 +443,51 @@ class GuiDeployer(tk.Tk):
         return 'https://api.testnet.hiro.so'
 
     def _run(self, cmd, cwd=None, env=None, on_failure=None):
-        def worker():
-            try:
-                self._log(f"\n$ {cmd}\n")
-                self._update_status("🔄 Running...", "orange")
-                self._set_process_running(True)
-                
-                self.current_proc = subprocess.Popen(cmd, cwd=str(cwd or ROOT), env=env or self._env(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, shell=True)
-                self.proc_label.config(text=f"PID: {self.current_proc.pid}")
-                
-                for line in self.current_proc.stdout:
-                    if self.current_proc.poll() is not None:
-                        break
-                    self.log_queue.put(line)
-                    self.log_buffer.append(line)
-                    
-                rc = self.current_proc.wait()
-                self._log(f"\n[exit {rc}]\n")
-                
-                # Check for failure
-                if rc != 0:
-                    self._log(f"❌ Command failed with exit code {rc}\n")
-                    self._update_status("❌ Failed", "red")
-                    log_file = self._save_failure_log(f"Command failed: {cmd}")
-                    if on_failure:
-                        on_failure(rc, log_file)
-                else:
-                    self._update_status("✅ Complete", "green")
-                    
-            except Exception as e:
-                self._log(f"❌ [error] {e}\n")
-                self._update_status("❌ Error", "red")
-                self._save_failure_log(f"Exception: {e}")
-            finally:
-                self.current_proc = None
-                self._set_process_running(False)
-                self.proc_label.config(text="No process")
-        threading.Thread(target=worker, daemon=True).start()
+        """Run command synchronously and return stdout, stderr"""
+        try:
+            self._log(f"\n$ {cmd}\n")
+            self._update_status("🔄 Running...", "orange")
+            self._set_process_running(True)
+
+            result = subprocess.run(
+                cmd,
+                cwd=str(cwd or ROOT),
+                env=env or self._env(),
+                capture_output=True,
+                text=True,
+                shell=True,
+                timeout=300  # 5 minute timeout
+            )
+
+            self._log(result.stdout)
+            if result.stderr:
+                self._log(f"STDERR: {result.stderr}\n")
+            self._log(f"\n[exit {result.returncode}]\n")
+
+            # Check for failure
+            if result.returncode != 0:
+                self._log(f"❌ Command failed with exit code {result.returncode}\n")
+                self._update_status("❌ Failed", "red")
+                log_file = self._save_failure_log(f"Command failed: {cmd}")
+                if on_failure:
+                    on_failure(result.returncode, log_file)
+            else:
+                self._update_status("✅ Complete", "green")
+
+            return result.stdout, result.stderr
+
+        except subprocess.TimeoutExpired:
+            self._log("❌ Command timed out after 5 minutes\n")
+            self._update_status("❌ Timeout", "red")
+            self._save_failure_log(f"Command timed out: {cmd}")
+            return "", "Timeout"
+        except Exception as e:
+            self._log(f"❌ [error] {e}\n")
+            self._update_status("❌ Error", "red")
+            self._save_failure_log(f"Exception: {e}")
+            return "", str(e)
+        finally:
+            self._set_process_running(False)
     
     def _update_status(self, text, color="black"):
         """Update status label"""
@@ -609,7 +616,7 @@ class GuiDeployer(tk.Tk):
             cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
         else:
             cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
-        
+
         stdout, stderr = self._run(cmd, env=env) # Capture output
 
         if self.devnet_dry_run.get():
@@ -624,51 +631,7 @@ class GuiDeployer(tk.Tk):
         if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
             env["SKIP_DEPLOYED"] = "1"
             self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
-        
-        if self.contract_filter.get().strip():
-            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
-        if self.deploy_mode.get() == "sdk":
-            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
-        else:
-            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
-        
-        stdout, stderr = self._run(cmd, env=env) # Capture output
 
-        # For testnet, we assume it's always a live deployment, so no specific dry-run feedback block needed
-        # However, we can still log the output for debugging/auditing purposes
-        self._log("\n--- TESTNET DEPLOYMENT OUTPUT ---\n")
-        self._log(f"STDOUT:\n{stdout}\n")
-        if stderr:
-            self._log(f"STDERR:\n{stderr}\n")
-        self._log("----------------------------------\n")
-
-        # Set deployment mode based on pre-checks
-        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
-            env["SKIP_DEPLOYED"] = "1"
-            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
-        
-        if self.contract_filter.get().strip():
-            env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
-        if self.deploy_mode.get() == "sdk":
-            cmd = f"node {SCRIPTS / 'sdk_deploy_contracts.js'}"
-        else:
-            cmd = f"node {SCRIPTS / 'deploy_from_clarinet_list.js'}"
-        
-        stdout, stderr = self._run(cmd, env=env) # Capture output
-
-        # For testnet, we assume it's always a live deployment, so no specific dry-run feedback block needed
-        # However, we can still log the output for debugging/auditing purposes
-        self._log("\n--- TESTNET DEPLOYMENT OUTPUT ---\n")
-        self._log(f"STDOUT:\n{stdout}\n")
-        if stderr:
-            self._log(f"STDERR:\n{stderr}\n")
-        self._log("----------------------------------\n")
-
-        # Set deployment mode based on pre-checks
-        if hasattr(self, 'deployment_mode') and self.deployment_mode == 'upgrade':
-            env["SKIP_DEPLOYED"] = "1"
-            self._log(f"\n🔄 UPGRADE MODE: Skipping {len(self.deployed_contracts)} deployed contracts\n")
-        
         if self.contract_filter.get().strip():
             env["CONTRACT_FILTER"] = self.contract_filter.get().strip()
         if self.deploy_mode.get() == "sdk":
@@ -678,12 +641,10 @@ class GuiDeployer(tk.Tk):
         self._run(cmd, env=env)
 
     def on_pre_checks(self):
-        """Run pre-deployment checks in background"""
-        def worker():
-            success = self._run_pre_deployment_checks()
-            if not success:
-                self._save_failure_log("Pre-deployment checks failed")
-        threading.Thread(target=worker, daemon=True).start()
+        """Run pre-deployment checks synchronously"""
+        success = self._run_pre_deployment_checks()
+        if not success:
+            self._save_failure_log("Pre-deployment checks failed")
     
     def on_save_log(self):
         """Manually save current log"""

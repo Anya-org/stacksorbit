@@ -1,21 +1,33 @@
 {
   "name": "stacksorbit",
-  "version": "1.0.0",
-  "description": "Professional GUI deployment tool for Stacks blockchain smart contracts with intelligent pre-checks and process control",
-  "main": "index.js",
+  "version": "1.1.0",
+  "description": "Ultimate deployment tool for Stacks blockchain with enhanced CLI, monitoring, chainhooks, and user-friendly experience",
+  "main": "bin/enhanced-stacksorbit.js",
   "bin": {
-    "stacksorbit": "./bin/stacksorbit.js"
+    "stacksorbit": "./bin/enhanced-stacksorbit.js"
   },
   "scripts": {
-    "test": "python -m pytest -q",
+    "start": "node bin/enhanced-stacksorbit.js",
+    "setup": "python setup_wizard.py",
+    "deploy": "python ultimate_stacksorbit.py deploy",
+    "monitor": "python ultimate_stacksorbit.py monitor",
+    "verify": "python ultimate_stacksorbit.py verify",
+    "dashboard": "python enhanced_dashboard.py",
+    "diagnose": "python ultimate_stacksorbit.py diagnose",
+    "detect": "python stacksorbit_auto_detect.py",
+    "check": "python conxian_testnet_deploy.py check",
+    "gui": "node bin/stacksorbit.js",
+    "test": "python test_enhanced_features.py",
     "test:unit": "python -m pytest tests/unit/ -q",
     "test:integration": "python -m pytest tests/integration/ -q",
     "test:gui": "python tests/test_gui.py",
-    "lint": "eslint bin/stacksorbit.js && pylint stacksorbit.py --exit-zero",
-    "format": "prettier --write bin/stacksorbit.js && black stacksorbit.py",
+    "test:enhanced": "python test_enhanced_features.py",
+    "lint": "eslint bin/*.js && pylint *.py --exit-zero",
+    "format": "prettier --write bin/*.js && black *.py",
     "ci": "npm install && python -m pip install --upgrade pip && python -m pip install -e .[dev,test] && npm run lint && npm test",
     "prepare": "python setup.py build",
-    "prepublishOnly": "npm run lint && npm test"
+    "prepublishOnly": "npm run lint && npm test",
+    "install-deps": "python -m pip install -r requirements.txt"
   },
   "keywords": [
     "stacks",
@@ -55,6 +67,8 @@
   "dependencies": {
     "@stacks/transactions": "^6.13.0",
     "@stacks/network": "^6.13.0",
+    "commander": "^11.0.0",
+    "axios": "^1.6.0",
     "dotenv": "^16.3.1"
   },
   "devDependencies": {

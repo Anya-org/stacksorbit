@@ -1,0 +1,214 @@
+{
+  "templates": {
+    "testnet_quick_start": {
+      "name": "Testnet Quick Start",
+      "description": "Fast deployment to testnet with basic monitoring",
+      "recommended_for": "Development and testing",
+      "config": {
+        "NETWORK": "testnet",
+        "DEPLOYMENT_MODE": "full",
+        "BATCH_SIZE": 5,
+        "PARALLEL_DEPLOY": false,
+        "MONITORING_ENABLED": true,
+        "VERIFICATION_ENABLED": true,
+        "GAS_OPTIMIZATION": false
+      },
+      "steps": [
+        "Run: stacksorbit check",
+        "Run: stacksorbit deploy --dry-run",
+        "Run: stacksorbit deploy",
+        "Run: stacksorbit monitor --follow",
+        "Run: stacksorbit verify"
+      ]
+    },
+
+    "mainnet_production": {
+      "name": "Mainnet Production",
+      "description": "Production deployment with full validation and monitoring",
+      "recommended_for": "Production deployment",
+      "warning": "This uses real STX tokens!",
+      "config": {
+        "NETWORK": "mainnet",
+        "DEPLOYMENT_MODE": "upgrade",
+        "BATCH_SIZE": 3,
+        "PARALLEL_DEPLOY": false,
+        "MONITORING_ENABLED": true,
+        "VERIFICATION_ENABLED": true,
+        "GAS_OPTIMIZATION": true,
+        "CONFIRMATION_TIMEOUT": 600
+      },
+      "steps": [
+        "Run: stacksorbit check --comprehensive",
+        "Run: stacksorbit deploy --dry-run --batch-size 1",
+        "Run: stacksorbit deploy --batch-size 3",
+        "Run: stacksorbit monitor --follow --verbose",
+        "Run: stacksorbit verify --comprehensive",
+        "Monitor for 24 hours",
+        "Run: python deployment_verifier.py --comprehensive"
+      ]
+    },
+
+    "devnet_development": {
+      "name": "Devnet Development",
+      "description": "Local development with fast deployment",
+      "recommended_for": "Local development and testing",
+      "config": {
+        "NETWORK": "devnet",
+        "DEPLOYMENT_MODE": "full",
+        "BATCH_SIZE": 10,
+        "PARALLEL_DEPLOY": true,
+        "MONITORING_ENABLED": false,
+        "VERIFICATION_ENABLED": false,
+        "DRY_RUN": false
+      },
+      "prerequisites": [
+        "Local Stacks node running",
+        "Clarinet devnet active"
+      ],
+      "steps": [
+        "Start: clarinet devnet start",
+        "Wait for devnet to be ready",
+        "Run: stacksorbit deploy --network devnet",
+        "Test contracts locally"
+      ]
+    },
+
+    "core_only": {
+      "name": "Core Infrastructure Only",
+      "description": "Deploy only core contracts (traits, utils, base)",
+      "recommended_for": "Infrastructure setup",
+      "config": {
+        "NETWORK": "testnet",
+        "CONTRACT_FILTER": "base,core",
+        "DEPLOYMENT_MODE": "full",
+        "BATCH_SIZE": 8,
+        "MONITORING_ENABLED": true
+      },
+      "steps": [
+        "Run: stacksorbit check",
+        "Run: stacksorbit deploy --category base",
+        "Run: stacksorbit deploy --category core",
+        "Run: stacksorbit verify --contracts all-traits utils-encoding"
+      ]
+    },
+
+    "tokens_only": {
+      "name": "Token System Only",
+      "description": "Deploy only token contracts",
+      "recommended_for": "Token testing and integration",
+      "config": {
+        "NETWORK": "testnet",
+        "CONTRACT_FILTER": "tokens",
+        "DEPLOYMENT_MODE": "full",
+        "BATCH_SIZE": 5,
+        "MONITORING_ENABLED": true
+      },
+      "steps": [
+        "Deploy core contracts first (if needed)",
+        "Run: stacksorbit deploy --category tokens",
+        "Run: stacksorbit verify --contracts cxd-token cxlp-token"
+      ]
+    },
+
+    "emergency_update": {
+      "name": "Emergency Update",
+      "description": "Quick deployment for critical updates",
+      "recommended_for": "Emergency fixes and security updates",
+      "config": {
+        "NETWORK": "mainnet",
+        "DEPLOYMENT_MODE": "upgrade",
+        "BATCH_SIZE": 1,
+        "PARALLEL_DEPLOY": false,
+        "MONITORING_ENABLED": true,
+        "VERIFICATION_ENABLED": true,
+        "PRIORITY": "high"
+      },
+      "steps": [
+        "Run: stacksorbit check --comprehensive",
+        "Run: stacksorbit deploy --batch-size 1 --skip-compile",
+        "Run: stacksorbit monitor --follow",
+        "Run: stacksorbit verify --comprehensive"
+      ]
+    }
+  },
+
+  "categories": {
+    "base": {
+      "description": "Foundational contracts (traits, utilities, libraries)",
+      "contracts": ["all-traits", "utils-encoding", "utils-utils", "lib-error-codes"],
+      "gas_estimate": "Low",
+      "deployment_order": 1
+    },
+
+    "core": {
+      "description": "Core infrastructure (engines, managers, risk systems)",
+      "contracts": ["core-dimensional-engine", "core-position-manager", "risk-risk-manager"],
+      "gas_estimate": "Medium",
+      "deployment_order": 2
+    },
+
+    "tokens": {
+      "description": "Token system (CXD, CXLP, governance tokens)",
+      "contracts": ["cxd-token", "cxlp-token", "cxvg-token", "governance-token"],
+      "gas_estimate": "Low",
+      "deployment_order": 3
+    },
+
+    "dex": {
+      "description": "DEX system (factory, router, pools, vaults)",
+      "contracts": ["dex-factory", "dex-router", "dex-pool", "dex-vault"],
+      "gas_estimate": "High",
+      "deployment_order": 4
+    },
+
+    "dimensional": {
+      "description": "Dimensional system (positions, concentrated liquidity)",
+      "contracts": ["dim-registry", "position-nft", "dimensional-core"],
+      "gas_estimate": "High",
+      "deployment_order": 5
+    },
+
+    "governance": {
+      "description": "Governance system (proposals, timelock, voting)",
+      "contracts": ["governance-token", "proposal-engine", "timelock-controller"],
+      "gas_estimate": "Medium",
+      "deployment_order": 6
+    }
+  },
+
+  "troubleshooting": {
+    "common_issues": {
+      "low_balance": {
+        "symptom": "Transaction failed with insufficient funds",
+        "solution": "Add more STX to your account",
+        "prevention": "Check balance before deployment"
+      },
+
+      "network_timeout": {
+        "symptom": "Network requests timing out",
+        "solution": "Check internet connection and API status",
+        "prevention": "Run 'stacksorbit check --network-only' first"
+      },
+
+      "compilation_errors": {
+        "symptom": "Contracts failing to compile",
+        "solution": "Fix Clarity syntax errors in contracts",
+        "prevention": "Run 'clarinet check' before deployment"
+      },
+
+      "nonce_errors": {
+        "symptom": "Transaction nonce errors",
+        "solution": "Wait for previous transactions to confirm",
+        "prevention": "Use smaller batch sizes"
+      }
+    },
+
+    "recovery_steps": [
+      "Run: stacksorbit check --comprehensive",
+      "Check: python deployment_monitor.py --api-status",
+      "Verify: python deployment_verifier.py --comprehensive",
+      "Review: logs/deployment_failure_*.log",
+      "Contact: Support if issues persist"
+    ]
+  }
+}
