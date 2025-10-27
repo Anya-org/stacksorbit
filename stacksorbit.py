@@ -23,6 +23,7 @@ import json
 import time
 import threading
 import queue
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "scripts"
@@ -45,6 +46,9 @@ class GuiDeployer(tk.Tk):
         self._auto_load_env() # This will now use the ConfigManager
         self._process_clarinet_config() # Process Clarinet.toml
 
+        # Project directory selection
+        self.project_dir = tk.StringVar(value=str(ROOT))
+
         # State vars with auto-detection
         self.network = tk.StringVar(value="testnet")
         initial_api = os.environ.get("CORE_API_URL") or os.environ.get("STACKS_API_BASE") or self._default_core_api_url("testnet")
@@ -58,11 +62,11 @@ class GuiDeployer(tk.Tk):
 
         # Auto-detect contracts
         self.total_contracts = self._count_contracts()
-        
+
         self.status_labels = {}
         self.deployment_mode = 'full'
         self.deployed_contracts = []
-        
+
         # Ensure logs directory exists
         (ROOT / 'logs').mkdir(exist_ok=True)
         
@@ -102,12 +106,19 @@ class GuiDeployer(tk.Tk):
             self._log(f"ℹ️ Clarinet.toml not found or loaded.\n")
 
     def _count_contracts(self):
-        """Auto-detect total number of contracts"""
+        """Auto-detect total number of contracts in current project directory"""
         try:
-            contract_files = list((ROOT / 'contracts').rglob('*.clar'))
-            return len(contract_files)
+            project_path = Path(self.project_dir.get()) if self.project_dir.get() else ROOT
+            contracts_dir = project_path / 'contracts'
+            if contracts_dir.exists():
+                contract_files = list(contracts_dir.rglob('*.clar'))
+                return len(contract_files)
+            else:
+                # Fallback to search in project root
+                contract_files = list(project_path.rglob('*.clar'))
+                return len(contract_files)
         except:
-            return 144  # fallback
+            return 0  # fallback
     
     def _check_environment(self):
         """Pre-deployment check: Validate environment variables"""
@@ -374,6 +385,23 @@ class GuiDeployer(tk.Tk):
         
         # === RIGHT PANEL (ADVANCED CONTROLS) ===
         
+        # Project directory selector
+        project_frame = ttk.LabelFrame(right_panel, text="Project Directory")
+        project_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        # Current project directory display
+        self.project_dir_label = ttk.Label(project_frame, text=f"Current: {str(ROOT)}", font=("Arial", 8))
+        self.project_dir_label.pack(anchor=tk.W, padx=5, pady=(5,0))
+
+        # Project directory selection buttons
+        project_buttons = ttk.Frame(project_frame)
+        project_buttons.pack(fill=tk.X, padx=5, pady=5)
+
+        ttk.Button(project_buttons, text="Select Project Dir",
+                  command=self._select_project_dir).pack(side=tk.LEFT, padx=(0,5))
+        ttk.Button(project_buttons, text="Refresh Config",
+                  command=self._refresh_project_config).pack(side=tk.LEFT, padx=(0,5))
+
         # Network selection
         net_frame = ttk.LabelFrame(right_panel, text="Network")
         net_frame.pack(fill=tk.X, padx=5, pady=5)
@@ -451,7 +479,7 @@ class GuiDeployer(tk.Tk):
 
             result = subprocess.run(
                 cmd,
-                cwd=str(cwd or ROOT),
+                cwd=str(cwd or Path(self.project_dir.get())),
                 env=env or self._env(),
                 capture_output=True,
                 text=True,
@@ -533,8 +561,8 @@ class GuiDeployer(tk.Tk):
     def _save_failure_log(self, reason="Unknown"):
         """Save complete log buffer to file on failure"""
         try:
-            log_dir = ROOT / 'logs'
-            log_dir.mkdir(exist_ok=True)
+            log_dir = Path(self.project_dir.get()) / 'logs'
+            log_dir.mkdir(parents=True, exist_ok=True)
             
             log_file = log_dir / f'deployment_failure_{self._timestamp()}.log'
             
@@ -725,7 +753,7 @@ class GuiDeployer(tk.Tk):
             set_status(k, bool(env.get(k)))
 
     def on_load_env(self):
-        env_path = ROOT / '.env'
+        env_path = Path(self.project_dir.get()) / '.env'
         if not env_path.exists():
             self._log('[info] .env not found\n')
             return
@@ -749,7 +777,7 @@ class GuiDeployer(tk.Tk):
 
     def on_save_env(self):
         # Save minimal snapshot of current UI and key env values
-        env_path = ROOT / '.env'
+        env_path = Path(self.project_dir.get()) / '.env'
         lines = []
         if self.core_api_url.get().strip():
             lines.append(f"CORE_API_URL={self.core_api_url.get().strip()}")
@@ -766,7 +794,7 @@ class GuiDeployer(tk.Tk):
 
     def on_load_wallets(self):
         net = self.network.get().strip().lower()
-        cfg = ROOT / 'config' / f'wallets.{net}.json'
+        cfg = Path(self.project_dir.get()) / 'config' / f'wallets.{net}.json'
         if not cfg.exists():
             self._log(f"[wallets] config not found: {cfg}\n")
             return
@@ -789,7 +817,63 @@ class GuiDeployer(tk.Tk):
             self._log(f"[wallets] load error: {e}\n")
         self.refresh_status()
 
+    def _select_project_dir(self):
+        """Open directory selector dialog to choose project directory"""
+        from tkinter import filedialog
 
-if __name__ == "__main__":
-    app = GuiDeployer()
-    app.mainloop()
+        selected_dir = filedialog.askdirectory(
+            title="Select Project Directory",
+            initialdir=str(ROOT)
+        )
+
+        if selected_dir:
+            # Update the project directory
+            self.project_dir.set(selected_dir)
+
+            # Update the display label
+            self.project_dir_label.config(text=f"Current: {selected_dir}")
+
+            # Re-initialize config manager for new directory
+            new_root = Path(selected_dir)
+            self.config_manager = ConfigManager(new_root)
+            self.loaded_configs = self.config_manager.scan_and_load_configs()
+
+            # Update status display
+            self.total_contracts = self._count_contracts()
+            self._log(f"[INFO] Switched to project directory: {selected_dir}\n")
+            self._log(f"[INFO] Reloaded configuration\n")
+            self._log(f"[INFO] Found {self.total_contracts} contracts\n")
+
+            # Update status in left panel - find the contracts count label
+            self._update_contracts_display()
+
+    def _refresh_project_config(self):
+        """Refresh configuration for current project directory"""
+        # Re-scan current directory
+        self.config_manager = ConfigManager(Path(self.project_dir.get()))
+        self.loaded_configs = self.config_manager.scan_and_load_configs()
+
+        # Update status
+        self._log(f"[INFO] Refreshed configuration for: {self.project_dir.get()}\n")
+
+        # Update contracts count
+        self.total_contracts = self._count_contracts()
+        self._log(f"[INFO] Found {self.total_contracts} contracts\n")
+
+        # Update status display
+        self._update_contracts_display()
+
+    def _update_contracts_display(self):
+        """Update the contracts count display in the UI"""
+        # Find and update the contracts label in the status panel
+        def find_contracts_label(parent):
+            for child in parent.winfo_children():
+                if isinstance(child, ttk.Label) and "detected" in str(child.cget('text')):
+                    child.config(text=f"{self.total_contracts} detected")
+                    return True
+                elif hasattr(child, 'winfo_children'):
+                    if find_contracts_label(child):
+                        return True
+            return False
+
+        find_contracts_label(self)

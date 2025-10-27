@@ -51,6 +51,8 @@ class EnhancedConfigManager:
                     key, value = line.split('=', 1)
                     self.config[key.strip()] = value.strip().strip('"')
 
+        # Store the config path for the deployer to use
+        self.config['CONFIG_PATH'] = str(self.config_path)
         return self.config
 
     def _create_default_config(self):
@@ -122,7 +124,8 @@ CONFIRMATION_TIMEOUT=300
 
     def _validate_private_key(self, privkey: str) -> bool:
         """Validate private key format"""
-        return len(privkey) == 64 and all(c in '0123456789abcdefABCDEF' for c in privkey)
+        # Accept both 64-char (raw) and 66-char (with 01 suffix) private keys
+        return (len(privkey) == 64 or len(privkey) == 66) and all(c in '0123456789abcdefABCDEF' for c in privkey)
 
     def _validate_address(self, address: str) -> bool:
         """Validate Stacks address format"""
@@ -222,19 +225,22 @@ class EnhancedConxianDeployer:
             'dimensional': ['dim-registry', 'dim-metrics', 'position-nft', 'dimensional-core'],
             'oracle': ['oracle', 'oracle-aggregator', 'btc-adapter'],
             'security': ['circuit-breaker', 'pausable', 'mev-protector'],
-            'monitoring': ['analytics-aggregator', 'monitoring-dashboard']
+            'monitoring': ['analytics-aggregator', 'monitoring-dashboard'],
+            'self-run': ['self-run', 'autonomous', 'auto-deploy', 'self-healing'],
+            'self-managed': ['managed', 'supervised', 'controlled', 'orchestrated']
         }
 
     def run_pre_checks(self) -> bool:
         """Run comprehensive pre-deployment checks"""
-        print(f"\n{Fore.CYAN}🔍 Running Pre-Deployment Checks{Style.RESET_ALL}\n")
+        print(f"\n[INFO] Running Pre-Deployment Checks\n")
 
         checks = [
             ('Environment', self._check_environment),
             ('Network', self._check_network),
             ('Compilation', self._check_compilation),
             ('Account Balance', self._check_balance),
-            ('Deployment Mode', self._check_deployment_mode)
+            ('Deployment Mode', self._check_deployment_mode),
+            ('System Alignment', self._check_system_alignment)
         ]
 
         all_passed = True
@@ -243,100 +249,185 @@ class EnhancedConxianDeployer:
                 if not check_func():
                     all_passed = False
             except Exception as e:
-                print(f"❌ {check_name} check failed: {e}")
+                print(f"[ERROR] {check_name} check failed: {e}")
                 all_passed = False
 
-        print(f"\n{Fore.GREEN if all_passed else Fore.RED}{'✅' if all_passed else '❌'} Overall Status: {'READY' if all_passed else 'ISSUES FOUND'}{Style.RESET_ALL}")
+        print(f"\n{'[SUCCESS]' if all_passed else '[ERROR]'} Overall Status: {'READY' if all_passed else 'ISSUES FOUND'}")
         return all_passed
 
     def _check_environment(self) -> bool:
         """Check environment configuration"""
-        print("🔧 Checking environment variables...")
+        print("Checking environment variables...")
 
         required = ['DEPLOYER_PRIVKEY', 'SYSTEM_ADDRESS', 'NETWORK']
         missing = [req for req in required if not self.config.get(req)]
 
         if missing:
-            print(f"❌ Missing required variables: {', '.join(missing)}")
+            print(f"[ERROR] Missing required variables: {', '.join(missing)}")
             return False
 
-        print(f"✅ DEPLOYER_PRIVKEY: {self.config['DEPLOYER_PRIVKEY'][:10]}...")
-        print(f"✅ SYSTEM_ADDRESS: {self.config['SYSTEM_ADDRESS']}")
-        print(f"✅ NETWORK: {self.config['NETWORK']}")
+        print(f"[SUCCESS] DEPLOYER_PRIVKEY: {self.config['DEPLOYER_PRIVKEY'][:10]}...")
+        print(f"[SUCCESS] SYSTEM_ADDRESS: {self.config['SYSTEM_ADDRESS']}")
+        print(f"[SUCCESS] NETWORK: {self.config['NETWORK']}")
         return True
 
     def _check_network(self) -> bool:
         """Check network connectivity"""
-        print("🌐 Checking network connectivity...")
+        print("Checking network connectivity...")
 
         api_status = self.monitor.check_api_status()
         if api_status['status'] == 'online':
-            print(f"✅ Connected to {api_status['network_id']}")
-            print(f"✅ Block height: {api_status['block_height']}")
+            print(f"[SUCCESS] Connected to {api_status['network_id']}")
+            print(f"[SUCCESS] Block height: {api_status['block_height']}")
             return True
         else:
-            print(f"❌ Network check failed: {api_status.get('error', 'Unknown error')}")
+            print(f"[ERROR] Network check failed: {api_status.get('error', 'Unknown error')}")
             return False
 
     def _check_compilation(self) -> bool:
         """Check contract compilation"""
-        print("⚙️  Checking contract compilation...")
+        print("Checking contract compilation...")
 
         try:
             result = subprocess.run(['clarinet', 'check'],
                                   capture_output=True, text=True, timeout=60)
             if result.returncode == 0:
-                print("✅ All contracts compile successfully")
+                print("[SUCCESS] All contracts compile successfully")
                 return True
             else:
-                print("⚠️  Compilation issues detected (deployment may still work)")
+                print("[WARNING] Compilation issues detected (deployment may still work)")
                 if self.verbose:
                     print(result.stdout)
                 return True
         except Exception as e:
-            print(f"⚠️  Could not run compilation check: {e}")
+            print(f"[WARNING] Could not run compilation check: {e}")
             return True
 
     def _check_balance(self) -> bool:
         """Check account balance"""
-        print("💰 Checking account balance...")
+        print("Checking account balance...")
 
         account_info = self.monitor.get_account_info(self.config['SYSTEM_ADDRESS'])
         if account_info:
             balance = int(account_info.get('balance', 0)) / 1000000  # Convert to STX
             min_balance = 10  # Minimum 10 STX for deployment
 
-            print(f"✅ Current balance: {balance} STX")
+            print(f"[SUCCESS] Current balance: {balance} STX")
             if balance < min_balance:
-                print(f"⚠️  Low balance: {balance} STX (minimum {min_balance} STX recommended)")
+                print(f"[WARNING] Low balance: {balance} STX (minimum {min_balance} STX recommended)")
                 return False
             return True
         else:
-            print("❌ Could not check balance")
+            print("[ERROR] Could not check balance")
             return False
 
     def _check_deployment_mode(self) -> bool:
         """Check deployment mode"""
-        print("📦 Checking deployment mode...")
+        print("Checking deployment mode...")
 
         account_info = self.monitor.get_account_info(self.config['SYSTEM_ADDRESS'])
         if account_info:
             nonce = account_info.get('nonce', 0)
             if nonce > 0:
-                print(f"🔄 Upgrade mode (nonce: {nonce})")
+                print(f"[INFO] Upgrade mode (nonce: {nonce})")
                 self.config['DEPLOYMENT_MODE'] = 'upgrade'
             else:
-                print("🆕 Full deployment mode")
+                print("[INFO] Full deployment mode")
                 self.config['DEPLOYMENT_MODE'] = 'full'
         else:
-            print("ℹ️  Assuming full deployment mode")
+            print("[INFO] Assuming full deployment mode")
             self.config['DEPLOYMENT_MODE'] = 'full'
 
-        return True
+    def _check_system_alignment(self) -> bool:
+        """Check system alignment - deployed vs expected contracts"""
+        print("Checking system alignment...")
+
+        try:
+            # Get expected contracts
+            expected_contracts = self._get_deployment_list()
+            expected_names = {c['name'] for c in expected_contracts}
+
+            # Get currently deployed contracts
+            account_info = self.monitor.get_account_info(self.config['SYSTEM_ADDRESS'])
+            if not account_info:
+                print("[WARNING] Could not check system alignment - no account info")
+                return True
+
+            # Get deployed contracts from the account
+            deployed_contracts = self._get_deployed_contracts()
+            deployed_names = {c['name'] for c in deployed_contracts}
+
+            # Analyze alignment
+            missing_contracts = expected_names - deployed_names
+            extra_contracts = deployed_names - expected_names
+
+            # Report alignment status
+            if not missing_contracts and not extra_contracts:
+                print(f"[SUCCESS] System alignment perfect - all {len(expected_names)} contracts deployed")
+                return True
+            else:
+                print(f"[INFO] System alignment analysis:")
+                print(f"   Expected: {len(expected_names)} contracts")
+                print(f"   Deployed: {len(deployed_names)} contracts")
+
+                if missing_contracts:
+                    print(f"[WARNING] Missing contracts ({len(missing_contracts)}):")
+                    for contract in sorted(missing_contracts):
+                        print(f"   - {contract}")
+
+                if extra_contracts:
+                    print(f"[INFO] Extra contracts ({len(extra_contracts)}):")
+                    for contract in sorted(extra_contracts):
+                        print(f"   - {contract}")
+
+                # Store alignment data for deployment decisions
+                self.system_alignment = {
+                    'expected': expected_names,
+                    'deployed': deployed_names,
+                    'missing': missing_contracts,
+                    'extra': extra_contracts,
+                    'aligned': len(missing_contracts) == 0 and len(extra_contracts) == 0
+                }
+
+                return True  # Don't fail the check, just report
+
+        except Exception as e:
+            print(f"[WARNING] Could not check system alignment: {e}")
+            return True
+
+    def _get_deployed_contracts(self) -> List[Dict]:
+        """Get list of currently deployed contracts for the account"""
+        # This is a placeholder - in a real implementation, this would query
+        # the Stacks blockchain to get the list of contracts deployed by this account
+        deployed = []
+
+        # Simulate checking deployed contracts
+        # In reality, this would use Stacks API or SDK to query contract events
+        try:
+            # For now, we'll simulate based on deployment history
+            history_path = Path("deployment") / "history.json"
+            if history_path.exists():
+                with open(history_path, 'r') as f:
+                    history = json.load(f)
+
+                # Get the latest deployment
+                if history:
+                    latest = history[-1]
+                    for contract in latest.get('results', {}).get('successful', []):
+                        deployed.append({
+                            'name': contract['name'],
+                            'tx_id': contract.get('tx_id', ''),
+                            'deployed_at': latest.get('timestamp', '')
+                        })
+
+        except Exception as e:
+            print(f"Warning: Could not read deployment history: {e}")
+
+        return deployed
 
     def deploy_conxian(self, category: Optional[str] = None, dry_run: bool = False) -> Dict:
         """Deploy Conxian contracts with enhanced monitoring"""
-        print(f"\n{Fore.CYAN}🚀 Conxian Protocol Deployment{Style.RESET_ALL}")
+        print(f"\n[INFO] Conxian Protocol Deployment")
         print("=" * 60)
 
         if dry_run:
@@ -345,11 +436,17 @@ class EnhancedConxianDeployer:
         # Get deployment list
         contracts = self._get_deployment_list(category)
 
+        # Apply system alignment if available
+        if hasattr(self, 'system_alignment') and self.system_alignment:
+            if self.system_alignment['missing']:
+                print(f"[INFO] Found {len(self.system_alignment['missing'])} missing contracts from previous deployment")
+                print(f"[INFO] Will prioritize missing contracts in deployment")
+
         if not contracts:
-            print("❌ No contracts found to deploy")
+            print("[ERROR] No contracts found to deploy")
             return {'success': False, 'error': 'No contracts found'}
 
-        print(f"📦 Deploying {len(contracts)} contracts in {self.config.get('DEPLOYMENT_MODE', 'full')} mode\n")
+        print(f"[INFO] Deploying {len(contracts)} contracts in {self.config.get('DEPLOYMENT_MODE', 'full')} mode\n")
 
         results = {'successful': [], 'failed': [], 'skipped': []}
 
@@ -367,16 +464,16 @@ class EnhancedConxianDeployer:
                     )
 
                     if confirmed:
-                        print(f"✅ {contract['name']} deployed successfully")
+                        print(f"[SUCCESS] {contract['name']} deployed successfully")
                         results['successful'].append({'name': contract['name'], 'tx_id': tx_id})
                     else:
-                        print(f"⏰ {contract['name']} deployment timed out")
+                        print(f"[TIMEOUT] {contract['name']} deployment timed out")
                         results['failed'].append({'name': contract['name'], 'error': 'timeout'})
                 else:
                     results['failed'].append({'name': contract['name'], 'error': 'deployment failed'})
 
             except Exception as e:
-                print(f"❌ {contract['name']} failed: {e}")
+                print(f"[ERROR] {contract['name']} failed: {e}")
                 results['failed'].append({'name': contract['name'], 'error': str(e)})
 
             # Small delay between deployments
@@ -389,13 +486,22 @@ class EnhancedConxianDeployer:
 
     def _dry_run_deployment(self, category: Optional[str] = None) -> Dict:
         """Perform dry run of deployment"""
-        print(f"\n{Fore.YELLOW}🔍 DRY RUN MODE{Style.RESET_ALL}")
+        print(f"\n[INFO] DRY RUN MODE")
         print("=" * 60)
 
         contracts = self._get_deployment_list(category)
         total_gas = 0
 
-        print("📋 Deployment Plan:\n")
+        print("[INFO] Deployment Plan:\n")
+
+        # Show system alignment if available
+        if hasattr(self, 'system_alignment') and self.system_alignment:
+            if self.system_alignment['missing']:
+                print(f"[INFO] Missing contracts that will be deployed:")
+                for contract in sorted(self.system_alignment['missing']):
+                    if any(contract in c['name'] for c in contracts):
+                        print(f"   + {contract}")
+                print()
 
         for i, contract in enumerate(contracts, 1):
             gas_estimate = self._estimate_gas(contract)
@@ -406,7 +512,7 @@ class EnhancedConxianDeployer:
             print(f"   Estimated gas: {gas_estimate} STX")
             print()
 
-        print("📊 Summary:")
+        print("[SUMMARY]:")
         print(f"   Total contracts: {len(contracts)}")
         print(f"   Estimated gas: {total_gas} STX")
         print(f"   Deployment mode: {self.config.get('DEPLOYMENT_MODE', 'full')}")
@@ -418,13 +524,17 @@ class EnhancedConxianDeployer:
         """Get list of contracts to deploy"""
         contracts = []
 
-        # Try Clarinet.toml first
-        clarinet_path = Path("Clarinet.toml")
+        # Get the project directory from the config path
+        config_path = Path(self.config.get('CONFIG_PATH', '.env'))
+        project_dir = config_path.parent
+
+        # Try Clarinet.toml first in the project directory
+        clarinet_path = project_dir / "Clarinet.toml"
         if clarinet_path.exists():
             contracts = self._parse_clarinet_toml(clarinet_path)
         else:
-            # Fallback to directory scan
-            contracts = self._scan_contracts_directory()
+            # Fallback to directory scan in project directory
+            contracts = self._scan_contracts_directory(project_dir)
 
         # Filter by category if specified
         if category and category in self.contract_categories:
@@ -460,17 +570,17 @@ class EnhancedConxianDeployer:
 
         return contracts
 
-    def _scan_contracts_directory(self) -> List[Dict]:
+    def _scan_contracts_directory(self, project_dir: Path) -> List[Dict]:
         """Scan contracts directory for .clar files"""
         contracts = []
-        contracts_dir = Path("contracts")
+        contracts_dir = project_dir / "contracts"
 
         if contracts_dir.exists():
             for clar_file in contracts_dir.rglob("*.clar"):
                 contract_name = clar_file.stem
                 contracts.append({
                     'name': contract_name,
-                    'path': str(clar_file.relative_to(clarinet_path.parent)),
+                    'path': str(clar_file.relative_to(project_dir)),
                     'full_path': str(clar_file)
                 })
 
@@ -502,7 +612,7 @@ class EnhancedConxianDeployer:
         # This is a placeholder - in a real implementation, this would use
         # the @stacks/transactions library to create and broadcast deployment transactions
 
-        print(f"📄 Deploying {contract['name']}...")
+        print(f"Deploying {contract['name']}...")
 
         # Simulate deployment
         time.sleep(1)
@@ -556,14 +666,14 @@ class EnhancedConxianDeployer:
         with open(history_path, 'w') as f:
             json.dump(history, f, indent=2)
 
-        print(f"💾 Deployment results saved to {history_path}")
+        print(f"[INFO] Deployment results saved to {history_path}")
 
 def main():
     """Main CLI function"""
     parser = argparse.ArgumentParser(description='Enhanced Conxian Deployment Tool')
     parser.add_argument('--config', default='.env', help='Configuration file path')
     parser.add_argument('--network', choices=['devnet', 'testnet', 'mainnet'], default='testnet')
-    parser.add_argument('--category', choices=['core', 'tokens', 'dex', 'dimensional', 'oracle', 'security', 'monitoring'])
+    parser.add_argument('--category', choices=['core', 'tokens', 'dex', 'dimensional', 'oracle', 'security', 'monitoring', 'self-run', 'self-managed'])
     parser.add_argument('--dry-run', action='store_true', help='Perform dry run')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
     parser.add_argument('--batch-size', type=int, default=5, help='Contracts per batch')
@@ -583,7 +693,7 @@ def main():
         # Validate configuration
         is_valid, errors = config_manager.validate_config()
         if not is_valid:
-            print("❌ Configuration validation failed:")
+            print("[ERROR] Configuration validation failed:")
             for error in errors:
                 print(f"   - {error}")
             return 1
@@ -594,7 +704,7 @@ def main():
         # Run pre-checks unless in dry-run mode
         if not args.dry_run:
             if not deployer.run_pre_checks():
-                print("\n❌ Pre-deployment checks failed. Use --dry-run to continue anyway.")
+                print("\n[ERROR] Pre-deployment checks failed. Use --dry-run to continue anyway.")
                 return 1
 
         # Execute deployment
@@ -604,31 +714,31 @@ def main():
         )
 
         if args.dry_run:
-            print("\n🔍 Dry run completed successfully")
+            print("\n[INFO] Dry run completed successfully")
             return 0
 
         # Show final results
-        print("
-📊 Final Results:"        print(f"✅ Successful: {len(results['successful'])}")
-        print(f"❌ Failed: {len(results['failed'])}")
-        print(f"⏭️  Skipped: {len(results['skipped'])}")
+        print("\n[RESULTS] Final Results:")
+        print(f"[SUCCESS] Successful: {len(results['successful'])}")
+        print(f"[ERROR] Failed: {len(results['failed'])}")
+        print(f"[SKIP] Skipped: {len(results['skipped'])}")
 
         if results['failed']:
-            print("
-❌ Failed contracts:"            for failed in results['failed']:
+            print("\n[ERROR] Failed contracts:")
+            for failed in results['failed']:
                 print(f"   - {failed['name']}: {failed['error']}")
             return 1
 
-        print("
-🎉 Deployment completed successfully!"        print("💡 Use monitoring tools to verify all contracts are active")
+        print("\n[SUCCESS] Deployment completed successfully!")
+        print("[INFO] Use monitoring tools to verify all contracts are active")
 
         return 0
 
     except KeyboardInterrupt:
-        print("
-🛑 Deployment cancelled by user"        return 1
+        print("\n[STOP] Deployment cancelled by user")
+        return 1
     except Exception as e:
-        print(f"\n❌ Deployment failed: {e}")
+        print(f"\n[ERROR] Deployment failed: {e}")
         if args.verbose:
             import traceback
             traceback.print_exc()

@@ -153,22 +153,26 @@ class ConxianTestnetDeployer:
 
         address = self.config.get('SYSTEM_ADDRESS')
         if address:
-            print("
-👤 Account Status:"            account_info = monitor.get_account_info(address)
+            print("\n👤 Account Status:")
+
+            account_info = monitor.get_account_info(address)
             if account_info:
                 balance = int(account_info.get('balance', 0)) / 1000000
                 print(f"   Balance: {balance} STX")
                 print(f"   Nonce: {account_info.get('nonce', 0)}")
 
+            print("\n📦 Deployed Contracts:")
+            contracts = monitor.get_deployed_contracts(address)
+            print(f"   Count: {len(contracts)}")
             print("
-📦 Deployed Contracts:"            contracts = monitor.get_deployed_contracts(address)
+
             for contract in contracts:
                 print(f"   - {contract.get('contract_id', 'unknown')}")
 
         # Start real-time monitoring
         if options.get('follow', False):
-            print("
-🔄 Starting real-time monitoring..."            print("📝 Press Ctrl+C to stop monitoring\n")
+            print("\n🔄 Starting real-time monitoring...")
+            print("📝 Press Ctrl+C to stop monitoring\n")
 
             monitor_thread = monitor.start_monitoring()
 
@@ -211,11 +215,11 @@ class ConxianTestnetDeployer:
 
         # Exit with appropriate code
         if results['overall_status'] != 'success':
-            print("
-❌ Deployment verification failed"            sys.exit(1)
+            print("\n❌ Deployment verification failed")
+            sys.exit(1)
         else:
-            print("
-✅ Deployment verification successful"
+            print("\n✅ Deployment verification successful")
+
     def initialize_setup(self, options: Dict) -> None:
         """Initialize deployment setup"""
         print("⚙️  Initializing Conxian deployment setup...")
@@ -242,10 +246,10 @@ class ConxianTestnetDeployer:
 
         self.config_manager.save_config(self.config)
 
-        print("
-✅ Setup initialized!"        print(f"📝 Configuration saved to {self.config_path}")
-        print("
-📋 Next steps:"        print("1. Edit .env file with your private key and address")
+        print("\n✅ Setup initialized!")
+        print(f"📝 Configuration saved to {self.config_path}")
+        print("\n📋 Next steps:")
+        print("1. Edit .env file with your private key and address")
         print("2. Fund your address with STX tokens")
         print("3. Run: python conxian_testnet_deploy.py check")
         print("4. Run: python conxian_testnet_deploy.py deploy --dry-run")
@@ -293,19 +297,18 @@ class ConxianTestnetDeployer:
         # Account status
         address = config.get('SYSTEM_ADDRESS')
         if address:
-            print("
-👤 Account Status:"            account_info = monitor.get_account_info(address)
+            print("\n👤 Account Status:")
+            account_info = monitor.get_account_info(address)
             if account_info:
                 balance = int(account_info.get('balance', 0)) / 1000000
                 print(f"   Balance: {balance} STX")
                 print(f"   Nonce: {account_info.get('nonce', 0)}")
 
-            print("
-📦 Deployed Contracts:"            contracts = monitor.get_deployed_contracts(address)
+            print("\n📦 Deployed Contracts:")
+            contracts = monitor.get_deployed_contracts(address)
             print(f"   Count: {len(contracts)}")
 
-        print("
-📊 Diagnostics Complete"
+        print("\n📊 Diagnostics Complete")
         print(f"✅ Overall Status: {'READY' if checks_passed else 'NEEDS ATTENTION'}")
 
 def main():
@@ -448,3 +451,4 @@ Examples:
 
 if __name__ == "__main__":
     main()
+

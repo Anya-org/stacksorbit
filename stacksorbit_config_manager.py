@@ -1,4 +1,6 @@
 import os
+import sys
+import argparse
 import toml
 from dotenv import load_dotenv
 
@@ -41,12 +43,59 @@ class ConfigManager:
         return self.config
 
 if __name__ == "__main__":
-    # Example usage:
-    # Assuming this script is in C:\Users\bmokoka\anyachainlabs\stacksorbit
-    # and we want to scan that directory.
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    config_manager = ConfigManager(current_dir)
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='StackOrbit Configuration Manager - scans target directory for config files')
+    parser.add_argument('target', nargs='?', help='Target directory to scan (default: current directory)')
+    parser.add_argument('--target-dir', help='Alternative way to specify target directory')
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Determine target directory
+    # Use provided target directory or default to current directory
+    if args.target_dir:
+        target_dir = args.target_dir
+    elif args.target:
+        target_dir = args.target
+    else:
+        target_dir = os.getcwd()
+
+    # Convert to absolute path and validate
+    target_dir = os.path.abspath(target_dir)
+    if not os.path.exists(target_dir):
+        print(f"Error: Target directory does not exist: {target_dir}")
+        sys.exit(1)
+
+    if not os.path.isdir(target_dir):
+        print(f"Error: Target path is not a directory: {target_dir}")
+        sys.exit(1)
+
+    print(f"[INFO] StackOrbit Configuration Manager")
+    print(f"[INFO] Target directory: {target_dir}")
+    print(f"[INFO] Starting scan...\n")
+
+    # Create config manager and scan
+    config_manager = ConfigManager(target_dir)
     loaded_configs = config_manager.scan_and_load_configs()
+
     print("\n--- Loaded Configurations ---")
     for key, value in loaded_configs.items():
         print(f"{key}: {value}")
+
+    # Show summary
+    print(f"\n[SUMMARY] Scan Summary:")
+    print(f"   Directory scanned: {target_dir}")
+    print(f"   .env files found: {1 if loaded_configs.get('env_loaded') else 0}")
+    print(f"   Clarinet.toml files found: {1 if 'Clarinet.toml' in loaded_configs else 0}")
+    print(f"   Total config files: {len(loaded_configs)}")
+
+    if 'Clarinet.toml' in loaded_configs:
+        clarinet_config = loaded_configs['Clarinet.toml']
+        if 'contracts' in clarinet_config:
+            contract_count = len(clarinet_config['contracts'])
+            print(f"   Contracts in Clarinet.toml: {contract_count}")
+        if 'project' in clarinet_config:
+            project_name = clarinet_config['project'].get('name', 'Unknown')
+            print(f"   Project name: {project_name}")
+
+    print(f"\n[SUCCESS] Configuration scan complete!")
