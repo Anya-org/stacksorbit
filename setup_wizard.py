@@ -88,8 +88,8 @@ class SetupWizard:
                 all_met = False
 
         # Check for StacksOrbit dependencies
-        print("
-📦 Checking StacksOrbit dependencies..."        try:
+        print("\n📦 Checking StacksOrbit dependencies...")
+        try:
             import requests
             print("✅ Python requests library")
         except ImportError:
@@ -647,8 +647,8 @@ def main():
         success = wizard.start_wizard()
 
         if success:
-            print("
-🎉 Setup completed! You can now deploy using:"            print("   python conxian_testnet_deploy.py deploy")
+            print("\n🎉 Setup completed! You can now deploy using:")
+            print("   python conxian_testnet_deploy.py deploy")
             print("   python enhanced_dashboard.py")
             return 0
         else:
