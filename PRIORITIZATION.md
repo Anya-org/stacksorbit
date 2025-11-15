@@ -1,20 +1,17 @@
-# Prioritization of Documentation Issues and Solutions
+# Prioritization of Recommendations
 
-This chart prioritizes the identified documentation issues based on their severity and the complexity of the proposed solutions.
+This document outlines the recommended prioritization for the proposed improvements to StacksOrbit.
 
-| Issue                               | Severity | Solution Complexity | Priority |
-| ----------------------------------- | -------- | ------------------- | -------- |
-| No `AGENTS.md` File                 | High     | Low                 | **High** |
-| Lack of a Clear "Single Source of Truth" | High     | Low                 | **High** |
-| Redundant and Potentially Conflicting Information | High     | Medium              | **High** |
-| Inconsistent Commands               | Medium   | Low                 | **Medium** |
-| Vague "Ultimate" and "Enhanced" Terminology | Medium   | Medium              | **Medium** |
-| No High-Level Architectural Overview | Medium   | Medium              | **Medium** |
-| Documentation Maintenance Overhead | Low      | Low                 | **Low**    |
-| No Explicit License Information in all Files | Low      | Low                 | **Low**    |
+## 1. UI Improvement (Highest Priority)
 
-## Justification
+The highest priority is the improvement of the user interface.
 
-*   **High Priority:** The most critical issues are the lack of a centralized `AGENTS.md` file and a single source of truth. These issues have a high impact on the usability of the documentation for both humans and AI, and the solutions are relatively simple to implement. Consolidating the documentation is also a high priority, as it will address the issue of redundant and conflicting information.
-*   **Medium Priority:** Issues like inconsistent commands, vague terminology, and the lack of an architectural overview are important to address but are not as critical as the high-priority items. The solutions are also slightly more complex, as they may involve renaming files or creating new content.
-*   **Low Priority:** The issues of documentation maintenance overhead and the lack of license information are important in the long run, but they are not as urgent as the other issues. The maintenance overhead will be largely addressed by the consolidation of the documentation.
+*   **Reasoning:** The user explicitly requested to prioritize the UI first. The new Textual-based dashboard provides a significantly improved user experience for all users of the StacksOrbit tool, regardless of their development environment. It is a foundational improvement that will have the broadest impact.
+*   **Status:** The `curses`-based dashboard has been successfully replaced with a new Textual-based dashboard.
+
+## 2. VSX Integration (Secondary Priority)
+
+The second priority is the development of a VS Code extension.
+
+*   **Reasoning:** A VS Code extension will greatly enhance the developer experience for those who use VS Code as their primary editor. However, this feature benefits a specific subset of users. The UI improvement is a more general enhancement that should be completed first.
+*   **Status:** A proposal for the VS Code extension has been created in `VSX_INTEGRATION.md`.

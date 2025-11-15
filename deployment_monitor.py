@@ -250,7 +250,8 @@ class DeploymentMonitor:
                     last_status = status
 
                 if status == 'success':
-                    self.logger.info("✅ Transaction confirmed successfully!"                    return tx_info
+                    self.logger.info("✅ Transaction confirmed successfully!")
+                    return tx_info
                 elif status == 'error':
                     self.logger.error(f"❌ Transaction failed: {tx_info.get('tx_result', 'Unknown error')}")
                     return tx_info
@@ -312,7 +313,8 @@ class DeploymentMonitor:
         # Summary
         verification['success'] = len(verification['missing']) == 0
 
-        self.logger.info("📊 Verification Summary:"        self.logger.info(f"   Expected: {len(verification['expected'])}")
+        self.logger.info("📊 Verification Summary:")
+        self.logger.info(f"   Expected: {len(verification['expected'])}")
         self.logger.info(f"   Verified: {len(verification['verified'])}")
         self.logger.info(f"   Missing: {len(verification['missing'])}")
         self.logger.info(f"   Extra: {len(verification['extra'])}")
