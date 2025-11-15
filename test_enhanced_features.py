@@ -183,13 +183,12 @@ class TestIntegration(unittest.TestCase):
     def test_project_structure(self):
         """Test project structure is complete"""
         required_files = [
-            'bin/stacksorbit.js',
-            'bin/enhanced-stacksorbit.js',
-            'lib/deployer.js',
-            'lib/monitor.js',
-            'setup_wizard.py',
-            'enhanced_dashboard.py',
-            'ultimate_stacksorbit.py'
+            'stacksorbit_cli.py',
+            'stacksorbit_dashboard.py',
+            'enhanced_conxian_deployment.py',
+            'deployment_monitor.py',
+            'deployment_verifier.py',
+            'local_devnet.py'
         ]
 
         for file_path in required_files:
