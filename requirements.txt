@@ -7,6 +7,7 @@ toml>=0.10.2
 requests>=2.31.0
 pyyaml>=6.0.1
 colorama>=0.4.6
+textual>=0.65.1
 
 # GUI dependencies (included with Python)
 # tkinter (included with Python)

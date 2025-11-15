@@ -1,0 +1,23 @@
+/* A basic CSS file for the StacksOrbit dashboard */
+
+Screen {
+    layout: vertical;
+}
+
+#address {
+    padding: 1;
+    background: $panel;
+}
+
+.overview_left, .overview_right {
+    width: 50%;
+    padding: 1;
+}
+
+Label {
+    margin-bottom: 1;
+}
+
+.bold {
+    text-style: bold;
+}
