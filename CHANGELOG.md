@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-11-14
+
+### Added
+
+- Local development network using `stacks-core`
+- `devnet` command to the CLI to start, stop, and check the status of the local development network
+- Installation of `stacks-core` to the setup wizard
+- Configuration of `stacks-core` path in `.env` file
+
+### Changed
+
+- Updated `LocalDevnet` class to be stateless using a PID file
+- Improved setup wizard with checks for `git` and `cargo`
+- Setup wizard now streams output of long-running commands
+- Corrected step numbering in the setup wizard
+
 ## [1.1.0] - 2025-10-26
 
 ### ✨ **Major Features Added**

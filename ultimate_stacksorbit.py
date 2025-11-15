@@ -19,6 +19,7 @@ from enhanced_conxian_deployment import EnhancedConfigManager, EnhancedConxianDe
 from deployment_monitor import DeploymentMonitor
 from deployment_verifier import DeploymentVerifier
 from enhanced_dashboard import EnhancedDashboard
+from local_devnet import LocalDevnet
 
 class UltimateStacksOrbit:
     """Ultimate deployment solution for Stacks blockchain"""
@@ -58,6 +59,8 @@ class UltimateStacksOrbit:
                 return self.run_comprehensive_diagnosis(kwargs)
             elif command == 'template':
                 return self.apply_deployment_template(kwargs)
+            elif command == 'devnet':
+                return self.run_devnet(kwargs)
             else:
                 self.show_help()
                 return 1
@@ -498,6 +501,29 @@ class UltimateStacksOrbit:
 
         return 0
 
+    def run_devnet(self, options: Dict) -> int:
+        """Run local development network"""
+        config_manager = EnhancedConfigManager(self.config_path)
+        config = config_manager.load_config()
+        stacks_core_path = Path(config.get("STACKS_CORE_PATH", self.project_root / "stacks-core"))
+        devnet = LocalDevnet(stacks_core_path)
+        command = options.get("devnet_command")
+
+        if command == "start":
+            devnet.start()
+        elif command == "stop":
+            devnet.stop()
+        elif command == "status":
+            if devnet.is_running():
+                print("Local development network is running.")
+            else:
+                print("Local development network is not running.")
+        else:
+            print("Invalid devnet command. Please use start, stop, or status.")
+            return 1
+
+        return 0
+
     def _apply_template_config(self, config: Dict, template_name: str) -> Dict:
         """Apply template configuration to existing config"""
         templates = self.templates.get('templates', {})
@@ -600,6 +626,9 @@ def main():
     parser.add_argument('--contracts', nargs='*', help='Contracts to verify')
     parser.add_argument('--comprehensive', action='store_true', help='Comprehensive verification')
 
+    # Devnet options
+    parser.add_argument('--devnet-command', choices=['start', 'stop', 'status'], help='Local development network command')
+
     args = parser.parse_args()
 
     try:
@@ -619,7 +648,8 @@ def main():
             'api_only': args.api_only,
             'contracts': args.contracts,
             'comprehensive': args.comprehensive,
-            'verbose': args.verbose
+            'verbose': args.verbose,
+            'devnet_command': args.devnet_command
         }
 
         # Execute command

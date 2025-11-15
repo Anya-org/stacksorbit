@@ -21,7 +21,7 @@ const program = new Command();
 program
   .name('stacksorbit')
   .description('Professional deployment tool for Stacks blockchain smart contracts')
-  .version('1.1.0');
+  .version('1.2.0');
 
 // Global options
 program
