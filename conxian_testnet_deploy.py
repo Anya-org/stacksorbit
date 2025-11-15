@@ -115,7 +115,7 @@ class ConxianTestnetDeployer:
             },
             'metadata': {
                 'tool': 'StacksOrbit Enhanced',
-                'version': '1.1.0',
+                'version': '1.2.0',
                 'protocol': 'Conxian'
             }
         }
@@ -451,4 +451,3 @@ Examples:
 
 if __name__ == "__main__":
     main()
-

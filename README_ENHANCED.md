@@ -2,7 +2,7 @@
 
 > **Enhanced professional deployment tool for Stacks blockchain smart contracts with full CLI capabilities, Hiro API integration, and comprehensive monitoring system.**
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/Anya-org/stacksorbit)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/Anya-org/stacksorbit)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 [![Node.js](https://img.shields.io/badge/node.js-14+-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -515,7 +515,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 🎯 Roadmap
 
-### v1.1.0 (Current)
+### v1.2.0 (Current)
 - ✅ Full CLI interface
 - ✅ Hiro API integration
 - ✅ Comprehensive monitoring

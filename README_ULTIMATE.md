@@ -2,7 +2,7 @@
 
 > **The most advanced deployment tool for Stacks blockchain with full CLI capabilities, Hiro API integration, comprehensive monitoring, and user-friendly experience for everyone.**
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/Anya-org/stacksorbit)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/Anya-org/stacksorbit)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 [![Node.js](https://img.shields.io/badge/node.js-14+-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -670,7 +670,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-## 🎯 What's New in v1.1.0
+## 🎯 What's New in v1.2.0
 
 ### **Enhanced CLI System**
 - ✅ Full command-line interface with comprehensive options

@@ -166,7 +166,7 @@ Built with ❤️ by Anya Chain Labs for the Conxian DeFi Protocol.
 
 **What's Next?**
 
-See our [roadmap](README.md#roadmap) for planned features in v1.1.0 and v2.0.0.
+See our [roadmap](README.md#roadmap) for planned features in v1.2.0 and v2.0.0.
 
 ```
 
@@ -225,7 +225,7 @@ When complete, verify:
 
 ### Long-term (Next Month):
 1. Gather user feedback
-2. Plan v1.1.0 features
+2. Plan v1.2.0 features
 3. Build community
 4. Create documentation site
 5. Add more examples
