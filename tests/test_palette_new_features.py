@@ -202,3 +202,63 @@ async def test_transaction_confirmations_and_highlighting():
         assert app.selected_tx_id == tx_id
         assert not app.w_copy_tx_btn.disabled
         assert "(6)" in str(app.w_tx_status_label.render()) or "Selected" in str(app.w_tx_status_label.render())
+
+@pytest.mark.asyncio
+async def test_actionable_empty_states():
+    from unittest.mock import MagicMock
+    app = StacksOrbitGUI()
+
+    async with app.run_test() as pilot:
+        # 1. Test Contracts Table empty-deploy
+        app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
+        app.monitor = MagicMock()
+        app.monitor.check_api_status.return_value = {"status": "online", "block_height": 100}
+        app.monitor.get_account_info.return_value = {"balance": 0, "nonce": 0}
+        app.monitor.get_deployed_contracts.return_value = []
+        app.monitor.get_recent_transactions.return_value = []
+
+        # Force refresh by clearing cache
+        app._last_contracts = None
+        await app.update_data()
+
+        contracts_table = app.query_one("#contracts-table", DataTable)
+        assert "empty-deploy" in [k.value for k in contracts_table.rows.keys()]
+
+        # Select the empty-deploy row
+        await pilot.press("f2") # Switch to contracts tab
+        await pilot.pause(0.1)
+        # Select the first (placeholder) row
+        contracts_table.move_cursor(row=0)
+        # Textual DataTable RowSelected event can be triggered via pilot
+        from textual.widgets._data_table import RowKey
+        app.on_contracts_row_selected(DataTable.RowSelected(contracts_table, contracts_table.get_row_index("empty-deploy"), RowKey("empty-deploy")))
+        await pilot.pause(0.1)
+        assert app.w_tabbed_content.active == "deployment"
+
+        # 2. Test Transactions Table empty-refresh
+        await pilot.press("f3") # Switch to transactions tab
+        await pilot.pause(0.1)
+        transactions_table = app.query_one("#transactions-table", DataTable)
+        assert "empty-refresh" in [k.value for k in transactions_table.rows.keys()]
+
+        # Select the first row
+        transactions_table.move_cursor(row=0)
+        # Mock action_refresh
+        app.action_refresh = MagicMock()
+        app.on_transactions_row_selected(DataTable.RowSelected(transactions_table, transactions_table.get_row_index("empty-refresh"), RowKey("empty-refresh")))
+        await pilot.pause(0.1)
+        app.action_refresh.assert_called_once()
+
+        # 3. Test Config Missing empty-settings
+        app.address = "Not configured"
+        app._last_contracts = None
+        await app.update_data()
+        await pilot.pause(0.1)
+
+        assert "empty-settings" in [k.value for k in contracts_table.rows.keys()]
+        await pilot.press("f2")
+        await pilot.pause(0.1)
+        contracts_table.move_cursor(row=0)
+        app.on_contracts_row_selected(DataTable.RowSelected(contracts_table, contracts_table.get_row_index("empty-settings"), RowKey("empty-settings")))
+        await pilot.pause(0.1)
+        assert app.w_tabbed_content.active == "settings"

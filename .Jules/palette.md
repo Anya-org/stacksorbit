@@ -5,3 +5,7 @@
 ## 2025-03-08 - [Enhanced Copy Feedback]
 **Learning:** While button-label changes (📋 -> ✅) provide some feedback, users often look at the data they are copying. Providing feedback directly on the label containing the data (e.g., "Copied to clipboard!") provides more immediate and contextual confirmation of the action.
 **Action:** Use a temporary label update pattern alongside button changes for high-intent copy actions.
+
+## 2025-03-09 - [Actionable Empty States]
+**Learning:** Empty states in data tables often contain instructions (e.g., "Press [F4] to deploy"). Making these placeholder rows interactive by assigning unique keys and handling `RowSelected` events provides a delightful "shortcut" that aligns with the user's intent, improving accessibility for keyboard and mouse users alike.
+**Action:** Use unique row keys for placeholder rows to enable contextual navigation or actions directly from the table.
