@@ -1,5 +1,5 @@
 [project]
-name = "Conxian"
+name = "StacksOrbit"
 clarinet_version = "3.12.0"
 epoch = "3.0"
 
@@ -8,6 +8,9 @@ deployer = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
 
 [simnet]
 mnemonic = "cute bird surprise boring old news cake design aisle helmet choose tree"
+
+[contracts.placeholder]
+path = "contracts/placeholder.clar"
 
 [contracts.sip-standards]
 path = "contracts/traits/sip-standards.clar"

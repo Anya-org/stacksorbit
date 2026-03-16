@@ -505,8 +505,17 @@ StacksOrbit is committed to supporting the latest Clarity language features.
     *   **System Integrity:** Verified no regressions via full unit test suite (70 passed).
 *   **Status:** Complete.
 
+### Session 38: Root-Up Foundation Alignment & Drift Reconciliation (Jules)
+
+*   **Objective:** Reinforce the project's foundation by aligning documentation and technical infrastructure with the Clarinet SDK and Vitest architecture, following the Root-Up Protocol.
+*   **Changes:**
+    *   **Drift Analysis:** Identified significant discrepancies between `Clarinet.toml` and the filesystem. Reconciled `Clarinet.toml` by renaming the project to `StacksOrbit` and adding the missing `placeholder` contract definition.
+    *   **Configuration Standardization:** Verified `package.json` dependencies and `vitest.config.ts` for native Simnet support and ESM compatibility.
+    *   **Documentation Sync:** Updated `PRD.md` to reflect the latest foundation alignment and documented the drift reconciliation logic.
+*   **Status:** Complete.
+
 ### Session Snapshot
-*   **Version:** 1.2.1
+*   **Version:** 1.2.2
 *   **License:** MIT (Standardized)
 *   **Documentation:** Consolidated (`AGENTS.md` as SSoT)
-*   **Tests:** 70 Passed (Pytest), 2 Passed (Vitest)
+*   **Tests:** Pending (Awaiting pnpm install)
