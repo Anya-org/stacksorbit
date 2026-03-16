@@ -630,10 +630,12 @@ class StacksOrbitGUI(App):
             # Handle empty state (Regression Fix: ensure clear() is called first)
             if not self._all_transactions:
                 if self.address != "Not configured":
-                    transactions_table.add_row("", "No transactions found", "Press [r] to refresh", "", "")
+                    transactions_table.add_row(
+                        "", "No transactions found", "Press [r] to refresh", "", "", key="empty-refresh"
+                    )
                 else:
                     transactions_table.add_row(
-                        "⚠️", "Config missing", "Press [F5] to configure", "", ""
+                        "⚠️", "Config missing", "Press [F5] to configure", "", "", key="empty-settings"
                     )
                 self.w_tx_filter_count.update("(0/0 matches)")
                 return
@@ -845,11 +847,11 @@ class StacksOrbitGUI(App):
                             contracts_table.add_row(*row, key=deployed_contracts[i].get("contract_id"))
                     elif self.address != "Not configured":
                         contracts_table.add_row(
-                            "", "No contracts found", "Press [F4] to deploy"
+                            "", "No contracts found", "Press [F4] to deploy", key="empty-deploy"
                         )
                     else:
                         contracts_table.add_row(
-                            "⚠️", "Config missing", "Press [F5] to set up"
+                            "⚠️", "Config missing", "Press [F5] to set up", key="empty-settings"
                         )
                 self._last_contracts = deployed_contracts
 
@@ -902,9 +904,16 @@ class StacksOrbitGUI(App):
 
     @on(DataTable.RowSelected, "#contracts-table")
     def on_contracts_row_selected(self, event: DataTable.RowSelected) -> None:
-        """PALETTE: Explicit selection (Enter/Click) copies the Contract ID."""
+        """PALETTE: Explicit selection (Enter/Click) copies the Contract ID or handles empty state."""
         contract_id = event.row_key.value
-        if contract_id:
+        if not contract_id:
+            return
+
+        if contract_id == "empty-deploy":
+            self.w_tabbed_content.active = "deployment"
+        elif contract_id == "empty-settings":
+            self.w_tabbed_content.active = "settings"
+        else:
             self.copy_to_clipboard(contract_id)
             self.notify(f"Contract ID copied: {contract_id}", severity="information")
 
@@ -922,9 +931,16 @@ class StacksOrbitGUI(App):
 
     @on(DataTable.RowSelected, "#transactions-table")
     def on_transactions_row_selected(self, event: DataTable.RowSelected) -> None:
-        """PALETTE: Explicit selection (Enter/Click) copies the full TX ID."""
+        """PALETTE: Explicit selection (Enter/Click) copies the full TX ID or handles empty state."""
         tx_id = event.row_key.value
-        if tx_id:
+        if not tx_id:
+            return
+
+        if tx_id == "empty-refresh":
+            self.action_refresh()
+        elif tx_id == "empty-settings":
+            self.w_tabbed_content.active = "settings"
+        else:
             self.copy_to_clipboard(tx_id)
             self.notify(f"Transaction ID copied: {tx_id}", severity="information")
 
