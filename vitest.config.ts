@@ -24,7 +24,13 @@ export default defineConfig(async () => {
         },
       },
       // Ensure tests are isolated and don't conflict
+      // Note: singleThread is used to optimize simnet interaction in restricted environments
       pool: 'threads',
+      poolOptions: {
+        threads: {
+          singleThread: true,
+        },
+      },
       include: ["js-tests/**/*.test.ts", "tests/**/*.test.ts"],
     },
   };
