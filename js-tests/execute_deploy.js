@@ -34,18 +34,40 @@ async function deploy(contractName, codeBody, privateKey, networkName) {
 // Check if running from command line
 if (require.main === module) {
   const args = process.argv.slice(2);
-  if (args.length < 4) {
-    console.error('Usage: node deployer.js <contractName> <path> <privateKey> <network>');
+  if (args.length < 3) {
+    console.error('Usage: node execute_deploy.js <contractName> <path> <network>');
+    console.error('Note: DEPLOYER_PRIVKEY must be set in environment variables.');
     process.exit(1);
   }
   
-  const [contractName, contractPath, privateKey, networkName] = args;
-  const codeBody = fs.readFileSync(contractPath, 'utf8');
+  const [contractName, contractPath, networkName] = args;
   
-  deploy(contractName, codeBody, privateKey, networkName).then(result => {
-    console.log(JSON.stringify(result));
-    if (!result.success) process.exit(1);
-  });
+  // 🛡️ Sentinel: Read private key from environment variables to prevent process list leaks.
+  const privateKey = process.env.DEPLOYER_PRIVKEY;
+  if (!privateKey) {
+    console.error(JSON.stringify({
+      success: false,
+      error: 'Missing DEPLOYER_PRIVKEY environment variable',
+      reason: 'security_policy_violation'
+    }));
+    process.exit(1);
+  }
+
+  try {
+    const codeBody = fs.readFileSync(contractPath, 'utf8');
+
+    deploy(contractName, codeBody, privateKey, networkName).then(result => {
+      console.log(JSON.stringify(result));
+      if (!result.success) process.exit(1);
+    });
+  } catch (err) {
+    console.error(JSON.stringify({
+      success: false,
+      error: `Failed to read contract: ${err.message}`,
+      reason: 'file_not_found'
+    }));
+    process.exit(1);
+  }
 }
 
 module.exports = { deploy };
