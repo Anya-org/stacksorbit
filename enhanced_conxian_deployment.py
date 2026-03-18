@@ -946,11 +946,15 @@ class EnhancedConxianDeployer:
                 str(js_script),
                 contract['name'],
                 str(contract_path),
-                self.config.get("DEPLOYER_PRIVKEY", ""),
                 self.config.get("NETWORK", "testnet")
             ]
             
-            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            # 🛡️ Sentinel: Pass the private key via environment variables to prevent process list leaks.
+            # We merge the existing environment with our sensitive variables.
+            env = os.environ.copy()
+            env["DEPLOYER_PRIVKEY"] = self.config.get("DEPLOYER_PRIVKEY", "")
+
+            result = subprocess.run(cmd, capture_output=True, text=True, check=True, env=env)
             output = json.loads(result.stdout)
             
             if output.get("success"):
