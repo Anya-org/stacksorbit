@@ -103,6 +103,11 @@ class EnhancedConfigManager:
                 if k in file_config
                 or k in SECRET_KEYS
                 or k.startswith(("STACKS_", "STACKSORBIT_"))
+                or k in ("PROJECT_ROOT", "HIRO_API_KEY", "DEPLOYMENT_MODE",
+                         "BATCH_SIZE", "CONFIRMATION_TIMEOUT", "MONITORING_ENABLED",
+                         "LOG_LEVEL", "SAVE_LOGS", "VALIDATE_TRANSACTIONS",
+                         "PARALLEL_DEPLOY", "SYSTEM_ADDRESS", "NETWORK",
+                         "CORE_API_URL")
             }
         )
 
@@ -221,6 +226,14 @@ class EnhancedConxianDeployer:
         self.pnpm_test_script = pnpm_test_script
         self.clarinet_check_timeout = clarinet_check_timeout
         self.pre_check_results: Dict[str, bool] = {}
+        
+        # Bolt ⚡: Debug project root resolution
+        project_root = self.config.get("PROJECT_ROOT")
+        if project_root:
+            print(f"[DEBUG] Deployer initialized with PROJECT_ROOT: {project_root}")
+        else:
+            print("[DEBUG] Deployer initialized without PROJECT_ROOT (using default)")
+
         # Bolt ⚡: Use a shared monitor instance to leverage caching
         # If no monitor is provided, create a new one.
         self.monitor = monitor or DeploymentMonitor(
@@ -652,6 +665,13 @@ class EnhancedConxianDeployer:
 
             try:
                 tx_id = self._deploy_single_contract(contract)
+                if tx_id == "ALREADY_EXISTS":
+                    print(f"[INFO] {contract['name']} already exists on-chain. Marking as successful.")
+                    results["successful"].append(
+                        {"name": contract["name"], "tx_id": "ALREADY_EXISTS", "status": "exists"}
+                    )
+                    continue
+
                 if tx_id:
                     # Monitor transaction
                     confirmed = self.monitor.wait_for_confirmation(
@@ -928,50 +948,74 @@ class EnhancedConxianDeployer:
             return "0x" + "1" * 64
 
         try:
-            # Use the JS wrapper to execute the deployment
-            js_script = Path(__file__).parent / "js-tests" / "execute_deploy.js"
+            # The js-tests/ dir is a sibling of this file
+            script_root = Path(__file__).parent
+            js_script = script_root / "js-tests" / "execute_deploy.js"
             if not js_script.exists():
                 print(f"[ERROR] Deployment script not found at {js_script}")
                 return None
-                
-            # Path needs to be resolved relative to Conxian protocol dir or absolute
-            # For simplicity, let's assume contract['path'] is relative to Conxian root
-            contract_path = Path("..") / "Conxian" / contract['path']
+
+            # Resolve the contract path relative to the Conxian project root
+            project_dir = self._get_project_dir()
+            contract_rel_path = contract.get("path", "")
+            if contract_rel_path:
+                contract_path = (project_dir / contract_rel_path).resolve()
+            else:
+                contract_path = Path(contract.get("full_path", "")).resolve()
+
             if not contract_path.exists():
                 print(f"[ERROR] Contract file not found at {contract_path}")
                 return None
-                
+
             cmd = [
-                "node", 
-                str(js_script),
+                "node",
+                str(js_script.resolve()),
                 contract['name'],
                 str(contract_path),
                 self.config.get("NETWORK", "testnet")
             ]
-            
+
             # 🛡️ Sentinel: Pass the private key via environment variables to prevent process list leaks.
-            # We merge the existing environment with our sensitive variables.
             env = os.environ.copy()
             env["DEPLOYER_PRIVKEY"] = self.config.get("DEPLOYER_PRIVKEY", "")
 
-            result = subprocess.run(cmd, capture_output=True, text=True, check=True, env=env)
+            # Run from the stacksorbit root so node_modules resolves correctly
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=True,
+                env=env,
+                cwd=str(script_root)
+            )
             output = json.loads(result.stdout)
-            
+
             if output.get("success"):
                 return output.get("txId")
             else:
                 print(f"[ERROR] Deployment failed: {output.get('error')} - {output.get('reason')}")
                 return None
-                
+
         except subprocess.CalledProcessError as e:
-            print(f"[ERROR] Node.js execution failed: {e.stderr}")
+            err_detail = e.stderr.strip() if e.stderr else "no stderr"
+            out_detail = e.stdout.strip() if e.stdout else "no stdout"
+            
+            # 🛡️ Intelligence: Detect if contract already exists
+            if "ContractAlreadyExists" in out_detail or "ContractAlreadyExists" in err_detail:
+                return "ALREADY_EXISTS"
+
+            print(f"[ERROR] Node.js execution failed (exit {e.returncode})")
+            print(f"   Command: {' '.join(cmd)}")
+            print(f"   Stdout: {out_detail}")
+            print(f"   Stderr: {err_detail}")
             return None
-        except json.JSONDecodeError:
-            print(f"[ERROR] Invalid output from deployment script")
+        except json.JSONDecodeError as e:
+            print(f"[ERROR] Invalid output from deployment script: {e}")
             return None
         except Exception as e:
             print(f"[ERROR] Unexpected deployment error: {str(e)}")
             return None
+
 
     def _estimate_gas(self, contract: Dict) -> float:
         """Estimate gas cost for contract deployment"""

@@ -375,13 +375,24 @@ class DeploymentMonitor:
     @cache_api_call
     def get_transaction_info(self, tx_id: str) -> Optional[Dict]:
         """Get detailed transaction information"""
+        # Bolt ⚡: Robustly handle both with and without '0x' prefix.
+        # Hiro API v2 usually expects the prefix.
+        formatted_tx_id = tx_id if tx_id.startswith("0x") else f"0x{tx_id}"
+        
         try:
-            response = self.session.get(f"{self.api_url}/v2/transactions/{tx_id}")
-            response.raise_for_status()
-            return response.json()
-
+            # Try v2 first
+            response = self.session.get(f"{self.api_url}/v2/transactions/{formatted_tx_id}")
+            if response.status_code == 200:
+                return response.json()
+            
+            # Fallback to extended v1 if v2 404s (indexer might be lagging)
+            response = self.session.get(f"{self.api_url}/extended/v1/tx/{formatted_tx_id}")
+            if response.status_code == 200:
+                return response.json()
+                
+            return None
         except Exception as e:
-            self.logger.error(f"Error getting transaction info: {e}")
+            self.logger.debug(f"Error getting transaction info for {formatted_tx_id}: {e}")
             return None
 
     def wait_for_transaction(self, tx_id: str, timeout: int = 300) -> Optional[Dict]:

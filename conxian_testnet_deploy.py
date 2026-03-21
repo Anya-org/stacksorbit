@@ -172,9 +172,20 @@ class ConxianTestnetDeployer:
 
             account_info = monitor.get_account_info(address)
             if account_info:
-                balance = int(account_info.get("balance", 0)) / 1000000
-                print(f"   Balance: {balance} STX")
-                print(f"   Nonce: {account_info.get('nonce', 0)}")
+                balance_raw = account_info.get("balance", 0)
+                balance = (
+                    int(balance_raw, 16)
+                    if isinstance(balance_raw, str) and balance_raw.startswith("0x")
+                    else int(balance_raw)
+                ) / 1000000
+                nonce_raw = account_info.get("nonce", 0)
+                nonce = (
+                    int(nonce_raw, 16)
+                    if isinstance(nonce_raw, str) and nonce_raw.startswith("0x")
+                    else int(nonce_raw)
+                )
+                print(f"   Balance: {balance:.6f} STX")
+                print(f"   Nonce: {nonce}")
 
             print("\n📦 Deployed Contracts:")
             contracts = monitor.get_deployed_contracts(address)
@@ -314,9 +325,20 @@ class ConxianTestnetDeployer:
             print("\n👤 Account Status:")
             account_info = monitor.get_account_info(address)
             if account_info:
-                balance = int(account_info.get("balance", 0)) / 1000000
-                print(f"   Balance: {balance} STX")
-                print(f"   Nonce: {account_info.get('nonce', 0)}")
+                balance_raw = account_info.get("balance", 0)
+                balance = (
+                    int(balance_raw, 16)
+                    if isinstance(balance_raw, str) and balance_raw.startswith("0x")
+                    else int(balance_raw)
+                ) / 1000000
+                nonce_raw = account_info.get("nonce", 0)
+                nonce = (
+                    int(nonce_raw, 16)
+                    if isinstance(nonce_raw, str) and nonce_raw.startswith("0x")
+                    else int(nonce_raw)
+                )
+                print(f"   Balance: {balance:.6f} STX")
+                print(f"   Nonce: {nonce}")
 
             print("\n📦 Deployed Contracts:")
             contracts = monitor.get_deployed_contracts(address)
