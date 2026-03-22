@@ -361,39 +361,49 @@ class DeploymentMonitor:
             return {"status": "offline", "error": str(e)}
 
     @cache_api_call
-    def get_account_info(self, address: str) -> Optional[Dict]:
-        """Get comprehensive account information."""
+    def _get_account_info_cached(self, address: str, **kwargs) -> Optional[Dict]:
+        """Bolt ⚡: Internal cached worker for account info."""
         try:
             response = self.session.get(f"{self.api_url}/v2/accounts/{address}")
             response.raise_for_status()
             return response.json()
-
         except Exception as e:
             self.logger.error(f"Error getting account info: {e}")
             return None
 
+    def get_account_info(self, address: str, **kwargs) -> Optional[Dict]:
+        """Get comprehensive account information with normalized address."""
+        if not address: return None
+        # Bolt ⚡: Normalize address before hitting the cache to maximize hits.
+        return self._get_account_info_cached(address.strip().upper(), **kwargs)
+
     @cache_api_call
-    def get_transaction_info(self, tx_id: str) -> Optional[Dict]:
-        """Get detailed transaction information"""
-        # Bolt ⚡: Robustly handle both with and without '0x' prefix.
-        # Hiro API v2 usually expects the prefix.
-        formatted_tx_id = tx_id if tx_id.startswith("0x") else f"0x{tx_id}"
-        
+    def _get_transaction_info_cached(self, tx_id: str, **kwargs) -> Optional[Dict]:
+        """Bolt ⚡: Internal cached worker for transaction info."""
         try:
             # Try v2 first
-            response = self.session.get(f"{self.api_url}/v2/transactions/{formatted_tx_id}")
+            response = self.session.get(f"{self.api_url}/v2/transactions/{tx_id}")
             if response.status_code == 200:
                 return response.json()
             
             # Fallback to extended v1 if v2 404s (indexer might be lagging)
-            response = self.session.get(f"{self.api_url}/extended/v1/tx/{formatted_tx_id}")
+            response = self.session.get(f"{self.api_url}/extended/v1/tx/{tx_id}")
             if response.status_code == 200:
                 return response.json()
                 
             return None
         except Exception as e:
-            self.logger.debug(f"Error getting transaction info for {formatted_tx_id}: {e}")
+            self.logger.debug(f"Error getting transaction info for {tx_id}: {e}")
             return None
+
+    def get_transaction_info(self, tx_id: str, **kwargs) -> Optional[Dict]:
+        """Get detailed transaction information with normalized TX ID."""
+        if not tx_id: return None
+        # Bolt ⚡: Normalize TX ID (lowercase + 0x prefix) before hitting the cache.
+        # This ensures '0xabc' and 'ABC' share the same cache entry.
+        tx = tx_id.strip().lower()
+        formatted_tx_id = tx if tx.startswith("0x") else f"0x{tx}"
+        return self._get_transaction_info_cached(formatted_tx_id, **kwargs)
 
     def wait_for_transaction(self, tx_id: str, timeout: int = 300) -> Optional[Dict]:
         """Wait for transaction confirmation with exponential backoff."""
@@ -446,8 +456,8 @@ class DeploymentMonitor:
         return self.get_transaction_info(tx_id)
 
     @cache_api_call
-    def get_deployed_contracts(self, address: str) -> List[Dict]:
-        """Get list of deployed contracts."""
+    def _get_deployed_contracts_cached(self, address: str, **kwargs) -> List[Dict]:
+        """Bolt ⚡: Internal cached worker for deployed contracts."""
         try:
             response = self.session.get(
                 f"{self.api_url}/v2/accounts/{address}/contracts"
@@ -456,19 +466,22 @@ class DeploymentMonitor:
             data = response.json()
 
             # Bolt ⚡: Robustly extract contracts from either 'contracts' or 'results' key.
-            # Hiro API responses vary by version/endpoint.
             contracts = data.get("contracts") or data.get("results", [])
 
             self.logger.info(f"📦 Found {len(contracts)} deployed contracts")
             return contracts
-
         except Exception as e:
             self.logger.error(f"Error getting deployed contracts: {e}")
             return []
 
+    def get_deployed_contracts(self, address: str, **kwargs) -> List[Dict]:
+        """Get list of deployed contracts with normalized address."""
+        if not address: return []
+        return self._get_deployed_contracts_cached(address.strip().upper(), **kwargs)
+
     @cache_api_call
-    def get_recent_transactions(self, address: str, limit: int = 50) -> List[Dict]:
-        """Get recent transactions for an address."""
+    def _get_recent_transactions_cached(self, address: str, limit: int = 50, **kwargs) -> List[Dict]:
+        """Bolt ⚡: Internal cached worker for recent transactions."""
         try:
             response = self.session.get(
                 f"{self.api_url}/v2/accounts/{address}/transactions?limit={limit}",
@@ -477,26 +490,37 @@ class DeploymentMonitor:
             response.raise_for_status()
             data = response.json()
             return data.get("results", [])
-
         except Exception as e:
             self.logger.error(f"Error getting recent transactions: {e}")
             return []
 
+    def get_recent_transactions(self, address: str, limit: int = 50, **kwargs) -> List[Dict]:
+        """Get recent transactions with normalized address."""
+        if not address: return []
+        return self._get_recent_transactions_cached(address.strip().upper(), limit=limit, **kwargs)
+
     @cache_api_call
-    def get_contract_details(self, contract_id: str) -> Optional[Dict]:
-        """Get contract details, including source code."""
+    def _get_contract_details_cached(self, contract_id: str, **kwargs) -> Optional[Dict]:
+        """Bolt ⚡: Internal cached worker for contract details."""
         try:
             # The contract_id is in the format 'address.name'
             address, name = contract_id.split(".")
             url = f"{self.api_url}/v2/contracts/interface/{address}/{name}"
             response = self.session.get(url)
             response.raise_for_status()
-            # We are primarily interested in the source code
             source_data = response.json()
             return {"source_code": source_data.get("source", "Source not available")}
         except Exception as e:
             self.logger.error(f"Error getting contract details for {contract_id}: {e}")
             return None
+
+    def get_contract_details(self, contract_id: str, **kwargs) -> Optional[Dict]:
+        """Get contract details with normalized contract ID."""
+        if not contract_id or "." not in contract_id: return None
+        # Bolt ⚡: Normalize contract ID (ADDRESS.name) before hitting the cache.
+        addr, name = contract_id.strip().split(".", 1)
+        normalized_id = f"{addr.upper()}.{name}"
+        return self._get_contract_details_cached(normalized_id, **kwargs)
 
     def verify_deployment(self, expected_contracts: List[str], address: str) -> Dict:
         """Verify deployment completeness"""
