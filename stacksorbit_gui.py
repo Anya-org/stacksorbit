@@ -708,6 +708,9 @@ class StacksOrbitGUI(App):
 
     def _prepare_tx_search_key(self, tx: Dict) -> None:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""
+        # Bolt ⚡: Skip re-calculation if the search key already exists.
+        if "_search_key" in tx:
+            return
         tx["_search_key"] = f"{tx.get('tx_id', '')} {tx.get('tx_type', '')} {tx.get('tx_status', '')}".lower()
 
     def _format_relative_time(self, iso_time: str, now_bucket: int) -> str:

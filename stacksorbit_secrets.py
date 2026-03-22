@@ -322,45 +322,51 @@ def _is_public_normalized(k: str) -> bool:
     return bool(PUBLIC_RE.search(k))
 
 
-@functools.lru_cache(maxsize=1024)
 def is_public_key(key: str) -> bool:
     """
     Check if a configuration or API key is considered public.
     Public keys are excluded from value-based secret detection.
 
-    Bolt ⚡: Re-added outer cache to avoid redundant .upper() calls in hot paths.
+    Bolt ⚡: Removed outer cache to prevent thrashing on case variations.
+    The .upper() call is fast, and hitting the internal cached _is_public_normalized
+    is more efficient for multi-case inputs.
     """
     if not key or not isinstance(key, str):
         return False
     return _is_public_normalized(key.upper())
 
 
-@functools.lru_cache(maxsize=1024)
 def is_sensitive_key(key: str) -> bool:
     """
     Check if a configuration key is considered sensitive.
     A key is sensitive if it's in the known SECRET_KEYS set or
     contains any of the SENSITIVE_SUBSTRINGS.
 
-    Bolt ⚡: Re-added outer cache to avoid redundant .upper() calls in hot paths.
+    Bolt ⚡: Removed outer cache to prevent thrashing on case variations.
+    Normalizing to upper case BEFORE hitting the internal cached _is_sensitive_normalized
+    ensures "key", "KEY", and "Key" all share the same cache entry.
     """
     if not key or not isinstance(key, str):
         return False
 
-    # Bolt ⚡: Normalize to upper case BEFORE hitting the secondary cache to maximize
-    # efficiency for case variations (e.g., "key" and "KEY" hit the same entry).
     return _is_sensitive_normalized(key.upper())
 
 
-@functools.lru_cache(maxsize=256)
+@functools.lru_cache(maxsize=1024)
+def _validate_stacks_address_cached(address: str, network: str = None) -> bool:
+    """Bolt ⚡: Internal cached validation for pre-normalized addresses."""
+    reg = NETWORK_ADDR_RE_MAP.get(network, GENERIC_ADDR_RE)
+    return bool(reg.match(address))
+
+
 def validate_stacks_address(address: str, network: str = None) -> bool:
     """
     Validate Stacks address format by network and charset.
     Prefix rules: SP for mainnet, ST for testnet/devnet.
     C32 allowed charset (I, L, O, U are excluded).
 
-    Bolt ⚡: Caching this function improves UI responsiveness during real-time
-    validation by avoiding redundant string normalization and regex matching.
+    Bolt ⚡: Split into outer normalization wrapper and cached internal worker
+    to prevent cache thrashing on variations in whitespace and casing.
     """
     if not address or not isinstance(address, str):
         return False
@@ -370,12 +376,8 @@ def validate_stacks_address(address: str, network: str = None) -> bool:
     if len(address) < 28:
         return False
 
-    addr = address.strip().upper()
-
-    # Bolt ⚡: Use pre-compiled network-aware regex for ~35% speedup.
-    # These combine prefix, length, and charset checks into a single pass.
-    reg = NETWORK_ADDR_RE_MAP.get(network, GENERIC_ADDR_RE)
-    return bool(reg.match(addr))
+    # Bolt ⚡: Normalize BEFORE hitting the cache to maximize hits.
+    return _validate_stacks_address_cached(address.strip().upper(), network)
 
 
 # 🛡️ Sentinel: Centralized list of safe placeholders for secrets.
