@@ -177,6 +177,10 @@ Input.error {
     border: round #cc3333;
 }
 
+Input.success {
+    border: round #28a745;
+}
+
 .input-group {
     layout: horizontal;
     align: center middle;

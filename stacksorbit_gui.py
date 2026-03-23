@@ -326,9 +326,10 @@ class StacksOrbitGUI(App):
                 yield DataTable(id="transactions-table", zebra_stripes=True)
                 with Horizontal(id="transaction-actions"):
                     yield Label(
-                        "Select a transaction to see actions",
+                        "Select a transaction to see actions [dim](Click to copy)[/]",
                         id="tx-status-label",
                         classes="clickable-label",
+                        markup=True,
                     )
                     yield Button("📋", id="copy-selected-tx-btn")
                     yield Button("🌐", id="view-selected-tx-explorer-btn")
@@ -1300,12 +1301,15 @@ class StacksOrbitGUI(App):
 
         if not has_value:
             event.input.remove_class("error")
+            event.input.remove_class("success")
             error_label.update("")
         elif is_valid:
             event.input.remove_class("error")
+            event.input.add_class("success")
             error_label.update(f"[green]✅ Valid[/]{count_display}")
         else:
             event.input.add_class("error")
+            event.input.remove_class("success")
             prefix = "SP" if self.network == "mainnet" else "ST"
             # PALETTE: Accurate validation range from stacksorbit_secrets.py
             error_label.update(
@@ -1349,12 +1353,15 @@ class StacksOrbitGUI(App):
 
         if not event.value or event.value == "your_private_key_here":
             event.input.remove_class("error")
+            event.input.remove_class("success")
             error_label.update("")
         elif validate_private_key(event.value):
             event.input.remove_class("error")
+            event.input.add_class("success")
             error_label.update(f"[green]✅ Valid[/]{count_display}")
         else:
             event.input.add_class("error")
+            event.input.remove_class("success")
             error_label.update(
                 f"[red]❌ Must be a 64 or 66 character hex string[/red]{count_display}"
             )
@@ -1485,7 +1492,8 @@ class StacksOrbitGUI(App):
         """Handle copy source button press with visual feedback."""
         if self.current_source_code:
             self.copy_to_clipboard(self.current_source_code)
-            self.notify("Contract source code copied", severity="information")
+            name = self.selected_contract_id.split(".")[1] if "." in self.selected_contract_id else "contract"
+            self.notify(f"Source code for '{name}' copied", severity="information")
 
             # Micro-UX: Visual feedback
             btn = self.query_one("#copy-source-btn", Button)
@@ -1630,8 +1638,14 @@ class StacksOrbitGUI(App):
             self.notify(f"Error saving config: {e}", severity="error")
         finally:
             save_btn.disabled = False
-            save_btn.label = original_label
             save_btn.remove_class("success")
+            # PALETTE: Ensure label reflects current state (unsaved_changes might have changed)
+            if self.unsaved_changes:
+                save_btn.variant = "warning"
+                save_btn.label = "💾 Save Changes*"
+            else:
+                save_btn.variant = "primary"
+                save_btn.label = "💾 Save"
 
 
 def main():

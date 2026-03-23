@@ -9,3 +9,11 @@
 ## 2025-03-09 - [Actionable Empty States]
 **Learning:** Empty states in data tables often contain instructions (e.g., "Press [F4] to deploy"). Making these placeholder rows interactive by assigning unique keys and handling `RowSelected` events provides a delightful "shortcut" that aligns with the user's intent, improving accessibility for keyboard and mouse users alike.
 **Action:** Use unique row keys for placeholder rows to enable contextual navigation or actions directly from the table.
+
+## 2025-03-23 - [Interactive Validation Feedback]
+**Learning:** Providing immediate visual confirmation (e.g., green border and checkmark) for valid inputs in addition to error feedback significantly improves the user's confidence and clarity during data entry.
+**Action:** Implement positive validation states (`.success`) for critical input fields to balance error-only feedback.
+
+## 2025-03-23 - [Reactive State-Aware Buttons]
+**Learning:** When a button action (like "Save") triggers a temporary state change ("Saved!"), restoring the button's appearance based on the current *reactive* state of the application is more robust than blindly restoring its *previous* label, especially if other UI events occurred during the action.
+**Action:** Use application reactive state (e.g., `self.unsaved_changes`) to derive UI button labels and variants after asynchronous operations.
