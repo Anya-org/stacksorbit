@@ -1135,5 +1135,298 @@
       "batch_size": "5",
       "total_contracts": 85
     }
+  },
+  {
+    "timestamp": "2026-03-23T13:24:37.073196",
+    "network": "testnet",
+    "deployer": "ST1BK6TFDEJ4TBVWH5SHNB6SPNWGY06YZFG9WMM4P",
+    "results": {
+      "successful": [
+        {
+          "name": "placeholder",
+          "tx_id": "b6b6b2321122bf6b6b5df6d16ae189e611bd396d76cde91f06c6808efdea81cc"
+        }
+      ],
+      "failed": [
+        {
+          "name": "access-control-trait",
+          "error": "deployment failed"
+        },
+        {
+          "name": "conxian-access",
+          "error": "deployment failed"
+        },
+        {
+          "name": "conxian-protocol",
+          "error": "deployment failed"
+        },
+        {
+          "name": "sip-standards",
+          "error": "deployment failed"
+        },
+        {
+          "name": "cxd-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "automation-traits",
+          "error": "deployment failed"
+        },
+        {
+          "name": "oracle-aggregator",
+          "error": "deployment failed"
+        },
+        {
+          "name": "risk-manager",
+          "error": "deployment failed"
+        },
+        {
+          "name": "conxian-service-trait",
+          "error": "deployment failed"
+        },
+        {
+          "name": "agent-risk",
+          "error": "deployment failed"
+        },
+        {
+          "name": "bme-engine",
+          "error": "deployment failed"
+        },
+        {
+          "name": "conxian-csf-trait",
+          "error": "deployment failed"
+        },
+        {
+          "name": "concentrated-liquidity-pool",
+          "error": "deployment failed"
+        },
+        {
+          "name": "cxd-treasury",
+          "error": "deployment failed"
+        },
+        {
+          "name": "agent-treasury",
+          "error": "deployment failed"
+        },
+        {
+          "name": "block-utils",
+          "error": "deployment failed"
+        },
+        {
+          "name": "security-monitoring",
+          "error": "deployment failed"
+        },
+        {
+          "name": "circuit-breaker",
+          "error": "deployment failed"
+        },
+        {
+          "name": "compliance-hooks",
+          "error": "deployment failed"
+        },
+        {
+          "name": "compliance-manager",
+          "error": "deployment failed"
+        },
+        {
+          "name": "concentrated-math",
+          "error": "deployment failed"
+        },
+        {
+          "name": "conxian-insurance-fund",
+          "error": "deployment failed"
+        },
+        {
+          "name": "conxian-intent-trait",
+          "error": "deployment failed"
+        },
+        {
+          "name": "core-traits",
+          "error": "deployment failed"
+        },
+        {
+          "name": "cxlp-position-nft",
+          "error": "deployment failed"
+        },
+        {
+          "name": "cxlp-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "cxs-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "cxtr-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "cxvg-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "dao-treasury",
+          "error": "deployment failed"
+        },
+        {
+          "name": "defi-traits",
+          "error": "deployment failed"
+        },
+        {
+          "name": "dex-factory",
+          "error": "deployment failed"
+        },
+        {
+          "name": "position-nft",
+          "error": "deployment failed"
+        },
+        {
+          "name": "dimensional-core",
+          "error": "deployment failed"
+        },
+        {
+          "name": "revenue-distributor",
+          "error": "deployment failed"
+        },
+        {
+          "name": "economic-policy-engine",
+          "error": "deployment failed"
+        },
+        {
+          "name": "enhanced-circuit-breaker",
+          "error": "deployment failed"
+        },
+        {
+          "name": "enhanced-governance-nft",
+          "error": "deployment failed"
+        },
+        {
+          "name": "lending-manager",
+          "error": "deployment failed"
+        },
+        {
+          "name": "operational-treasury",
+          "error": "deployment failed"
+        },
+        {
+          "name": "finance-metrics",
+          "error": "deployment failed"
+        },
+        {
+          "name": "governance-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "governance-traits",
+          "error": "deployment failed"
+        },
+        {
+          "name": "intent-solver-gateway",
+          "error": "deployment failed"
+        },
+        {
+          "name": "interest-rate-model",
+          "error": "deployment failed"
+        },
+        {
+          "name": "kyc-registry",
+          "error": "deployment failed"
+        },
+        {
+          "name": "liquidity-manager",
+          "error": "deployment failed"
+        },
+        {
+          "name": "math-utilities",
+          "error": "deployment failed"
+        },
+        {
+          "name": "mev-protector",
+          "error": "deployment failed"
+        },
+        {
+          "name": "mock-csf-protocol",
+          "error": "deployment failed"
+        },
+        {
+          "name": "mock-proposal",
+          "error": "deployment failed"
+        },
+        {
+          "name": "mock-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "swap-router",
+          "error": "deployment failed"
+        },
+        {
+          "name": "monitoring-dashboard",
+          "error": "deployment failed"
+        },
+        {
+          "name": "ops-engine",
+          "error": "deployment failed"
+        },
+        {
+          "name": "pausable-trait",
+          "error": "deployment failed"
+        },
+        {
+          "name": "pool-factory",
+          "error": "deployment failed"
+        },
+        {
+          "name": "pool-registry",
+          "error": "deployment failed"
+        },
+        {
+          "name": "position-factory",
+          "error": "deployment failed"
+        },
+        {
+          "name": "proof-of-reserves",
+          "error": "deployment failed"
+        },
+        {
+          "name": "proposal-engine",
+          "error": "deployment failed"
+        },
+        {
+          "name": "proposal-executor",
+          "error": "deployment failed"
+        },
+        {
+          "name": "proposal-registry",
+          "error": "deployment failed"
+        },
+        {
+          "name": "regulatory-adapter",
+          "error": "deployment failed"
+        },
+        {
+          "name": "reputation-engine",
+          "error": "deployment failed"
+        },
+        {
+          "name": "route-manager",
+          "error": "deployment failed"
+        },
+        {
+          "name": "token-system-coordinator",
+          "error": "deployment failed"
+        },
+        {
+          "name": "vault-traits",
+          "error": "deployment failed"
+        }
+      ],
+      "skipped": []
+    },
+    "config": {
+      "mode": "upgrade",
+      "batch_size": 5,
+      "total_contracts": 69
+    }
   }
 ]

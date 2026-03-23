@@ -1,25 +1,13 @@
 {
   "deployment": {
-    "timestamp": "2026-03-21T11:11:05.034800",
+    "timestamp": "2026-03-23T13:24:41.861757",
     "network": "testnet",
-    "deployer": "ST3FCFXAHTN37MFCMC6MBY2M9GSCH0NXMY8YKV003",
+    "deployer": "ST1BK6TFDEJ4TBVWH5SHNB6SPNWGY06YZFG9WMM4P",
     "results": {
       "successful": [
         {
-          "name": "conxian-service-trait",
-          "tx_id": "483511e849d55d79b7b35157e9c4b2d7fb577d3fab345f2decc92bbede5c8cf2"
-        },
-        {
-          "name": "automation-traits",
-          "tx_id": "b9c3d1cf2dd9d557816c8c6cca7b1216480cb2738969e9d4c969bfceaf1ef5f7"
-        },
-        {
-          "name": "batch-auction",
-          "tx_id": "64d286134f43977412efdbd513f55023582565f421afab2cc121e35cef5a50b1"
-        },
-        {
-          "name": "finance-metrics",
-          "tx_id": "534db40036ca434bffa580666b3374474916f2fbf536cefc82a2f1a0e5c8758a"
+          "name": "placeholder",
+          "tx_id": "b6b6b2321122bf6b6b5df6d16ae189e611bd396d76cde91f06c6808efdea81cc"
         }
       ],
       "failed": [
@@ -29,19 +17,11 @@
         },
         {
           "name": "conxian-access",
-          "error": "timeout"
-        },
-        {
-          "name": "conxian-protocol",
-          "error": "timeout"
-        },
-        {
-          "name": "oracle-aggregator",
           "error": "deployment failed"
         },
         {
-          "name": "risk-manager",
-          "error": "timeout"
+          "name": "conxian-protocol",
+          "error": "deployment failed"
         },
         {
           "name": "sip-standards",
@@ -49,6 +29,22 @@
         },
         {
           "name": "cxd-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "automation-traits",
+          "error": "deployment failed"
+        },
+        {
+          "name": "oracle-aggregator",
+          "error": "deployment failed"
+        },
+        {
+          "name": "risk-manager",
+          "error": "deployment failed"
+        },
+        {
+          "name": "conxian-service-trait",
           "error": "deployment failed"
         },
         {
@@ -60,10 +56,6 @@
           "error": "deployment failed"
         },
         {
-          "name": "cxd-treasury",
-          "error": "deployment failed"
-        },
-        {
           "name": "conxian-csf-trait",
           "error": "deployment failed"
         },
@@ -72,19 +64,15 @@
           "error": "deployment failed"
         },
         {
+          "name": "cxd-treasury",
+          "error": "deployment failed"
+        },
+        {
           "name": "agent-treasury",
           "error": "deployment failed"
         },
         {
-          "name": "alex-adapter",
-          "error": "timeout"
-        },
-        {
           "name": "block-utils",
-          "error": "timeout"
-        },
-        {
-          "name": "bond-token",
           "error": "deployment failed"
         },
         {
@@ -93,14 +81,6 @@
         },
         {
           "name": "circuit-breaker",
-          "error": "deployment failed"
-        },
-        {
-          "name": "community-dao",
-          "error": "deployment failed"
-        },
-        {
-          "name": "community-governance-token",
           "error": "deployment failed"
         },
         {
@@ -168,10 +148,6 @@
           "error": "deployment failed"
         },
         {
-          "name": "dimensional-engine",
-          "error": "deployment failed"
-        },
-        {
           "name": "revenue-distributor",
           "error": "deployment failed"
         },
@@ -188,7 +164,7 @@
           "error": "deployment failed"
         },
         {
-          "name": "federated-oracle-adapter",
+          "name": "lending-manager",
           "error": "deployment failed"
         },
         {
@@ -196,27 +172,15 @@
           "error": "deployment failed"
         },
         {
-          "name": "lending-manager",
-          "error": "deployment failed"
-        },
-        {
-          "name": "founder-vesting",
-          "error": "deployment failed"
-        },
-        {
-          "name": "governance-traits",
-          "error": "deployment failed"
-        },
-        {
-          "name": "timelock",
-          "error": "deployment failed"
-        },
-        {
-          "name": "governance-handover",
+          "name": "finance-metrics",
           "error": "deployment failed"
         },
         {
           "name": "governance-token",
+          "error": "deployment failed"
+        },
+        {
+          "name": "governance-traits",
           "error": "deployment failed"
         },
         {
@@ -236,19 +200,11 @@
           "error": "deployment failed"
         },
         {
-          "name": "math-lib-concentrated",
-          "error": "deployment failed"
-        },
-        {
           "name": "math-utilities",
           "error": "deployment failed"
         },
         {
           "name": "mev-protector",
-          "error": "deployment failed"
-        },
-        {
-          "name": "mock-circuit-breaker",
           "error": "deployment failed"
         },
         {
@@ -272,15 +228,7 @@
           "error": "deployment failed"
         },
         {
-          "name": "office-manager",
-          "error": "deployment failed"
-        },
-        {
           "name": "ops-engine",
-          "error": "deployment failed"
-        },
-        {
-          "name": "oracle",
           "error": "deployment failed"
         },
         {
@@ -328,36 +276,62 @@
           "error": "deployment failed"
         },
         {
-          "name": "signed-data-base",
-          "error": "deployment failed"
-        },
-        {
           "name": "token-system-coordinator",
           "error": "deployment failed"
         },
         {
-          "name": "upgrade-controller",
-          "error": "deployment failed"
-        },
-        {
           "name": "vault-traits",
-          "error": "deployment failed"
-        },
-        {
-          "name": "voting",
           "error": "deployment failed"
         }
       ],
       "skipped": []
     },
     "verification": {
-      "timestamp": "2026-03-21T11:10:59.437855",
+      "timestamp": "2026-03-23T13:24:37.360145",
       "network": "testnet",
       "overall_status": "failed",
       "checks": {
+        "Gas Usage": {
+          "passed": 0,
+          "details": {
+            "current_balance": 383.8933,
+            "transaction_count": 62,
+            "estimated_gas_used": 6.2,
+            "remaining_balance": 377.6933
+          }
+        },
+        "Network Health": {
+          "passed": 0,
+          "details": {
+            "status": "online",
+            "block_height": 3920289,
+            "network_id": 2147483648,
+            "server_version": "stacks-node 3.3.0.0.6 (01c9768, release build, linux [x86_64])",
+            "burn_block_height": 158497,
+            "tps": 0
+          },
+          "error": null
+        },
+        "API Connectivity": {
+          "passed": 0,
+          "details": {
+            "status": "online",
+            "block_height": 3920289,
+            "network_id": 2147483648,
+            "server_version": "stacks-node 3.3.0.0.6 (01c9768, release build, linux [x86_64])",
+            "burn_block_height": 158497,
+            "tps": 0
+          },
+          "error": null
+        },
         "Account Status": {
           "passed": 0,
-          "error": "Could not retrieve account information"
+          "details": {
+            "balance": 383.8933,
+            "nonce": 62,
+            "min_balance": 1.0
+          },
+          "error": null
         },
         "Contract Deployment": {
           "passed": 0,
@@ -440,26 +414,6 @@
           },
           "error": "Missing contracts: ['placeholder', 'sip-standards', 'core-traits', 'security-monitoring', 'automation-traits', 'conxian-service-trait', 'defi-traits', 'conxian-intent-trait', 'conxian-csf-trait', 'conxian-access', 'conxian-protocol', 'block-utils', 'oracle-aggregator', 'cxd-token', 'bme-engine', 'cxd-treasury', 'mev-protector', 'revenue-distributor', 'concentrated-liquidity-pool', 'risk-manager', 'agent-risk', 'enhanced-circuit-breaker', 'swap-router', 'agent-treasury', 'intent-solver-gateway', 'ops-engine', 'economic-policy-engine', 'position-nft', 'lending-manager', 'dimensional-core', 'operational-treasury', 'conxian-insurance-fund', 'finance-metrics', 'circuit-breaker', 'vault-traits', 'interest-rate-model', 'reputation-engine', 'proposal-registry', 'concentrated-math', 'governance-traits', 'governance-token', 'cxvg-token', 'cxtr-token', 'cxlp-token', 'cxlp-position-nft', 'cxs-token', 'token-system-coordinator', 'position-factory', 'route-manager', 'pool-factory', 'pool-registry', 'liquidity-manager', 'monitoring-dashboard', 'proposal-engine', 'proposal-executor', 'dao-treasury', 'pausable-trait', 'access-control-trait', 'math-utilities', 'compliance-hooks', 'kyc-registry', 'proof-of-reserves', 'mock-token', 'mock-proposal', 'compliance-manager', 'regulatory-adapter', 'enhanced-governance-nft', 'dex-factory', 'mock-csf-protocol']"
         },
-        "API Connectivity": {
-          "passed": 0,
-          "details": {
-            "status": "offline",
-            "error": "HTTPSConnectionPool(host='api.testnet.hiro.so', port=443): Max retries exceeded with url: /v2/info (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001840F846290>: Failed to resolve 'api.testnet.hiro.so' ([Errno 11001] getaddrinfo failed)\"))"
-          },
-          "error": "HTTPSConnectionPool(host='api.testnet.hiro.so', port=443): Max retries exceeded with url: /v2/info (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001840F846290>: Failed to resolve 'api.testnet.hiro.so' ([Errno 11001] getaddrinfo failed)\"))"
-        },
-        "Network Health": {
-          "passed": 0,
-          "details": {
-            "status": "offline",
-            "error": "HTTPSConnectionPool(host='api.testnet.hiro.so', port=443): Max retries exceeded with url: /v2/info (Caused by NameResolutionError(\"<urllib3.connection.HTTPSConnection object at 0x000001840F846290>: Failed to resolve 'api.testnet.hiro.so' ([Errno 11001] getaddrinfo failed)\"))"
-          },
-          "error": "Network health check failed"
-        },
-        "Gas Usage": {
-          "passed": 0,
-          "error": "Could not retrieve account information"
-        },
         "Contract Functionality": {
           "passed": 0,
           "error": "No contracts deployed to test"
@@ -475,19 +429,16 @@
       },
       "contracts": {},
       "recommendations": [
-        "Fix API connectivity issues before proceeding",
-        "Fund account with sufficient STX balance",
-        "Deploy missing contracts: placeholder, sip-standards, core-traits, security-monitoring, automation-traits, conxian-service-trait, defi-traits, conxian-intent-trait, conxian-csf-trait, conxian-access, conxian-protocol, block-utils, oracle-aggregator, cxd-token, bme-engine, cxd-treasury, mev-protector, revenue-distributor, concentrated-liquidity-pool, risk-manager, agent-risk, enhanced-circuit-breaker, swap-router, agent-treasury, intent-solver-gateway, ops-engine, economic-policy-engine, position-nft, lending-manager, dimensional-core, operational-treasury, conxian-insurance-fund, finance-metrics, circuit-breaker, vault-traits, interest-rate-model, reputation-engine, proposal-registry, concentrated-math, governance-traits, governance-token, cxvg-token, cxtr-token, cxlp-token, cxlp-position-nft, cxs-token, token-system-coordinator, position-factory, route-manager, pool-factory, pool-registry, liquidity-manager, monitoring-dashboard, proposal-engine, proposal-executor, dao-treasury, pausable-trait, access-control-trait, math-utilities, compliance-hooks, kyc-registry, proof-of-reserves, mock-token, mock-proposal, compliance-manager, regulatory-adapter, enhanced-governance-nft, dex-factory, mock-csf-protocol",
-        "Wait for network stability before continuing"
+        "Deploy missing contracts: placeholder, sip-standards, core-traits, security-monitoring, automation-traits, conxian-service-trait, defi-traits, conxian-intent-trait, conxian-csf-trait, conxian-access, conxian-protocol, block-utils, oracle-aggregator, cxd-token, bme-engine, cxd-treasury, mev-protector, revenue-distributor, concentrated-liquidity-pool, risk-manager, agent-risk, enhanced-circuit-breaker, swap-router, agent-treasury, intent-solver-gateway, ops-engine, economic-policy-engine, position-nft, lending-manager, dimensional-core, operational-treasury, conxian-insurance-fund, finance-metrics, circuit-breaker, vault-traits, interest-rate-model, reputation-engine, proposal-registry, concentrated-math, governance-traits, governance-token, cxvg-token, cxtr-token, cxlp-token, cxlp-position-nft, cxs-token, token-system-coordinator, position-factory, route-manager, pool-factory, pool-registry, liquidity-manager, monitoring-dashboard, proposal-engine, proposal-executor, dao-treasury, pausable-trait, access-control-trait, math-utilities, compliance-hooks, kyc-registry, proof-of-reserves, mock-token, mock-proposal, compliance-manager, regulatory-adapter, enhanced-governance-nft, dex-factory, mock-csf-protocol"
       ]
     }
   },
   "config": {
-    "deployment_mode": "full",
-    "total_contracts": 85,
-    "successful": 4,
-    "failed": 81,
-    "gas_estimate": 4.0
+    "deployment_mode": "upgrade",
+    "total_contracts": 69,
+    "successful": 1,
+    "failed": 68,
+    "gas_estimate": 1.0
   },
   "metadata": {
     "tool": "StacksOrbit Enhanced",
