@@ -1,119 +1,21 @@
 {
   "version": "1.0",
-  "name": "Conxian Testnet Full Event Monitor",
-  "description": "Monitors all core Conxian contracts: DEX swaps, yield optimizer intents, circuit-breaker veto events, bridge mints, governance proposals, and revenue distributions.",
+  "name": "Placeholder Testnet Event Monitor",
+  "description": "Monitors the placeholder contract for owner verification events on Testnet.",
   "chains": [
     {
       "network": "testnet",
       "webhooks": [
         {
-          "name": "DEX Swap Events",
+          "name": "Placeholder get-owner Events",
           "if": {
             "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.swap-router",
-            "method": "swap-exact-tokens-for-tokens"
+            "contract_identifier": "ST000000000000000000002Q6VF78.placeholder",
+            "method": "get-owner"
           },
           "then": {
             "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/dex-swap",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        },
-        {
-          "name": "Yield Intent Execution Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.yield-optimizer",
-            "method": "execute-yield-intent"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/yield-intent",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        },
-        {
-          "name": "Circuit Breaker Veto Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.circuit-breaker",
-            "method": "trigger-veto"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/circuit-veto",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        },
-        {
-          "name": "NTT Bridge Cross-Chain Mint Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.bridge-nft",
-            "method": "cross-chain-mint"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/bridge-mint",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        },
-        {
-          "name": "Revenue Distribution Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.revenue-distributor",
-            "method": "distribute"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/revenue",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        },
-        {
-          "name": "Governance Proposal Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.proposal-engine",
-            "method": "submit-proposal"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/governance",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        },
-        {
-          "name": "Oracle Price Feed Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.oracle-aggregator",
-            "method": "set-price"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/oracle-price",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        },
-        {
-          "name": "Autonomous Rebalance Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "STSZXAKV7DWTDZN2601WR31BM51BD3YTQXKCF9EZ.yield-optimizer",
-            "method": "autonomous-rebalance"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/conxian/rebalance",
+              "url": "https://api.testnet.hiro.so/webhook/placeholder/get-owner",
               "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
             }
           }
