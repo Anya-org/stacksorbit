@@ -1428,5 +1428,37 @@
       "batch_size": 5,
       "total_contracts": 69
     }
+  },
+  {
+    "timestamp": "2026-03-29T20:30:46.887029",
+    "network": "testnet",
+    "deployer": "ST1BK6TFDEJ4TBVWH5SHNB6SPNWGY06YZFG9WMM4P",
+    "results": {
+      "successful": [],
+      "failed": [
+        {
+          "name": "dlc-bond",
+          "error": "deployment failed"
+        },
+        {
+          "name": "dlc-orchestrator",
+          "error": "deployment failed"
+        },
+        {
+          "name": "placeholder",
+          "error": "deployment failed"
+        },
+        {
+          "name": "revenue-automation",
+          "error": "deployment failed"
+        }
+      ],
+      "skipped": []
+    },
+    "config": {
+      "mode": "upgrade",
+      "batch_size": 5,
+      "total_contracts": 4
+    }
   }
 ]
