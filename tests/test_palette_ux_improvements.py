@@ -20,8 +20,7 @@ async def test_palette_ux_improvements():
         # Reset last_contracts to force table update
         app._last_contracts = None
 
-        # 1. Verify Empty States in Contracts Table (Tab overview/contracts)
-        # Contracts table is in 'contracts' tab.
+        # 1. Verify Empty States in Contracts Table
         app.w_tabbed_content.active = "contracts"
         await pilot.pause()
 
@@ -29,18 +28,17 @@ async def test_palette_ux_improvements():
 
         # Test "Not configured" state
         app.address = "Not configured"
-        app._last_contracts = None # Force update
+        app._last_contracts = None
         await app.update_data()
         await pilot.pause()
 
-        # Check row data
         row_data = contracts_table.get_row_at(0)
         assert "Config missing" in str(row_data)
         assert "Press [F5] to set up" in str(row_data)
 
         # Test "No contracts found" state
         app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
-        app._last_contracts = None # Force update
+        app._last_contracts = None
         await app.update_data()
         await pilot.pause()
         row_data = contracts_table.get_row_at(0)
@@ -76,42 +74,28 @@ async def test_palette_ux_improvements():
 
         filter_input = app.query_one("#tx-filter-input", Input)
         filter_input.value = "nonexistent"
-        # Wait for reactive filter update
         await pilot.pause()
 
         filter_count = app.query_one("#tx-filter-count", Label)
-        # Check the markup by looking at the label's reactive text if possible
-        # In Textual, Label.renderable is often where the Rich text lives.
-        # If it's not there, let's just check if it's rendered with red.
-        # Actually, let's just assert it doesn't crash and we see it in screenshot.
-        # But for the test, let's try to find where the text is.
-        # Label has a 'renderable' property which is a Rich Text or similar.
-        try:
-            from rich.text import Text
-            if isinstance(filter_count.renderable, Text):
-                assert any(style.color and style.color.name == "red" for start, end, style in filter_count.renderable.spans)
-        except Exception:
-            # Fallback for different Textual/Rich versions
-            pass
+        # Check using render() which returns the renderable (often a Text object)
+        rendered = str(filter_count.render())
+        assert "(0/1 matches)" in rendered
 
         # 4. Verify Efficiency Shortcuts
         app.w_tabbed_content.active = "deployment"
         await pilot.pause()
 
-        # Mock the on_precheck_pressed and on_start_deploy_pressed methods
-        app.on_precheck_pressed = MagicMock()
-        app.on_start_deploy_pressed = MagicMock()
+        # Mock the shortcut methods directly
+        app.action_precheck = MagicMock()
+        app.action_deploy = MagicMock()
 
-        # Test 'c' shortcut
-        await pilot.press("c")
-        app.on_precheck_pressed.assert_called_once()
+        # Test 'p' shortcut
+        await pilot.press("p")
+        app.action_precheck.assert_called_once()
 
         # Test 'u' shortcut
         await pilot.press("u")
-        app.on_start_deploy_pressed.assert_called_once()
-
-        # 5. Save Screenshot (disabled for repo hygiene)
-        # app.save_screenshot("palette_ux_verification.svg")
+        app.action_deploy.assert_called_once()
 
 if __name__ == "__main__":
     pass

@@ -1,0 +1,70 @@
+/* StacksOrbit GUI CSS - Sovereign Earthy Theme */
+
+.sovereign-theme {
+    background: #FDFBF7;
+    color: #121212;
+}
+
+.sovereign-theme Header {
+    background: #FFFFFF;
+    color: #121212;
+    border-bottom: solid #C25E00;
+}
+
+.sovereign-theme Footer {
+    background: #FFFFFF;
+    color: #808080;
+    border-top: solid #E0DBCF;
+}
+
+.sovereign-theme TabbedContent {
+    background: #FFFFFF;
+    border: heavy #E0DBCF;
+}
+
+.sovereign-theme Tab {
+    background: #F4F0E6;
+    border: round #E0DBCF;
+    color: #121212;
+}
+
+.sovereign-theme Tab:hover {
+    background: #EBE6D9;
+}
+
+.sovereign-theme Tab.--current {
+    background: #C25E00;
+    color: white;
+}
+
+.sovereign-theme .metric-card {
+    background: #FFFFFF;
+    border: round #E0DBCF;
+}
+
+.sovereign-theme .metric-card Static {
+    color: #121212;
+}
+
+.sovereign-theme Button {
+    background: #F4F0E6;
+    border: round #E0DBCF;
+    color: #121212;
+}
+
+.sovereign-theme Button.primary {
+    background: #C25E00;
+    color: white;
+}
+
+.sovereign-theme DataTable {
+    background: #FFFFFF;
+    border: heavy #E0DBCF;
+    color: #121212;
+}
+
+.sovereign-theme Input {
+    background: #FFFFFF;
+    border: round #E0DBCF;
+    color: #121212;
+}
