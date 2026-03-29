@@ -44,6 +44,7 @@ except ImportError as e:
     print(f"Import error: {e}")
     GUI_AVAILABLE = False
 
+from infrastructure_wiring import InfrastructureWiring
 from deployment_monitor import DeploymentMonitor
 
 @functools.lru_cache(maxsize=128)
@@ -88,7 +89,7 @@ from stacksorbit_secrets import (
 class StacksOrbitGUI(App):
     """A Textual dashboard for StacksOrbit."""
 
-    CSS_PATH = "stacksorbit_gui.tcss"
+    CSS_PATH = ["stacksorbit_gui.tcss", "stacksorbit_gui_sovereign.tcss"]
 
     BINDINGS = [
         Binding("d", "toggle_dark", "Toggle dark mode"),
@@ -193,6 +194,8 @@ class StacksOrbitGUI(App):
         self._last_transactions = None
         self._last_metrics = {}
         self._deployment_log_lines = []
+        self.theme_name = "standard"
+        self.infra = InfrastructureWiring(self.config)
 
     def _load_config(self) -> Dict:
         """Load configuration from file and environment, enforcing security policies."""
@@ -284,6 +287,18 @@ class StacksOrbitGUI(App):
                         Static("0", id="block-height"),
                         classes="metric-card",
                         id="metric-height",
+                    )
+                    yield Container(
+                        Label("Runway"),
+                        Static("N/A", id="runway"),
+                        classes="metric-card",
+                        id="metric-runway",
+                    )
+                    yield Container(
+                        Label("Exit Velocity"),
+                        Static("N/A", id="exit-velocity"),
+                        classes="metric-card",
+                        id="metric-exit-velocity",
                     )
                 with Horizontal(id="overview-buttons"):
                     yield Button(
@@ -424,6 +439,8 @@ class StacksOrbitGUI(App):
         # Bolt ⚡: Cache frequently accessed widgets to avoid redundant DOM queries via query_one.
         # This significantly improves performance during high-frequency update loops and UI events.
         self.w_network_status = self.query_one("#network-status", Static)
+        self.w_runway = self.query_one("#runway", Static)
+        self.w_exit_velocity = self.query_one("#exit-velocity", Static)
         self.w_block_height = self.query_one("#block-height", Static)
         self.w_balance = self.query_one("#balance", Static)
         self.w_nonce = self.query_one("#nonce", Static)
@@ -723,16 +740,12 @@ class StacksOrbitGUI(App):
 
     async def update_data(self, bypass_cache: bool = False) -> None:
         """Update all data in the GUI concurrently."""
-        # ⚡ Bolt: Don't clear tables immediately to avoid flickering.
-        # We will clear them only if data has changed.
-        # Bolt ⚡: Use cached indicators to avoid O(N) DOM queries.
         for indicator in self.w_loading_indicators:
             indicator.display = True
 
         try:
             # ⚡ Bolt: Run synchronous API calls concurrently in threads
-            # This prevents the UI from blocking and speeds up the data refresh
-            # by fetching all data in parallel instead of one by one.
+            infra_metrics_task = asyncio.to_thread(self.infra.get_runway_metrics)
             api_status_task = asyncio.to_thread(
                 self.monitor.check_api_status, bypass_cache=bypass_cache
             )
@@ -752,82 +765,98 @@ class StacksOrbitGUI(App):
                     bypass_cache=bypass_cache,
                 )
 
-                api_status, account_info, deployed_contracts, transactions = (
-                    await asyncio.gather(
-                        api_status_task,
-                        account_info_task,
-                        contracts_task,
-                        transactions_task,
-                        return_exceptions=True,
-                    )
+                results = await asyncio.gather(
+                    infra_metrics_task,
+                    api_status_task,
+                    account_info_task,
+                    contracts_task,
+                    transactions_task,
+                    return_exceptions=True,
                 )
+                infra_metrics, api_status, account_info, deployed_contracts, transactions = results
             else:
-                # If no address, only fetch API status and provide sensible defaults for other data.
-                api_status = await api_status_task
+                results = await asyncio.gather(infra_metrics_task, api_status_task, return_exceptions=True)
+                infra_metrics, api_status = results
                 account_info, deployed_contracts, transactions = None, [], []
-                # Data will be processed by the Bolt ⚡ optimization logic below
 
-            # Process API status result
             if isinstance(api_status, Exception):
-                raise api_status  # Propagate exception to be caught by the main handler
+                raise api_status
 
-            # Bolt ⚡: Conditional UI updates for dashboard metrics.
-            # Static.update() is expensive; only call it if the value has changed.
-            status = api_status.get("status", "unknown").upper()
-            dot = "[green]●[/]" if status == "ONLINE" else "[red]●[/]"
-            status_display = f"{dot} {status}"
-            if self._last_metrics.get("status") != status_display:
+            # Process metrics
+            metrics = self._last_metrics.copy()
+
+            # Supabase Infra Metrics
+            if not isinstance(infra_metrics, Exception) and infra_metrics:
+                runway = f"{infra_metrics.get('runway_months', '?')} mo"
+                if self._last_metrics.get('runway') != runway:
+                    self.w_runway.update(runway)
+                    metrics['runway'] = runway
+
+            exit_velocity_data = await asyncio.to_thread(self.infra.get_exit_velocity)
+            if exit_velocity_data:
+                ev = f"{exit_velocity_data.get('current_estimated_valuation_zar', '?')} ZAR"
+                if self._last_metrics.get('exit_velocity') != ev:
+                    self.w_exit_velocity.update(ev)
+                    metrics['exit_velocity'] = ev
+
+            status = api_status.get('status', 'unknown').upper()
+            dot = '[green]●[/]' if status == 'ONLINE' else '[red]●[/]'
+            status_display = f'{dot} {status}'
+            if self._last_metrics.get('status') != status_display:
                 self.w_network_status.update(status_display)
-                self._last_metrics["status"] = status_display
+                metrics['status'] = status_display
 
-            self.current_block_height = api_status.get("block_height", 0)
+            self.current_block_height = api_status.get('block_height', 0)
             height = str(self.current_block_height)
-            if self._last_metrics.get("height") != height:
+            if self._last_metrics.get('height') != height:
                 self.w_block_height.update(height)
-                self._last_metrics["height"] = height
+                metrics['height'] = height
 
-            # Process account info result
             if isinstance(account_info, Exception):
                 raise account_info
 
-            balance_stx_display = "0 STX"
-            nonce_display = "0"
+            balance_stx_display = '0 STX'
+            nonce_display = '0'
 
             if account_info:
-                balance_raw = account_info.get("balance", 0)
+                balance_raw = account_info.get('balance', 0)
                 balance_stx = (
                     int(balance_raw, 16)
-                    if isinstance(balance_raw, str) and balance_raw.startswith("0x")
+                    if isinstance(balance_raw, str) and balance_raw.startswith('0x')
                     else int(balance_raw)
                 ) / 1_000_000
-                balance_stx_display = f"{balance_stx:,.6f} STX"
+                balance_stx_display = f'{balance_stx:,.6f} STX'
 
-                # PALETTE: Colorize balance for immediate visual context
                 if balance_stx >= 1.0:
-                    balance_stx_display = f"[green]{balance_stx_display}[/]"
+                    balance_stx_display = f'[green]{balance_stx_display}[/]'
                 elif balance_stx > 0:
-                    balance_stx_display = f"[yellow]{balance_stx_display}[/]"
+                    balance_stx_display = f'[yellow]{balance_stx_display}[/]'
                 else:
-                    balance_stx_display = f"[red]{balance_stx_display}[/]"
+                    balance_stx_display = f'[red]{balance_stx_display}[/]'
 
-                nonce_display = str(account_info.get("nonce", 0))
+                nonce_display = str(account_info.get('nonce', 0))
 
-            if self._last_metrics.get("balance") != balance_stx_display:
+            if self._last_metrics.get('balance') != balance_stx_display:
                 self.w_balance.update(balance_stx_display)
-                self._last_metrics["balance"] = balance_stx_display
+                metrics['balance'] = balance_stx_display
 
-            if self._last_metrics.get("nonce") != nonce_display:
+            if self._last_metrics.get('nonce') != nonce_display:
                 self.w_nonce.update(nonce_display)
-                self._last_metrics["nonce"] = nonce_display
+                metrics['nonce'] = nonce_display
+
+            self._last_metrics = metrics
+
+            now_label = datetime.now().strftime('%H:%M:%S')
+            self.w_last_updated.update(f' [dim]Last updated: {now_label}[/]')
 
             # Process deployed contracts result
             if isinstance(deployed_contracts, Exception):
                 raise deployed_contracts
 
             count_display = str(len(deployed_contracts))
-            if self._last_metrics.get("contract-count") != count_display:
+            if self._last_metrics.get('contract-count') != count_display:
                 self.w_contract_count.update(count_display)
-                self._last_metrics["contract-count"] = count_display
+                self._last_metrics['contract-count'] = count_display
 
             # ⚡ Bolt: Only clear and repopulate contracts table if data changed
             if deployed_contracts != self._last_contracts:

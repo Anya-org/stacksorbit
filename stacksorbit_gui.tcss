@@ -1,250 +1,250 @@
 /* StacksOrbit GUI CSS - Modern Theme */
 
-Screen {
+.standard-theme Screen {
     background: #0c0c0d;
     color: #c0c0c0;
     layout: vertical;
     padding: 1;
 }
 
-Header {
+.standard-theme Header {
     background: #1e1e20;
     color: #e0e0e0;
     text-style: bold;
     padding: 1 2;
 }
 
-Footer {
+.standard-theme Footer {
     background: #1e1e20;
     color: #a0a0a0;
     padding: 0 2;
 }
 
-TabbedContent {
+.standard-theme TabbedContent {
     background: #151516;
     border: heavy #2a2a2c;
     padding: 1;
 }
 
-TabPane {
+.standard-theme TabPane {
     padding: 1;
 }
 
-Tabs {
+.standard-theme Tabs {
     background: #1e1e20;
 }
 
-Tab {
+.standard-theme Tab {
     padding: 1 2;
     background: #1a1a1b;
     border: round #2a2a2c;
 }
 
-Tab:hover {
+.standard-theme Tab:hover {
     background: #252527;
 }
 
-Tab:focus {
+.standard-theme Tab:focus {
     border: round #007acc;
     background: #252527;
 }
 
-Tab.--current {
+.standard-theme Tab.--current {
     background: #007acc;
     color: white;
     text-style: bold;
 }
 
-.metric-card {
+.standard-theme .metric-card {
     background: #1a1a1b;
     border: round #2a2a2c;
     padding: 1 2;
     margin: 1;
 }
 
-.metric-card Label {
+.standard-theme .metric-card Label {
     color: #a0a0a0;
     text-style: bold;
     margin-bottom: 1;
 }
 
-.metric-card Static {
+.standard-theme .metric-card Static {
     color: #e0e0e0;
     text-style: bold;
 }
 
-.metric-card:hover {
+.standard-theme .metric-card:hover {
     background: #252527;
     border: round #007acc;
 }
 
-.metric-card:focus {
+.standard-theme .metric-card:focus {
     background: #252527;
     border: tall #007acc;
 }
 
-#metrics-grid {
+.standard-theme #metrics-grid {
     layout: grid;
     grid-size: 3;
     height: auto;
     margin: 1 0;
 }
 
-#address-bar { height: auto; align: center middle; padding: 1 2; background: #1e1e20; border: solid #2a2a2c; margin-bottom: 1; }
-#address-bar Label { margin: 0 1 0 0; text-style: bold; color: #a0a0a0; }
-#address-bar Static { color: #007acc; margin-right: 1; text-style: bold; }
-#address-bar Button { min-width: 4; padding: 0 1; margin: 0; height: 3; }
+.standard-theme #address-bar { height: auto; align: center middle; padding: 1 2; background: #1e1e20; border: solid #2a2a2c; margin-bottom: 1; }
+.standard-theme #address-bar Label { margin: 0 1 0 0; text-style: bold; color: #a0a0a0; }
+.standard-theme #address-bar Static { color: #007acc; margin-right: 1; text-style: bold; }
+.standard-theme #address-bar Button { min-width: 4; padding: 0 1; margin: 0; height: 3; }
 
-#overview-buttons {
+.standard-theme #overview-buttons {
     padding: 1 0;
     align: center middle;
 }
 
-#last-updated-label {
+.standard-theme #last-updated-label {
     padding: 1 2;
     color: #808080;
     height: 3;
 }
 
-Button {
+.standard-theme Button {
     margin: 0 1;
     padding: 1 2;
     border: round #2a2a2c;
     background: #252527;
 }
 
-Button:hover {
+.standard-theme Button:hover {
     background: #303032;
 }
 
-Button:focus {
+.standard-theme Button:focus {
     border: round #007acc;
     background: #303032;
 }
 
-Button.primary {
+.standard-theme Button.primary {
     background: #007acc;
     color: white;
 }
 
-Button.success {
+.standard-theme Button.success {
     background: #28a745; /* Green */
     color: white;
 }
 
-Button.warning {
+.standard-theme Button.warning {
     background: #f39c12; /* Orange */
     color: white;
 }
 
-Button.error {
+.standard-theme Button.error {
     background: #cc3333; /* Red */
     color: white;
 }
 
-DataTable {
+.standard-theme DataTable {
     background: #151516;
     border: heavy #2a2a2c;
 }
 
-DataTable .datatable--header {
+.standard-theme DataTable .datatable--header {
     background: #1e1e20;
     text-style: bold;
 }
 
-DataTable .datatable--cursor {
+.standard-theme DataTable .datatable--cursor {
     background: #007acc;
     color: white;
 }
 
-Log {
+.standard-theme Log {
     background: #151516;
     border: heavy #2a2a2c;
     padding: 1;
 }
 
-Input {
+.standard-theme Input {
     background: #252527;
     border: round #2a2a2c;
     padding: 1;
 }
 
-Input:focus {
+.standard-theme Input:focus {
     border: round #007acc;
 }
 
-Input.error {
+.standard-theme Input.error {
     border: round #cc3333;
 }
 
-Input.success {
+.standard-theme Input.success {
     border: round #28a745;
 }
 
-.input-group {
+.standard-theme .input-group {
     layout: horizontal;
     align: center middle;
 }
 
-.input-group Input {
+.standard-theme .input-group Input {
     width: 1fr;
     margin-right: 1;
 }
 
-.input-group Switch {
+.standard-theme .input-group Switch {
     width: auto;
 }
 
-.input-group Button {
+.standard-theme .input-group Button {
     width: auto;
     min-width: 8;
 }
 
-.switch-label {
+.standard-theme .switch-label {
     margin: 1 1 0 2;
     color: #a0a0a0;
 }
 
-.clickable-label:hover {
+.standard-theme .clickable-label:hover {
     color: #007acc;
     text-style: underline;
 }
 
-LoadingIndicator {
+.standard-theme LoadingIndicator {
     height: 3;
     content-align: center middle;
     width: 100%;
 }
 
-.details-pane {
+.standard-theme .details-pane {
     width: 60%;
     padding: 1;
     border-left: solid #2a2a2c;
 }
 
-.header {
+.standard-theme .header {
     text-style: bold;
     color: #e0e0e0;
 }
 
-#contract-details-header {
+.standard-theme #contract-details-header {
     height: auto;
     align: left middle;
     margin-bottom: 1;
 }
 
-#contract-details-header Label {
+.standard-theme #contract-details-header Label {
     width: 1fr;
     margin: 0;
 }
 
-#contract-details-header Button {
+.standard-theme #contract-details-header Button {
     min-width: 6;
     margin: 0;
     padding: 0 1;
 }
 
-#transaction-actions {
+.standard-theme #transaction-actions {
     height: auto;
     align: left middle;
     margin-top: 1;
@@ -253,18 +253,18 @@ LoadingIndicator {
     border: solid #2a2a2c;
 }
 
-#transaction-actions Label {
+.standard-theme #transaction-actions Label {
     width: 1fr;
     margin: 0;
 }
 
-#transaction-actions Button {
+.standard-theme #transaction-actions Button {
     min-width: 6;
     margin: 0 1;
     padding: 0 1;
 }
 
-#tx-filter-bar {
+.standard-theme #tx-filter-bar {
     height: auto;
     align: center middle;
     padding: 0 1;
@@ -273,19 +273,19 @@ LoadingIndicator {
     border: solid #2a2a2c;
 }
 
-#tx-filter-input {
+.standard-theme #tx-filter-input {
     width: 1fr;
     margin: 0;
     border: none;
     background: transparent;
 }
 
-#tx-filter-input:focus {
+.standard-theme #tx-filter-input:focus {
     border: none;
     background: #252527;
 }
 
-#clear-tx-filter-btn {
+.standard-theme #clear-tx-filter-btn {
     min-width: 4;
     padding: 0 1;
     margin: 0;
@@ -295,12 +295,12 @@ LoadingIndicator {
     color: #cc3333;
 }
 
-#clear-tx-filter-btn:hover {
+.standard-theme #clear-tx-filter-btn:hover {
     background: #303032;
     color: #ff4444;
 }
 
-#tx-filter-count {
+.standard-theme #tx-filter-count {
     width: auto;
     padding: 0 1;
     color: #808080;

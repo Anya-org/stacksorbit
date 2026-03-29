@@ -11,3 +11,12 @@ mnemonic = "cute bird surprise boring old news cake design aisle helmet choose t
 
 [contracts.placeholder]
 path = "contracts/placeholder.clar"
+
+[contracts.revenue-automation]
+path = "contracts/revenue-automation.clar"
+
+[contracts.dlc-orchestrator]
+path = "contracts/dlc-orchestrator.clar"
+
+[contracts.dlc-bond]
+path = "contracts/dlc-bond.clar"
