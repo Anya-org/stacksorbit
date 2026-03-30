@@ -93,6 +93,7 @@
 .standard-theme #address-bar { height: auto; align: center middle; padding: 1 2; background: #1e1e20; border: solid #2a2a2c; margin-bottom: 1; }
 .standard-theme #address-bar Label { margin: 0 1 0 0; text-style: bold; color: #a0a0a0; }
 .standard-theme #address-bar Static { color: #007acc; margin-right: 1; text-style: bold; }
+.standard-theme #address-bar Static:focus { color: white; background: #007acc; }
 .standard-theme #address-bar Button { min-width: 4; padding: 0 1; margin: 0; height: 3; }
 
 .standard-theme #overview-buttons {

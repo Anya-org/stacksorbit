@@ -42,8 +42,23 @@
     border: round #E0DBCF;
 }
 
+.sovereign-theme .metric-card:hover {
+    background: #FDFBF7;
+    border: round #C25E00;
+}
+
+.sovereign-theme .metric-card:focus {
+    background: #FDFBF7;
+    border: tall #C25E00;
+}
+
 .sovereign-theme .metric-card Static {
     color: #121212;
+}
+
+.sovereign-theme #display-address:focus {
+    background: #C25E00;
+    color: white;
 }
 
 .sovereign-theme Button {
