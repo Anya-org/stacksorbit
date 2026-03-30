@@ -433,6 +433,7 @@ class StacksOrbitGUI(App):
 
     def on_mount(self) -> None:
         """Initialize the GUI and cache widget references for performance."""
+        self.add_class(f"{self.theme_name}-theme")
         self.title = "StacksOrbit"
         self.sub_title = f"Deployment Dashboard [{self.network.upper()}]"
 
@@ -474,11 +475,22 @@ class StacksOrbitGUI(App):
         self.w_tabbed_content = self.query_one(TabbedContent)
 
         # PALETTE: Make dashboard metric cards focusable for keyboard accessibility
-        for card_id in ["#metric-network", "#metric-contracts", "#metric-balance", "#metric-nonce", "#metric-height"]:
+        for card_id in [
+            "#metric-network",
+            "#metric-contracts",
+            "#metric-balance",
+            "#metric-nonce",
+            "#metric-height",
+            "#metric-runway",
+            "#metric-exit-velocity",
+        ]:
             try:
                 self.query_one(card_id, Container).can_focus = True
             except Exception:
                 pass
+
+        # PALETTE: Make primary address display focusable
+        self.w_display_address.can_focus = True
 
         self.w_contract_details_header_label = self.query_one("#contract-details-header-label", Label)
         self.w_contract_details_md = self.query_one("#contract-details", Markdown)
@@ -600,26 +612,34 @@ class StacksOrbitGUI(App):
 
         # Add tooltips to metric cards for better clarity
         self.query("#network-status").first().parent.tooltip = (
-            f"Current status of the Stacks API ({self.monitor.api_url}). Click to refresh [r]."
+            f"Current status of the Stacks API ({self.monitor.api_url}). Click or [Enter] to refresh [r]."
         )
         self.query("#contract-count").first().parent.tooltip = (
-            "Total number of contracts deployed by this address"
+            "Total number of contracts deployed by this address. Click or [Enter] to browse [F2]."
         )
         self.query("#balance").first().parent.tooltip = (
-            "Available STX balance in this account"
+            "Available STX balance in this account. Click or [Enter] to view transactions [F3]."
         )
         self.query("#nonce").first().parent.tooltip = (
-            "Current account nonce (next transaction number)"
+            "Current account nonce (next transaction number). Click or [Enter] to view transactions [F3]."
         )
         self.query("#block-height").first().parent.tooltip = (
-            "Current Stacks blockchain height"
+            "Current Stacks blockchain height. Click or [Enter] to view transactions [F3]."
+        )
+        self.query("#runway").first().parent.tooltip = (
+            "Project runway in months. Requires Supabase integration. Click or [Enter] to refresh [r]."
+        )
+        self.query("#exit-velocity").first().parent.tooltip = (
+            "Project exit velocity in ZAR. Requires Supabase integration. Click or [Enter] to refresh [r]."
         )
 
         # Dashboard navigation tooltips
-        self.query_one("#metric-contracts").tooltip = "Click to view deployed contracts [F2]"
-        self.query_one("#metric-balance").tooltip = "Click to view transaction history [F3]"
-        self.query_one("#metric-nonce").tooltip = "Click to view transaction history [F3]"
-        self.query_one("#metric-height").tooltip = "Click to view transaction history [F3]"
+        self.query_one("#metric-contracts").tooltip = "Click or [Enter] to view deployed contracts [F2]"
+        self.query_one("#metric-balance").tooltip = "Click or [Enter] to view transaction history [F3]"
+        self.query_one("#metric-nonce").tooltip = "Click or [Enter] to view transaction history [F3]"
+        self.query_one("#metric-height").tooltip = "Click or [Enter] to view transaction history [F3]"
+        self.query_one("#metric-runway").tooltip = "Click or [Enter] to refresh metrics [r]"
+        self.query_one("#metric-exit-velocity").tooltip = "Click or [Enter] to refresh metrics [r]"
         self.query_one("#privkey-label", Label).tooltip = "Click to focus private key input"
         self.query_one("#address-label", Label).tooltip = "Click to focus address input"
         self.query_one("#show-privkey-label").tooltip = "Toggle private key visibility"
@@ -1042,12 +1062,14 @@ class StacksOrbitGUI(App):
         """Handle dashboard metric card interaction via keyboard."""
         if event.key == "enter" and self.focused:
             focused_id = self.focused.id
-            if focused_id == "metric-network":
+            if focused_id in ("metric-network", "metric-runway", "metric-exit-velocity"):
                 self.action_refresh()
             elif focused_id == "metric-contracts":
                 self.on_contracts_metric_click()
             elif focused_id in ("metric-balance", "metric-nonce", "metric-height"):
                 self.on_transactions_metric_click()
+            elif focused_id == "display-address":
+                self.run_worker(self.on_display_address_click())
 
     @on(TabbedContent.TabActivated)
     def on_tab_changed(self, event: TabbedContent.TabActivated) -> None:
