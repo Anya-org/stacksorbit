@@ -1,26 +1,16 @@
 {
   "version": "1.0",
-  "name": "Placeholder Testnet Event Monitor",
-  "description": "Monitors the placeholder contract for owner verification events on Testnet.",
-  "chains": [
-    {
-      "network": "testnet",
-      "webhooks": [
-        {
-          "name": "Placeholder get-owner Events",
-          "if": {
-            "scope": "contract_call",
-            "contract_identifier": "ST000000000000000000002Q6VF78.placeholder",
-            "method": "get-owner"
-          },
-          "then": {
-            "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/placeholder/get-owner",
-              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
-            }
-          }
-        }
-      ]
+  "name": "Testnet Event Monitor",
+  "description": "Monitors the placeholder and revenue contracts for owner and revenue events on Testnet.",
+  "if": {
+    "scope": "contract_call",
+    "contract_identifier": "ST000000000000000000002Q6VF78.placeholder",
+    "method": "get-owner"
+  },
+  "then": {
+    "http_post": {
+      "url": "https://webhook.stacksorbit.com/testnet",
+      "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
     }
-  ]
+  }
 }

@@ -2,7 +2,7 @@
 ;; Responsible for non-negotiable 100 bps (1%) protocol fee extraction.
 ;; Copyright (c) 2026 Conxian-Labs. This software is released under the MIT License.
 
-(use-trait sip-010-ft-trait .sip-standards.sip-010-ft-trait)
+(use-trait sip-010-ft-trait .sip-010-ft-trait.sip-010-ft-trait)
 
 (define-constant ERR_UNAUTHORIZED (err u401))
 (define-constant ERR_INVALID_AMOUNT (err u400))
@@ -20,15 +20,13 @@
         (fee (/ (* amount (var-get fee-bps)) u10000))
         (net-amount (- amount fee))
     )
-    (if (> amount u0)
-        (begin
-            ;; Transfer fee to protocol treasury
-            (unwrap! (stx-transfer? fee tx-sender (var-get protocol-wallet)) ERR_TRANSFER_FAILED)
-            ;; Transfer net to recipient
-            (unwrap! (stx-transfer? net-amount tx-sender recipient) ERR_TRANSFER_FAILED)
-            (ok { fee: fee, net: net-amount })
-        )
-        ERR_INVALID_AMOUNT
+    (begin
+        (asserts! (> amount u0) ERR_INVALID_AMOUNT)
+        ;; Transfer fee to protocol treasury
+        (unwrap! (stx-transfer? fee tx-sender (var-get protocol-wallet)) ERR_TRANSFER_FAILED)
+        ;; Transfer net to recipient
+        (unwrap! (stx-transfer? net-amount tx-sender recipient) ERR_TRANSFER_FAILED)
+        (ok { fee: fee, net: net-amount })
     ))
 )
 
@@ -42,15 +40,13 @@
         (fee (/ (* amount (var-get fee-bps)) u10000))
         (net-amount (- amount fee))
     )
-    (if (> amount u0)
-        (begin
-            ;; Transfer fee to protocol treasury
-            (unwrap! (contract-call? token transfer fee tx-sender (var-get protocol-wallet) none) ERR_TRANSFER_FAILED)
-            ;; Transfer net to recipient
-            (unwrap! (contract-call? token transfer net-amount tx-sender recipient none) ERR_TRANSFER_FAILED)
-            (ok { fee: fee, net: net-amount })
-        )
-        ERR_INVALID_AMOUNT
+    (begin
+        (asserts! (> amount u0) ERR_INVALID_AMOUNT)
+        ;; Transfer fee to protocol treasury
+        (unwrap! (contract-call? token transfer fee tx-sender (var-get protocol-wallet) none) ERR_TRANSFER_FAILED)
+        ;; Transfer net to recipient
+        (unwrap! (contract-call? token transfer net-amount tx-sender recipient none) ERR_TRANSFER_FAILED)
+        (ok { fee: fee, net: net-amount })
     ))
 )
 

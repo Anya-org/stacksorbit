@@ -3,14 +3,25 @@ import { Cl } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
+const wallet1 = accounts.get("wallet_1")!;
 
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
+    const recipient = wallet1;
+
+    // We set the protocol-wallet to something else to avoid self-transfer error (u402)
+    simnet.callPublicFn(
+      "revenue-automation",
+      "set-protocol-wallet",
+      [Cl.principal(wallet1)],
+      deployer
+    );
+
     const result = simnet.callPublicFn(
       "revenue-automation",
-      "process-revenue",
-      [Cl.uint(amount)],
+      "process-revenue-stx",
+      [Cl.uint(amount), Cl.principal(recipient)],
       deployer
     );
 
