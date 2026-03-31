@@ -15,7 +15,7 @@
           },
           "then": {
             "http_post": {
-              "url": "https://api.testnet.hiro.so/webhook/placeholder/get-owner",
+              "url": "https://webhook.stacksorbit.com/testnet",
               "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
             }
           }

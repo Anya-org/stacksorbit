@@ -20,3 +20,6 @@ path = "contracts/dlc-orchestrator.clar"
 
 [contracts.dlc-bond]
 path = "contracts/dlc-bond.clar"
+
+[contracts.sip-010-ft-trait]
+path = "contracts/sip-standards/sip-010-ft-trait.clar"

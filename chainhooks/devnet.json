@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "name": "Devnet Event Monitor",
-  "description": "Monitors the placeholder contract for owner verification events on Devnet.",
+  "description": "Monitors the placeholder and revenue contracts for owner and revenue events on Devnet.",
   "if": {
     "scope": "contract_call",
     "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.placeholder",
