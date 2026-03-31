@@ -9,10 +9,12 @@ describe("Conxian Systemic Alignment", () => {
     const amount = 1000000n; // 1 STX
     simnet.mintSTX(deployer, amount);
 
+    type ProtocolWalletDataVar = { value: string };
+
     const { value: protocolWallet } = simnet.getDataVar(
       "revenue-automation",
       "protocol-wallet"
-    ) as any;
+    ) as ProtocolWalletDataVar;
 
     const recipient = protocolWallet;
 
