@@ -20,7 +20,11 @@ class InfrastructureWiring:
         self.neon_db_url = config.get("NEON_DB_URL") or os.environ.get("NEON_DB_URL")
 
         # 🛡️ Sentinel: Redact URLs in debug logs to prevent disclosure of project IDs or keys in URLs
-        logger.debug(f"Supabase URL: {redact_recursive(self.supabase_url)}")
+        if self.supabase_url and logger.isEnabledFor(logging.DEBUG):
+            logger.debug(
+                "Supabase URL: %s",
+                redact_recursive(self.supabase_url, parent_key="SUPABASE_URL"),
+            )
 
     def get_runway_metrics(self) -> Optional[Dict]:
         """Fetch runway metrics from Supabase."""
