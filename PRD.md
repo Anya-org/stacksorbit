@@ -540,8 +540,19 @@ StacksOrbit is committed to supporting the latest Clarity language features.
     *   **Documentation Sync:** Expanded the Contract Registry and multi-network alignment tables in `PRD.md` to ensure full-lifecycle visibility.
 *   **Status:** Complete.
 
+### Session 41: Infrastructure Hardening & Cloud Secret Expansion (Sentinel)
+
+*   **Objective:** Enhance the application's security posture by hardening infrastructure logging and expanding the secret detection engine to cover major cloud and database providers.
+*   **Changes:**
+    *   **Logging Hardening:** Refactored `infrastructure_wiring.py` to utilize a structured logger (`stacksorbit_infra`) instead of standard `print` statements.
+    *   **Automated Redaction:** Implemented mandatory `redact_recursive` processing for all infrastructure logs, URLs, and outgoing telemetry payloads to prevent accidental credential leakage.
+    *   **Error Masking:** Standardized exception handling in `InfrastructureWiring` to use `logger.error` and `logger.warning` for operational failures, ensuring visibility without exposing internal details in standard output.
+    *   **Keyword Expansion:** Expanded `SENSITIVE_SUBSTRINGS` and `HIGH_CONFIDENCE_SENSITIVE_WORDS` in `stacksorbit_secrets.py` to include `SUPABASE`, `NEON`, `POSTGRES`, `MONGODB`, `REDIS`, `AWS`, `AZURE`, `GCP`, and `DIGITALOCEAN`.
+    *   **Regression Testing:** Established a new security regression suite `tests/unit/test_sentinel_infra_hardening.py` and verified the identification and redaction of provider-specific credentials.
+    *   **System Integrity:** Confirmed system stability via full Pytest (75 passed) and Vitest (5 passed) suites.
+
 ### Session Snapshot
-*   **Version:** 1.2.4
+*   **Version:** 1.2.5
 *   **License:** MIT (Standardized)
 *   **Documentation:** Root-Up Protocol Active
 *   **Tests:** Passed (Vitest Simnet & Pytest)

@@ -76,6 +76,15 @@ SENSITIVE_SUBSTRINGS = [
     "SENDGRID",
     "MAILGUN",
     "TWILIO",
+    "SUPABASE",
+    "NEON",
+    "POSTGRES",
+    "MONGODB",
+    "REDIS",
+    "AWS",
+    "AZURE",
+    "GCP",
+    "DIGITALOCEAN",
 ]
 
 # Bolt ⚡: Pre-compile regex for faster substring matching in high-frequency checks.
@@ -120,7 +129,9 @@ HIGH_CONFIDENCE_SENSITIVE_WORDS = [
     "DATABASE", "DB_", "SENSITIVE", "ENCRYPT", "BIP3", "CERT", "PKCS",
     "SSH", "PGP", "GPG", "PEM", "OAUTH", "COOKIE", "CSRF", "SESSID",
     "SESSIONID", "DECRYPT", "APIKEY", "API_KEY", "CLOUDFLARE", "HEROKU",
-    "STRIPE", "INFURA", "ALCHEMY", "SENDGRID", "MAILGUN", "TWILIO"
+    "STRIPE", "INFURA", "ALCHEMY", "SENDGRID", "MAILGUN", "TWILIO",
+    "SUPABASE", "NEON", "POSTGRES", "MONGODB", "REDIS", "AWS", "AZURE",
+    "GCP", "DIGITALOCEAN"
 ]
 HIGH_CONFIDENCE_SENSITIVE_RE = re.compile("|".join(HIGH_CONFIDENCE_SENSITIVE_WORDS), re.IGNORECASE)
 

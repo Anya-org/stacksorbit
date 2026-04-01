@@ -1,8 +1,13 @@
 import os
 import requests
 import json
+import logging
 from typing import Dict, List, Optional
 from datetime import datetime
+from stacksorbit_secrets import redact_recursive
+
+# 🛡️ Sentinel: Setup infrastructure logger
+logger = logging.getLogger("stacksorbit_infra")
 
 class InfrastructureWiring:
     """Handles integration with Supabase and Neon for StacksOrbit."""
@@ -11,8 +16,11 @@ class InfrastructureWiring:
         self.config = config
         self.supabase_url = config.get("SUPABASE_URL") or os.environ.get("SUPABASE_URL")
         self.supabase_key = config.get("SUPABASE_KEY") or os.environ.get("SUPABASE_KEY")
-        self.neon_db_url = config.get("NEON_DB_URL")
-        print(f"DEBUG: Supabase URL: {self.supabase_url}")
+        # 🛡️ Sentinel: Support NEON_DB_URL from environment for consistency
+        self.neon_db_url = config.get("NEON_DB_URL") or os.environ.get("NEON_DB_URL")
+
+        # 🛡️ Sentinel: Redact URLs in debug logs to prevent disclosure of project IDs or keys in URLs
+        logger.debug(f"Supabase URL: {redact_recursive(self.supabase_url)}")
 
     def get_runway_metrics(self) -> Optional[Dict]:
         """Fetch runway metrics from Supabase."""
@@ -25,16 +33,20 @@ class InfrastructureWiring:
         }
         try:
             url = f"{self.supabase_url}/rest/v1/runway_metrics?select=*&order=timestamp.desc&limit=1"
-            print(f"DEBUG: Fetching runway from {url}")
+            # 🛡️ Sentinel: Redact URL in logs
+            logger.debug(f"Fetching runway from {redact_recursive(url)}")
             response = requests.get(url, headers=headers, timeout=5)
             if response.status_code == 200:
                 data = response.json()
-                print(f"DEBUG: Runway data: {data}")
+                # 🛡️ Sentinel: Redact data before logging
+                logger.debug(f"Runway data: {redact_recursive(data)}")
                 return data[0] if data else None
             else:
-                print(f"DEBUG: Runway response error: {response.status_code} {response.text}")
+                # 🛡️ Sentinel: Use WARNING for non-200 responses as they indicate functional issues.
+                logger.warning(f"Runway response error: {response.status_code} {response.text}")
         except Exception as e:
-            print(f"DEBUG: Runway exception: {e}")
+            # 🛡️ Sentinel: Use ERROR for exceptions to ensure visibility in production logs.
+            logger.error(f"Runway exception: {e}")
             return None
         return None
 
@@ -53,7 +65,10 @@ class InfrastructureWiring:
             if response.status_code == 200:
                 data = response.json()
                 return data[0] if data else None
-        except Exception:
+            else:
+                logger.warning(f"Exit velocity response error: {response.status_code}")
+        except Exception as e:
+            logger.error(f"Exit velocity exception: {e}")
             return None
         return None
 
@@ -75,11 +90,18 @@ class InfrastructureWiring:
             "execution_time_ms": execution_time,
             "timestamp": datetime.now().isoformat()
         }
+
+        # 🛡️ Sentinel: Redact payload before sending to external service
+        # This provides defense-in-depth in case module_name or other fields contain secrets.
+        redacted_payload = redact_recursive(payload)
+
         try:
             url = f"{self.supabase_url}/rest/v1/deployment_efficiency"
-            requests.post(url, headers=headers, json=payload, timeout=5)
-        except Exception:
-            pass
+            response = requests.post(url, headers=headers, json=redacted_payload, timeout=5)
+            if response.status_code not in (200, 201):
+                logger.warning(f"Deployment log response error: {response.status_code}")
+        except Exception as e:
+            logger.error(f"Deployment log exception: {e}")
 
     def sync_to_neon(self):
         """Placeholder for Neon synchronization logic."""
