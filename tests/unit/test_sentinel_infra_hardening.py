@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from infrastructure_wiring import InfrastructureWiring
-from stacksorbit_secrets import is_sensitive_key
+from stacksorbit_secrets import is_sensitive_key, redact_recursive
 
 class TestSentinelInfraHardening(unittest.TestCase):
     def test_new_infra_keywords(self):
@@ -43,6 +43,16 @@ class TestSentinelInfraHardening(unittest.TestCase):
             sent = post.call_args.kwargs["json"]
 
         self.assertEqual(sent["module_name"], "<redacted>")
+
+    def test_redact_recursive_masks_neon_db_url(self):
+        """Verify nested infra keys remain redacted by redact_recursive."""
+        payload = {
+            "metadata": {
+                "NEON_DB_URL": "postgres://user:pass@ep-lucky-smoke-123.us-east-2.aws.neon.tech/neondb"
+            }
+        }
+        redacted = redact_recursive(payload)
+        self.assertEqual(redacted["metadata"]["NEON_DB_URL"], "<redacted>")
 
 if __name__ == "__main__":
     unittest.main()
