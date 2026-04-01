@@ -38,19 +38,37 @@ class InfrastructureWiring:
         try:
             url = f"{self.supabase_url}/rest/v1/runway_metrics?select=*&order=timestamp.desc&limit=1"
             # 🛡️ Sentinel: Redact URL in logs
-            logger.debug(f"Fetching runway from {redact_recursive(url)}")
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(
+                    "Fetching runway from %s",
+                    redact_recursive(url, parent_key="SUPABASE_URL"),
+                )
             response = requests.get(url, headers=headers, timeout=5)
             if response.status_code == 200:
                 data = response.json()
                 # 🛡️ Sentinel: Redact data before logging
-                logger.debug(f"Runway data: {redact_recursive(data)}")
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(
+                        "Runway data: %s",
+                        redact_recursive(data, parent_key="SUPABASE_RESPONSE"),
+                    )
                 return data[0] if data else None
             else:
                 # 🛡️ Sentinel: Use WARNING for non-200 responses as they indicate functional issues.
-                logger.warning(f"Runway response error: {response.status_code} {response.text}")
+                redacted_body = redact_recursive(
+                    response.text, parent_key="SUPABASE_RESPONSE"
+                )
+                logger.warning(
+                    "Runway response error: %s %s",
+                    response.status_code,
+                    str(redacted_body)[:500],
+                )
         except Exception as e:
             # 🛡️ Sentinel: Use ERROR for exceptions to ensure visibility in production logs.
-            logger.error(f"Runway exception: {e}")
+            logger.error(
+                "Runway exception: %s",
+                redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
+            )
             return None
         return None
 
@@ -72,7 +90,10 @@ class InfrastructureWiring:
             else:
                 logger.warning(f"Exit velocity response error: {response.status_code}")
         except Exception as e:
-            logger.error(f"Exit velocity exception: {e}")
+            logger.error(
+                "Exit velocity exception: %s",
+                redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
+            )
             return None
         return None
 
@@ -105,7 +126,10 @@ class InfrastructureWiring:
             if response.status_code not in (200, 201):
                 logger.warning(f"Deployment log response error: {response.status_code}")
         except Exception as e:
-            logger.error(f"Deployment log exception: {e}")
+            logger.error(
+                "Deployment log exception: %s",
+                redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
+            )
 
     def sync_to_neon(self):
         """Placeholder for Neon synchronization logic."""
