@@ -67,8 +67,6 @@ class InfrastructureWiring:
                 "Runway exception: %s",
                 redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
             )
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("Runway exception (debug)", exc_info=True)
             return None
         return None
 
@@ -109,8 +107,6 @@ class InfrastructureWiring:
                 "Exit velocity exception: %s",
                 redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
             )
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("Exit velocity exception (debug)", exc_info=True)
             return None
         return None
 
@@ -147,8 +143,6 @@ class InfrastructureWiring:
                 "Deployment log exception: %s",
                 redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
             )
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug("Deployment log exception (debug)", exc_info=True)
 
     def sync_to_neon(self):
         """Placeholder for Neon synchronization logic."""
