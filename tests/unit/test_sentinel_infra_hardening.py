@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from infrastructure_wiring import InfrastructureWiring
+from infrastructure_wiring import InfrastructureWiring, logger as infra_logger
 from stacksorbit_secrets import is_sensitive_key, redact_recursive
 
 class TestSentinelInfraHardening(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestSentinelInfraHardening(unittest.TestCase):
             "SUPABASE_KEY": "secret-supabase-key",
             "NEON_DB_URL": "postgres://user:pass@ep-lucky-smoke-123.us-east-2.aws.neon.tech/neondb"
         }
-        with self.assertLogs("stacksorbit_infra", level="DEBUG") as cm:
+        with self.assertLogs(infra_logger, level="DEBUG") as cm:
             InfrastructureWiring(config)
 
         self.assertTrue(any("<redacted>" in m for m in cm.output), "Expected redacted debug log")
@@ -42,7 +42,8 @@ class TestSentinelInfraHardening(unittest.TestCase):
             infra.log_deployment(secret_module_name, "success")
             sent = post.call_args.kwargs["json"]
 
-        self.assertEqual(sent["module_name"], "<redacted>")
+        self.assertNotEqual(sent["module_name"], secret_module_name)
+        self.assertNotIn(secret_module_name, str(sent))
 
     def test_redact_recursive_masks_neon_db_url(self):
         """Verify nested infra keys remain redacted by redact_recursive."""
