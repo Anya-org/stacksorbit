@@ -1,7 +1,8 @@
 import unittest
-import logging
+from unittest.mock import patch
+
 from infrastructure_wiring import InfrastructureWiring
-from stacksorbit_secrets import is_sensitive_key, redact_recursive
+from stacksorbit_secrets import is_sensitive_key
 
 class TestSentinelInfraHardening(unittest.TestCase):
     def test_new_infra_keywords(self):
@@ -14,38 +15,34 @@ class TestSentinelInfraHardening(unittest.TestCase):
         for kw in infra_keywords:
             self.assertTrue(is_sensitive_key(kw), f"Keyword '{kw}' should be sensitive")
 
-    def test_infra_redaction(self):
-        """Verify that InfrastructureWiring redacts sensitive data in log payloads."""
+    def test_infra_init_logs_redacted_urls(self):
+        """Verify that InfrastructureWiring redacts sensitive fields in debug logs."""
         config = {
             "SUPABASE_URL": "https://xyz.supabase.co",
             "SUPABASE_KEY": "secret-supabase-key",
             "NEON_DB_URL": "postgres://user:pass@ep-lucky-smoke-123.us-east-2.aws.neon.tech/neondb"
         }
+        with self.assertLogs("stacksorbit_infra", level="DEBUG") as cm:
+            InfrastructureWiring(config)
+
+        self.assertTrue(any("<redacted>" in m for m in cm.output), "Expected redacted debug log")
+        self.assertFalse(any("xyz.supabase.co" in m for m in cm.output), "Supabase URL should be redacted")
+
+    def test_log_deployment_redacts_outbound_payload(self):
+        """Verify that InfrastructureWiring redacts sensitive data in outbound payloads."""
+        config = {
+            "SUPABASE_URL": "https://xyz.supabase.co",
+            "SUPABASE_KEY": "secret-supabase-key",
+        }
         infra = InfrastructureWiring(config)
 
-        # We'll mock the log_deployment payload logic internally by checking redact_recursive
-        payload = {
-            "module_name": "vault-contract",
-            "status": "success",
-            "metadata": {
-                "NEON_DB_URL": config["NEON_DB_URL"]
-            }
-        }
+        secret_module_name = "0123456789abcdef" * 4
+        with patch("infrastructure_wiring.requests.post") as post:
+            post.return_value.status_code = 201
+            infra.log_deployment(secret_module_name, "success")
+            sent = post.call_args.kwargs["json"]
 
-        redacted = redact_recursive(payload)
-        self.assertEqual(redacted["metadata"]["NEON_DB_URL"], "<redacted>")
-
-    def test_infra_logger_redaction_usage(self):
-        """Verify that InfrastructureWiring uses redact_recursive for its debug logs."""
-        # Test keyword-based redaction
-        secret_url = "https://example.com/api"
-        redacted_url = redact_recursive(secret_url, parent_key="SUPABASE_URL")
-        self.assertEqual(redacted_url, "<redacted>")
-
-        # Test value-based redaction (private key as a separate value)
-        pk = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        redacted_pk = redact_recursive(pk)
-        self.assertEqual(redacted_pk, "<redacted>")
+        self.assertEqual(sent["module_name"], "<redacted>")
 
 if __name__ == "__main__":
     unittest.main()

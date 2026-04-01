@@ -88,7 +88,7 @@ SENSITIVE_SUBSTRINGS = [
 ]
 
 # Bolt ⚡: Pre-compile regex for faster substring matching in high-frequency checks.
-SENSITIVE_RE = re.compile("|".join(SENSITIVE_SUBSTRINGS))
+SENSITIVE_RE = re.compile("|".join(re.escape(s) for s in SENSITIVE_SUBSTRINGS))
 
 # Bolt ⚡: Public keys that should be excluded from value-based secret detection.
 # These often contain 64-character hex strings but are public blockchain data.
@@ -114,7 +114,7 @@ PUBLIC_SUBSTRINGS = [
 ]
 
 # Bolt ⚡: Pre-compile regex for faster public key matching.
-PUBLIC_RE = re.compile("|".join(PUBLIC_SUBSTRINGS))
+PUBLIC_RE = re.compile("|".join(re.escape(s) for s in PUBLIC_SUBSTRINGS))
 
 # Bolt ⚡: Pre-compile regex for faster hex character validation.
 HEX_RE = re.compile(r"^[0-9a-fA-F]+$")
@@ -133,7 +133,10 @@ HIGH_CONFIDENCE_SENSITIVE_WORDS = [
     "SUPABASE", "NEON", "POSTGRES", "MONGODB", "REDIS", "AWS", "AZURE",
     "GCP", "DIGITALOCEAN"
 ]
-HIGH_CONFIDENCE_SENSITIVE_RE = re.compile("|".join(HIGH_CONFIDENCE_SENSITIVE_WORDS), re.IGNORECASE)
+HIGH_CONFIDENCE_SENSITIVE_RE = re.compile(
+    "|".join(re.escape(s) for s in HIGH_CONFIDENCE_SENSITIVE_WORDS),
+    re.IGNORECASE,
+)
 
 
 @functools.lru_cache(maxsize=256)

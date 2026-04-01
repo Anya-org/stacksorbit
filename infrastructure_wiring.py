@@ -55,9 +55,7 @@ class InfrastructureWiring:
                 return data[0] if data else None
             else:
                 # 🛡️ Sentinel: Use WARNING for non-200 responses as they indicate functional issues.
-                redacted_body = redact_recursive(
-                    response.text, parent_key="SUPABASE_RESPONSE"
-                )
+                redacted_body = redact_recursive(response.text, parent_key="SUPABASE_RESPONSE")
                 logger.warning(
                     "Runway response error: %s %s",
                     response.status_code,
@@ -69,6 +67,8 @@ class InfrastructureWiring:
                 "Runway exception: %s",
                 redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
             )
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("Runway exception (debug)", exc_info=True)
             return None
         return None
 
@@ -83,17 +83,34 @@ class InfrastructureWiring:
         }
         try:
             url = f"{self.supabase_url}/rest/v1/exit_velocity?select=*&order=timestamp.desc&limit=1"
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(
+                    "Fetching exit velocity from %s",
+                    redact_recursive(url, parent_key="SUPABASE_URL"),
+                )
             response = requests.get(url, headers=headers, timeout=5)
             if response.status_code == 200:
                 data = response.json()
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(
+                        "Exit velocity data: %s",
+                        redact_recursive(data, parent_key="SUPABASE_RESPONSE"),
+                    )
                 return data[0] if data else None
             else:
-                logger.warning(f"Exit velocity response error: {response.status_code}")
+                redacted_body = redact_recursive(response.text, parent_key="SUPABASE_RESPONSE")
+                logger.warning(
+                    "Exit velocity response error: %s %s",
+                    response.status_code,
+                    str(redacted_body)[:500],
+                )
         except Exception as e:
             logger.error(
                 "Exit velocity exception: %s",
                 redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
             )
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("Exit velocity exception (debug)", exc_info=True)
             return None
         return None
 
@@ -130,6 +147,8 @@ class InfrastructureWiring:
                 "Deployment log exception: %s",
                 redact_recursive(str(e), parent_key="INFRA_EXCEPTION"),
             )
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("Deployment log exception (debug)", exc_info=True)
 
     def sync_to_neon(self):
         """Placeholder for Neon synchronization logic."""
