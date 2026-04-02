@@ -11,6 +11,25 @@
 
 ![StacksOrbit TUI Screenshot](stacksorbit-tui-screenshot.svg)
 
+## Purpose
+
+Provide a CLI-first toolkit for building, testing, deploying, monitoring, and verifying Stacks smart contracts.
+
+## Status
+
+Active development. The CLI surface and integrations may evolve as Stacks tooling and deployment patterns change.
+
+## Audience
+
+- Protocol engineers shipping Clarity smart contracts.
+- Operators and maintainers running deployments and monitoring environments.
+- Teams standardizing deployment workflows across multiple Stacks projects.
+
+## Relationship to the Conxian stack
+
+- Used as part of Conxian's contract deployment and operations workflows.
+- Commonly paired with orchestration layers like `conxius-platform`.
+
 ---
 
 ## 📖 Documentation
