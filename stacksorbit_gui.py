@@ -765,7 +765,8 @@ class StacksOrbitGUI(App):
 
         try:
             # ⚡ Bolt: Run synchronous API calls concurrently in threads
-            infra_metrics_task = asyncio.to_thread(self.infra.get_runway_metrics)
+            infra_runway_task = asyncio.to_thread(self.infra.get_runway_metrics, bypass_cache=bypass_cache)
+            infra_exit_velocity_task = asyncio.to_thread(self.infra.get_exit_velocity, bypass_cache=bypass_cache)
             api_status_task = asyncio.to_thread(
                 self.monitor.check_api_status, bypass_cache=bypass_cache
             )
@@ -786,17 +787,18 @@ class StacksOrbitGUI(App):
                 )
 
                 results = await asyncio.gather(
-                    infra_metrics_task,
+                    infra_runway_task,
+                    infra_exit_velocity_task,
                     api_status_task,
                     account_info_task,
                     contracts_task,
                     transactions_task,
                     return_exceptions=True,
                 )
-                infra_metrics, api_status, account_info, deployed_contracts, transactions = results
+                infra_runway, infra_exit_velocity, api_status, account_info, deployed_contracts, transactions = results
             else:
-                results = await asyncio.gather(infra_metrics_task, api_status_task, return_exceptions=True)
-                infra_metrics, api_status = results
+                results = await asyncio.gather(infra_runway_task, infra_exit_velocity_task, api_status_task, return_exceptions=True)
+                infra_runway, infra_exit_velocity, api_status = results
                 account_info, deployed_contracts, transactions = None, [], []
 
             if isinstance(api_status, Exception):
@@ -806,15 +808,14 @@ class StacksOrbitGUI(App):
             metrics = self._last_metrics.copy()
 
             # Supabase Infra Metrics
-            if not isinstance(infra_metrics, Exception) and infra_metrics:
-                runway = f"{infra_metrics.get('runway_months', '?')} mo"
+            if not isinstance(infra_runway, Exception) and infra_runway:
+                runway = f"{infra_runway.get('runway_months', '?')} mo"
                 if self._last_metrics.get('runway') != runway:
                     self.w_runway.update(runway)
                     metrics['runway'] = runway
 
-            exit_velocity_data = await asyncio.to_thread(self.infra.get_exit_velocity)
-            if exit_velocity_data:
-                ev = f"{exit_velocity_data.get('current_estimated_valuation_zar', '?')} ZAR"
+            if not isinstance(infra_exit_velocity, Exception) and infra_exit_velocity:
+                ev = f"{infra_exit_velocity.get('current_estimated_valuation_zar', '?')} ZAR"
                 if self._last_metrics.get('exit_velocity') != ev:
                     self.w_exit_velocity.update(ev)
                     metrics['exit_velocity'] = ev

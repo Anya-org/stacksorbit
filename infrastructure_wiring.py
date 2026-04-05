@@ -2,6 +2,8 @@ import os
 import requests
 import json
 import logging
+import time
+import threading
 from typing import Dict, List, Optional
 from datetime import datetime
 from stacksorbit_secrets import redact_recursive
@@ -19,6 +21,12 @@ class InfrastructureWiring:
         # 🛡️ Sentinel: Support NEON_DB_URL from environment for consistency
         self.neon_db_url = config.get("NEON_DB_URL") or os.environ.get("NEON_DB_URL")
 
+        # Bolt ⚡: Use a persistent Session for connection pooling to Supabase
+        self.session = requests.Session()
+        self._cache = {}
+        self._cache_lock = threading.Lock()
+        self._cache_ttl = 300  # 5 minutes
+
         # 🛡️ Sentinel: Redact URLs in debug logs to prevent disclosure of project IDs or keys in URLs
         if self.supabase_url and logger.isEnabledFor(logging.DEBUG):
             logger.debug(
@@ -26,10 +34,17 @@ class InfrastructureWiring:
                 redact_recursive(self.supabase_url, parent_key="SUPABASE_URL"),
             )
 
-    def get_runway_metrics(self) -> Optional[Dict]:
+    def get_runway_metrics(self, bypass_cache: bool = False) -> Optional[Dict]:
         """Fetch runway metrics from Supabase."""
         if not self.supabase_url or not self.supabase_key:
             return None
+
+        # Bolt ⚡: Check TTL cache to avoid redundant network I/O
+        if not bypass_cache:
+            with self._cache_lock:
+                cached = self._cache.get("runway")
+                if cached and (time.time() - cached["timestamp"]) < self._cache_ttl:
+                    return cached["data"]
 
         headers = {
             "apikey": self.supabase_key,
@@ -43,16 +58,22 @@ class InfrastructureWiring:
                     "Fetching runway from %s",
                     redact_recursive(url, parent_key="SUPABASE_URL"),
                 )
-            response = requests.get(url, headers=headers, timeout=5)
+            # Bolt ⚡: Use session for connection pooling and enforce timeout
+            response = self.session.get(url, headers=headers, timeout=5)
             if response.status_code == 200:
                 data = response.json()
+                result = data[0] if data else None
+                # Bolt ⚡: Update TTL cache
+                with self._cache_lock:
+                    self._cache["runway"] = {"timestamp": time.time(), "data": result}
+
                 # 🛡️ Sentinel: Redact data before logging
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(
                         "Runway data: %s",
                         redact_recursive(data, parent_key="SUPABASE_RESPONSE"),
                     )
-                return data[0] if data else None
+                return result
             else:
                 # 🛡️ Sentinel: Use WARNING for non-200 responses as they indicate functional issues.
                 redacted_body = redact_recursive(response.text, parent_key="SUPABASE_RESPONSE")
@@ -70,10 +91,17 @@ class InfrastructureWiring:
             return None
         return None
 
-    def get_exit_velocity(self) -> Optional[Dict]:
+    def get_exit_velocity(self, bypass_cache: bool = False) -> Optional[Dict]:
         """Fetch exit velocity metrics from Supabase."""
         if not self.supabase_url or not self.supabase_key:
             return None
+
+        # Bolt ⚡: Check TTL cache to avoid redundant network I/O
+        if not bypass_cache:
+            with self._cache_lock:
+                cached = self._cache.get("exit_velocity")
+                if cached and (time.time() - cached["timestamp"]) < self._cache_ttl:
+                    return cached["data"]
 
         headers = {
             "apikey": self.supabase_key,
@@ -86,15 +114,21 @@ class InfrastructureWiring:
                     "Fetching exit velocity from %s",
                     redact_recursive(url, parent_key="SUPABASE_URL"),
                 )
-            response = requests.get(url, headers=headers, timeout=5)
+            # Bolt ⚡: Use session for connection pooling and enforce timeout
+            response = self.session.get(url, headers=headers, timeout=5)
             if response.status_code == 200:
                 data = response.json()
+                result = data[0] if data else None
+                # Bolt ⚡: Update TTL cache
+                with self._cache_lock:
+                    self._cache["exit_velocity"] = {"timestamp": time.time(), "data": result}
+
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(
                         "Exit velocity data: %s",
                         redact_recursive(data, parent_key="SUPABASE_RESPONSE"),
                     )
-                return data[0] if data else None
+                return result
             else:
                 redacted_body = redact_recursive(response.text, parent_key="SUPABASE_RESPONSE")
                 logger.warning(
@@ -135,7 +169,8 @@ class InfrastructureWiring:
 
         try:
             url = f"{self.supabase_url}/rest/v1/deployment_efficiency"
-            response = requests.post(url, headers=headers, json=redacted_payload, timeout=5)
+            # Bolt ⚡: Use session for connection pooling and enforce timeout
+            response = self.session.post(url, headers=headers, json=redacted_payload, timeout=5)
             if response.status_code not in (200, 201):
                 logger.warning(f"Deployment log response error: {response.status_code}")
         except Exception as e:

@@ -37,7 +37,8 @@ class TestSentinelInfraHardening(unittest.TestCase):
         infra = InfrastructureWiring(config)
 
         secret_module_name = "0123456789abcdef" * 4
-        with patch("infrastructure_wiring.requests.post") as post:
+        # Bolt ⚡: Mock the session.post instead of requests.post
+        with patch.object(infra.session, "post") as post:
             post.return_value.status_code = 201
             infra.log_deployment(secret_module_name, "success")
             sent = post.call_args.kwargs["json"]
