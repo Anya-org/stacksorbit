@@ -17,3 +17,7 @@
 ## 2025-03-23 - [Reactive State-Aware Buttons]
 **Learning:** When a button action (like "Save") triggers a temporary state change ("Saved!"), restoring the button's appearance based on the current *reactive* state of the application is more robust than blindly restoring its *previous* label, especially if other UI events occurred during the action.
 **Action:** Use application reactive state (e.g., `self.unsaved_changes`) to derive UI button labels and variants after asynchronous operations.
+
+## 2025-03-24 - [Visual Categorization via Icons]
+**Learning:** In data-dense tables (like contract lists), replacing generic checkmarks with high-fidelity icons (emojis) based on content heuristics significantly improves scannability and user delight. It allows users to quickly differentiate between contract types (e.g., Tokens vs DEX) at a glance.
+**Action:** Implement heuristic-based categorization for list-based data and use specific visual indicators (icons) to represent the underlying purpose or type.

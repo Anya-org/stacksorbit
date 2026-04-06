@@ -122,6 +122,19 @@ class StacksOrbitGUI(App):
         "coinbase": "⛏️ [green]coinbase[/]",
     }
 
+    # PALETTE: Visual categorization for contracts.
+    CONTRACT_CATEGORY_MAP = {
+        "base": {"icon": "📜", "label": "Base"},
+        "tokens": {"icon": "🪙", "label": "Token"},
+        "nft": {"icon": "🖼️", "label": "NFT"},
+        "dex": {"icon": "🏦", "label": "DEX"},
+        "oracle": {"icon": "🔮", "label": "Oracle"},
+        "governance": {"icon": "⚖️", "label": "Gov"},
+        "security": {"icon": "🛡️", "label": "Security"},
+        "monitoring": {"icon": "📊", "label": "Monitor"},
+        "other": {"icon": "📄", "label": "Contract"},
+    }
+
     # Reactive variables
     network = reactive("testnet")
     address = reactive("Not configured")
@@ -739,10 +752,31 @@ class StacksOrbitGUI(App):
     def _setup_tables(self) -> None:
         """Setup the data tables"""
         contracts_table = self.query_one("#contracts-table", DataTable)
-        contracts_table.add_columns("Status", "Name", "Address")
+        contracts_table.add_columns("Type", "Name", "Address")
 
         transactions_table = self.query_one("#transactions-table", DataTable)
         transactions_table.add_columns("TX ID", "Type", "Status", "Time", "Block")
+
+    def _categorize_contract(self, name: str) -> str:
+        """PALETTE: Categorize a contract based on its name."""
+        name_lower = name.lower()
+        if any(w in name_lower for w in ["dex", "swap", "pool", "factory", "router", "amm", "liquidity"]):
+            return "dex"
+        if any(w in name_lower for w in ["trait", "utils", "lib", "error", "constant", "math", "std"]):
+            return "base"
+        if any(w in name_lower for w in ["token", "ft-", "sip-010"]):
+            return "tokens"
+        if any(w in name_lower for w in ["nft", "non-fungible", "sip-009"]):
+            return "nft"
+        if any(w in name_lower for w in ["oracle", "aggregator", "price", "feed"]):
+            return "oracle"
+        if any(w in name_lower for w in ["gov", "vote", "proposal", "dao", "multisig", "treasury"]):
+            return "governance"
+        if any(w in name_lower for w in ["security", "auth", "access", "guardian", "pause", "whitelist"]):
+            return "security"
+        if any(w in name_lower for w in ["monitor", "track", "dashboard", "analytics", "registry"]):
+            return "monitoring"
+        return "other"
 
     def _prepare_tx_search_key(self, tx: Dict) -> None:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""
@@ -890,7 +924,10 @@ class StacksOrbitGUI(App):
                         contract_rows = []
                         for contract in deployed_contracts:
                             address, name = contract.get("contract_id", "...").split(".")
-                            contract_rows.append(("✅", name, address))
+                            # PALETTE: Use categorized icons for visual variety
+                            category = self._categorize_contract(name)
+                            icon = self.CONTRACT_CATEGORY_MAP.get(category, self.CONTRACT_CATEGORY_MAP["other"])["icon"]
+                            contract_rows.append((icon, name, address))
 
                         # Note: DataTable.add_rows doesn't take keys in the same way as add_row in some versions,
                         # so we'll use add_row in a loop if add_rows doesn't support keys.
@@ -945,10 +982,14 @@ class StacksOrbitGUI(App):
         contract_id = event.row_key.value
         if contract_id:
             self.selected_contract_id = contract_id
-            # Update detail header with contract name
+            # Update detail header with contract name and category
             name = contract_id.split(".")[1] if "." in contract_id else contract_id
+            category_key = self._categorize_contract(name)
+            category = self.CONTRACT_CATEGORY_MAP.get(category_key, self.CONTRACT_CATEGORY_MAP["other"])
+            category_display = f"{category['icon']} {category['label']}"
+
             self.w_contract_details_header_label.update(
-                f"Details: [cyan]{name}[/] [dim][c]opy [e]xplorer[/]"
+                f"Details: [cyan]{name}[/] [dim]{category_display} [c]opy [e]xplorer[/]"
             )
 
             self.w_copy_contract_btn.disabled = False
