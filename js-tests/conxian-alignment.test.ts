@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Cl } from "@stacks/transactions";
+import { Cl, cvToString } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
@@ -7,16 +7,18 @@ const deployer = accounts.get("deployer")!;
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
+    const protocolWallet = cvToString(
+      simnet.getDataVar("revenue-automation", "protocol-wallet")
+    );
+    const recipient = "ST2NEB84ASENDXKYGJPQW86YXQCEFEX2ZQPG87ND";
+
+    const getStxBalance = (address: string): bigint =>
+      simnet.getAssetsMap().get("STX")?.get(address) ?? 0n;
+
     simnet.mintSTX(deployer, amount);
-
-    type ProtocolWalletDataVar = { value: string };
-
-    const { value: protocolWallet } = simnet.getDataVar(
-      "revenue-automation",
-      "protocol-wallet"
-    ) as ProtocolWalletDataVar;
-
-    const recipient = protocolWallet;
+    const deployerBalanceBefore = getStxBalance(deployer);
+    const protocolWalletBalanceBefore = getStxBalance(protocolWallet);
+    const recipientBalanceBefore = getStxBalance(recipient);
 
     const result = simnet.callPublicFn(
       "revenue-automation",
@@ -31,6 +33,14 @@ describe("Conxian Systemic Alignment", () => {
         net: Cl.uint(990000n)
       })
     );
+
+    const deployerBalanceAfter = getStxBalance(deployer);
+    const protocolWalletBalanceAfter = getStxBalance(protocolWallet);
+    const recipientBalanceAfter = getStxBalance(recipient);
+
+    expect(protocolWalletBalanceAfter - protocolWalletBalanceBefore).toBe(10000n);
+    expect(recipientBalanceAfter - recipientBalanceBefore).toBe(990000n);
+    expect(deployerBalanceBefore - deployerBalanceAfter).toBe(amount);
   });
 
   it("dlc-orchestrator: should open a DLC contract", () => {
