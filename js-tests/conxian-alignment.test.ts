@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Cl, cvToString } from "@stacks/transactions";
+import { Cl, cvToValue } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
@@ -7,9 +7,13 @@ const deployer = accounts.get("deployer")!;
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
-    const protocolWallet = cvToString(
+    const protocolWalletValue = cvToValue(
       simnet.getDataVar("revenue-automation", "protocol-wallet")
     );
+    if (typeof protocolWalletValue !== "string") {
+      throw new Error("Invalid protocol-wallet type");
+    }
+    const protocolWallet = protocolWalletValue;
     const recipient = "ST2NEB84ASENDXKYGJPQW86YXQCEFEX2ZQPG87ND";
 
     const getStxBalance = (address: string): bigint =>
