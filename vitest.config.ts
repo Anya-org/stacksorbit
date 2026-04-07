@@ -11,15 +11,21 @@ import { defineConfig } from "vitest/config";
  * to provide native simnet support for Clarity smart contracts.
  */
 export default defineConfig(async () => {
-  const { vitestSetupFilePath } = await import("@stacks/clarinet-sdk/vitest");
+  const { vitestSetupFilePath, getClarinetVitestsArgv } = await import(
+    "@stacks/clarinet-sdk/vitest"
+  );
 
   return {
     test: {
       environment: "clarinet",
       globals: true,
+      pool: "forks",
+      isolate: false,
+      maxWorkers: 1,
       setupFiles: [vitestSetupFilePath],
       environmentOptions: {
         clarinet: {
+          ...getClarinetVitestsArgv(),
           manifestPath: "./Clarinet.toml",
         },
       },

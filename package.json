@@ -75,8 +75,8 @@
     "next": "^16.0.1-canary.3"
   },
   "devDependencies": {
-    "@stacks/clarinet-sdk": "^3.14.1",
-    "vitest": "^4.0.18",
+    "@stacks/clarinet-sdk": "^3.16.0",
+    "vitest": "^4.1.2",
     "vitest-environment-clarinet": "^3.0.2",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^8.57.0",

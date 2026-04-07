@@ -31,8 +31,8 @@ importers:
         version: 16.2.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
     devDependencies:
       '@stacks/clarinet-sdk':
-        specifier: ^3.14.1
-        version: 3.15.1
+        specifier: ^3.16.0
+        version: 3.16.0
       '@vitest/coverage-v8':
         specifier: ^4.0.18
         version: 4.1.2(vitest@4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)))
@@ -43,11 +43,11 @@ importers:
         specifier: ^3.2.0
         version: 3.8.1
       vitest:
-        specifier: ^4.0.18
+        specifier: ^4.1.2
         version: 4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))
       vitest-environment-clarinet:
         specifier: ^3.0.2
-        version: 3.0.2(@stacks/clarinet-sdk@3.15.1)(vitest@4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)))
+        version: 3.0.2(@stacks/clarinet-sdk@3.16.0)(vitest@4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)))
 
 packages:
 
@@ -474,11 +474,11 @@ packages:
   '@stacks/auth@7.4.0':
     resolution: {integrity: sha512-2nEPQuhJMifxX7YhuaI1Qn7D0Bjvdav3cmQQXF6PGA/MKIQniExhvHKhuGrshMaJ2OUui+lJxFWA8RCyJVd5ow==}
 
-  '@stacks/clarinet-sdk-wasm@3.15.1':
-    resolution: {integrity: sha512-VnmhHG8cvB6ku/OGw1LCWwHElrGCL6stq6CVQxbTdb595ZAKIvBhJY7iKW5bvqWmHHMS7jxCNXM2fO/8M997Jg==}
+  '@stacks/clarinet-sdk-wasm@15.16.0':
+    resolution: {integrity: sha512-OBffQar1BSw0EZ9vnXeSLuVw4O0qfiFgcsSWcDvjybWOew41lUmSLa0QDwbfnKW0tmw2WAC6fDzzHZGQnhHWgg==}
 
-  '@stacks/clarinet-sdk@3.15.1':
-    resolution: {integrity: sha512-tFDzkqIIWyIl3WG21GJq1PtiIhQDyOXeOTK8089AXQYlO6jqwIvYlHuKn5qjokFBUaYcPOjGUhcCoJtkUCs6rA==}
+  '@stacks/clarinet-sdk@3.16.0':
+    resolution: {integrity: sha512-IhKXuEQnq8vfh97f3R05IHJlUqzT6kOcyWAihOgpb+Ap7t/OA2aCQQfsz4qXonnFXxA1uzojihFAMigMZ/VfNA==}
     engines: {node: '>=18.0.0'}
 
   '@stacks/common@7.3.1':
@@ -1796,11 +1796,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@stacks/clarinet-sdk-wasm@3.15.1': {}
+  '@stacks/clarinet-sdk-wasm@15.16.0': {}
 
-  '@stacks/clarinet-sdk@3.15.1':
+  '@stacks/clarinet-sdk@3.16.0':
     dependencies:
-      '@stacks/clarinet-sdk-wasm': 3.15.1
+      '@stacks/clarinet-sdk-wasm': 15.16.0
       '@stacks/transactions': 7.4.0
       kolorist: 1.8.0
       prompts: 2.4.2
@@ -2727,9 +2727,9 @@ snapshots:
       - '@emnapi/core'
       - '@emnapi/runtime'
 
-  vitest-environment-clarinet@3.0.2(@stacks/clarinet-sdk@3.15.1)(vitest@4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))):
+  vitest-environment-clarinet@3.0.2(@stacks/clarinet-sdk@3.16.0)(vitest@4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))):
     dependencies:
-      '@stacks/clarinet-sdk': 3.15.1
+      '@stacks/clarinet-sdk': 3.16.0
       vitest: 4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1))
 
   vitest@4.1.2(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)):

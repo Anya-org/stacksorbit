@@ -8,13 +8,14 @@ mock_contracts = [{"contract_id": "ST123.test"}]
 mock_transactions = [{"tx_id": "0x123", "tx_type": "smart_contract", "tx_status": "success", "block_height": 100}]
 mock_api_status = {"status": "online", "block_height": 500}
 mock_account_info = {"balance": "1000000", "nonce": 1}
-mock_infra_metrics = {"runway_months": 12, "fiat_balance_zar": 500000}
+mock_runway = {"runway_months": 12}
+mock_exit_velocity = {"current_estimated_valuation_zar": 500000}
 
 @pytest.mark.asyncio
 async def test_update_data_skips_clear_when_data_is_same():
     """Verify that update_data does not clear tables if data has not changed."""
     with patch("stacksorbit_gui.asyncio.gather", new_callable=AsyncMock) as mock_gather:
-        mock_gather.return_value = (mock_infra_metrics, mock_api_status, mock_account_info, mock_contracts, mock_transactions)
+        mock_gather.return_value = (mock_runway, mock_exit_velocity, mock_api_status, mock_account_info, mock_contracts, mock_transactions)
 
         app = StacksOrbitGUI()
         app.address = "ST123..."
@@ -49,7 +50,7 @@ async def test_update_data_skips_clear_when_data_is_same():
 async def test_update_data_calls_clear_when_data_changes():
     """Verify that update_data clears tables if data has changed."""
     with patch("stacksorbit_gui.asyncio.gather", new_callable=AsyncMock) as mock_gather:
-        mock_gather.return_value = (mock_infra_metrics, mock_api_status, mock_account_info, mock_contracts, mock_transactions)
+        mock_gather.return_value = (mock_runway, mock_exit_velocity, mock_api_status, mock_account_info, mock_contracts, mock_transactions)
 
         app = StacksOrbitGUI()
         app.address = "ST123..."

@@ -2,15 +2,25 @@
   "version": "1.0",
   "name": "Devnet Event Monitor",
   "description": "Monitors the placeholder and revenue contracts for owner and revenue events on Devnet.",
-  "if": {
-    "scope": "contract_call",
-    "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.placeholder",
-    "method": "get-owner"
-  },
-  "then": {
-    "http_post": {
-      "url": "http://localhost:3000/webhook",
-      "authorization_header": "Bearer ${DEVNET_WEBHOOK_TOKEN}"
+  "chains": [
+    {
+      "network": "devnet",
+      "webhooks": [
+        {
+          "name": "Placeholder get-owner Events",
+          "if": {
+            "scope": "contract_call",
+            "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.placeholder",
+            "method": "get-owner"
+          },
+          "then": {
+            "http_post": {
+              "url": "http://localhost:3000/webhook",
+              "authorization_header": "Bearer ${DEVNET_WEBHOOK_TOKEN}"
+            }
+          }
+        }
+      ]
     }
-  }
+  ]
 }
