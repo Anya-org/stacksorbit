@@ -7,6 +7,9 @@ const deployer = accounts.get("deployer")!;
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
+    const expectedFeeBps = 100n;
+    const fee = (amount * expectedFeeBps) / 10000n;
+    const net = amount - fee;
     const protocolWalletValue = cvToValue(
       simnet.getDataVar("revenue-automation", "protocol-wallet")
     );
@@ -33,8 +36,8 @@ describe("Conxian Systemic Alignment", () => {
 
     expect(result.result).toBeOk(
       Cl.tuple({
-        fee: Cl.uint(10000n),
-        net: Cl.uint(990000n)
+        fee: Cl.uint(fee),
+        net: Cl.uint(net)
       })
     );
 
@@ -42,8 +45,8 @@ describe("Conxian Systemic Alignment", () => {
     const protocolWalletBalanceAfter = getStxBalance(protocolWallet);
     const recipientBalanceAfter = getStxBalance(recipient);
 
-    expect(protocolWalletBalanceAfter - protocolWalletBalanceBefore).toBe(10000n);
-    expect(recipientBalanceAfter - recipientBalanceBefore).toBe(990000n);
+    expect(protocolWalletBalanceAfter - protocolWalletBalanceBefore).toBe(fee);
+    expect(recipientBalanceAfter - recipientBalanceBefore).toBe(net);
     expect(deployerBalanceBefore - deployerBalanceAfter).toBe(amount);
   });
 
