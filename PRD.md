@@ -82,6 +82,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 | `revenue-automation` | `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.revenue-automation` | `ST000000000000000000002Q6VF78.revenue-automation` | `SP2J1BCZK8Q0CP3W4R1XX9TMKJ1N1S8QZ7K0B5N8.revenue-automation` | ✅ Verified |
 | `dlc-orchestrator` | `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.dlc-orchestrator` | `ST000000000000000000002Q6VF78.dlc-orchestrator` | `SP2J1BCZK8Q0CP3W4R1XX9TMKJ1N1S8QZ7K0B5N8.dlc-orchestrator` | ✅ Verified |
 | `dlc-bond` | `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.dlc-bond` | `ST000000000000000000002Q6VF78.dlc-bond` | `SP2J1BCZK8Q0CP3W4R1XX9TMKJ1N1S8QZ7K0B5N8.dlc-bond` | ✅ Verified |
+| `sip-010-ft-trait` | `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.sip-010-ft-trait` | `Pending` | `Pending` | ⏳ Pending |
 
 *Note: All contract identifiers are synchronized with the Chainhook predicates in `/chainhooks`.*
 
@@ -94,6 +95,16 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 | **Mainnet** | ✅ Verified | `chainhooks/mainnet.json` | `https://api.mainnet.hiro.so` |
 
 ## 6. Session Log
+
+### Session 42: Foundation Modernization & Root-Up Alignment (Jules)
+
+*   **Objective:** Modernize the project's foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Changes:**
+    *   **Dependency Upgrade:** Upgraded `@stacks/clarinet-sdk` to `^3.16.0` and `vitest` to `^4.1.2` in `package.json`.
+    *   **Configuration Modernization:** Refactored `vitest.config.ts` to include `threads: { singleThread: true }` for improved stability in Vitest 4 environment.
+    *   **Root-Up Alignment:** Synchronized `PRD.md` by adding the `sip-010-ft-trait` contract to the Registry and documenting the session snapshot.
+    *   **Environment Setup:** Successfully configured the development environment, including Python `setuptools` for the `prepare` script.
+*   **Status:** Complete.
 
 ### Session 1: Initialization & Alignment
 
