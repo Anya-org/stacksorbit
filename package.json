@@ -57,7 +57,7 @@
   },
   "homepage": "https://github.com/Anya-org/stacksorbit#readme",
   "engines": {
-    "node": ">=20.9.0",
+    "node": ">=20.19.0",
     "pnpm": ">=8.0.0"
   },
   "os": [
