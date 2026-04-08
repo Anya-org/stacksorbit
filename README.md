@@ -19,6 +19,10 @@ Provide a CLI-first toolkit for building, testing, deploying, monitoring, and ve
 
 Active development. The CLI surface and integrations may evolve as Stacks tooling and deployment patterns change.
 
+## Ownership
+
+Ownership and review requirements are defined in [`CODEOWNERS`](./CODEOWNERS).
+
 ## Audience
 
 - Protocol engineers shipping Clarity smart contracts.
