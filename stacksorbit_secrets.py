@@ -180,10 +180,13 @@ def _is_sensitive_value_cached(value: str) -> bool:
 
     # Bolt ⚡: Use a fast split and length check.
     # BIP-39 supports 12, 15, 18, 21, and 24 words.
+    # 🛡️ Sentinel: Support international mnemonics (word length >= 1).
+    # To minimize false positives from normal sentences, we require uniform
+    # casing (all lower or all upper) OR the absence of caseable characters
+    # (e.g. for Chinese/Japanese characters).
     words = value.split()
-    if len(words) in (12, 15, 18, 21, 24) and all(len(w) >= 3 for w in words):
-        # Additional check: most mnemonics are all lowercase or all uppercase
-        if value.islower() or value.isupper():
+    if len(words) in (12, 15, 18, 21, 24) and all(len(w) >= 1 for w in words):
+        if value.islower() or value.isupper() or not any(c.islower() or c.isupper() for c in value):
             return True
 
     return False

@@ -37,7 +37,7 @@ def test_is_sensitive_value_mnemonic():
     mnemonic11 = "word " * 10 + "word"
     assert is_sensitive_value(mnemonic11) is False
 
-    # Mixed case (usually not a mnemonic)
+    # Mixed case (usually not a mnemonic, avoided for false positive protection)
     mnemonic_mixed = "Word " * 11 + "Word"
     assert is_sensitive_value(mnemonic_mixed) is False
 
