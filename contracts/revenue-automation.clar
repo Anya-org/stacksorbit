@@ -8,7 +8,7 @@
 (define-constant ERR_INVALID_AMOUNT (err u400))
 (define-constant ERR_TRANSFER_FAILED (err u402))
 
-(define-data-var protocol-wallet principal 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM)
+(define-data-var protocol-wallet principal tx-sender)
 (define-data-var fee-bps uint u100) ;; 100 BPS = 1% Sovereign Tax
 
 ;; @desc Calculate and extract fee natively in STX
