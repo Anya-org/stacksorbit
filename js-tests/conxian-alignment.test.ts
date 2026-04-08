@@ -7,7 +7,8 @@ const deployer = accounts.get("deployer")!;
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
-    simnet.mintSTX(deployer, amount + 1000000n);
+    const initialBalance = amount * 2n;
+    simnet.mintSTX(deployer, initialBalance);
 
     const protocolWallet = Cl.contractPrincipal(deployer, "revenue-automation");
     const setWallet = simnet.callPublicFn(
