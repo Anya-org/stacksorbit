@@ -131,3 +131,8 @@
 **Vulnerability:** Application logs and outgoing telemetry payloads in `infrastructure_wiring.py` were utilizing standard `print` statements and lacked mandatory redaction, potentially leaking provider-specific credentials (e.g., Supabase keys, Neon DB URLs) to standard output or external services.
 **Learning:** Defense-in-depth requires that all exit points for data—including telemetry, infrastructure logs, and debug output—must be treated as potential leak vectors. Relying on developers to manually redact data before logging is error-prone.
 **Prevention:** Implement mandatory, automated redaction for all infrastructure-related logs and outgoing payloads using centralized utilities (`redact_recursive`). Proactively expand secret detection keywords to include common cloud and database providers to catch credentials even when generic key names are used.
+
+## 2025-03-09 - International Mnemonic Detection and False-Positive Resistance
+**Vulnerability:** Mnemonics in non-English BIP-39 wordlists (e.g., Spanish, Chinese) were bypassing detection due to strict heuristics requiring word lengths $\ge 3$ and uniform Latin casing.
+**Learning:** Security heuristics for universal standards like BIP-39 must account for diverse linguistic characteristics. Rigid character counts or casing requirements fail to protect users using non-English locales, creating a regional security gap.
+**Prevention:** Relax word length requirements for mnemonics to 1 character. To maintain resistance against false positives in natural language, implement script-aware validation: require either uniform casing (all lower/upper) for caseable scripts or the complete absence of caseable characters for scripts like CJK.
