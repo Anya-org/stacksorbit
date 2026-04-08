@@ -8,6 +8,7 @@
 (define-constant ERR_INVALID_AMOUNT (err u400))
 (define-constant ERR_TRANSFER_FAILED (err u402))
 
+(define-data-var contract-admin principal tx-sender)
 (define-data-var protocol-wallet principal tx-sender)
 (define-data-var fee-bps uint u100) ;; 100 BPS = 1% Sovereign Tax
 
@@ -53,10 +54,23 @@
 ;; @desc Update the protocol wallet (Admin only)
 (define-public (set-protocol-wallet (new-wallet principal))
     (begin
-        (asserts! (is-eq tx-sender (var-get protocol-wallet)) ERR_UNAUTHORIZED)
+        (asserts! (is-eq tx-sender (var-get contract-admin)) ERR_UNAUTHORIZED)
         (var-set protocol-wallet new-wallet)
         (ok true)
     )
+)
+
+;; @desc Update contract admin (Admin only)
+(define-public (set-contract-admin (new-admin principal))
+    (begin
+        (asserts! (is-eq tx-sender (var-get contract-admin)) ERR_UNAUTHORIZED)
+        (var-set contract-admin new-admin)
+        (ok true)
+    )
+)
+
+(define-read-only (get-contract-admin)
+    (ok (var-get contract-admin))
 )
 
 (define-read-only (get-fee-bps)
