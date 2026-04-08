@@ -3,6 +3,9 @@ import { Cl } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
+// Clarinet's simnet accounts map currently aliases `wallet_1` to `deployer`, so we use a
+// deterministic external principal to exercise non-admin authorization paths.
+const nonAdminPrincipal = "ST2QH59X7AMWTNQVGBQ8D43HK06GTZ6VVNZMDRGT6";
 
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
@@ -32,6 +35,54 @@ describe("Conxian Systemic Alignment", () => {
         net: Cl.uint(990000n)
       })
     );
+  });
+
+  it("revenue-automation: non-admin cannot change protocol wallet or admin", () => {
+    const protocolWallet = Cl.contractPrincipal(deployer, "revenue-automation");
+
+    const setWallet = simnet.callPublicFn(
+      "revenue-automation",
+      "set-protocol-wallet",
+      [protocolWallet],
+      nonAdminPrincipal
+    );
+    expect(setWallet.result).toBeErr(Cl.uint(401n));
+
+    const setAdmin = simnet.callPublicFn(
+      "revenue-automation",
+      "set-contract-admin",
+      [Cl.principal(deployer)],
+      nonAdminPrincipal
+    );
+    expect(setAdmin.result).toBeErr(Cl.uint(401n));
+  });
+
+  it("revenue-automation: admin can rotate admin principal", () => {
+    const promote = simnet.callPublicFn(
+      "revenue-automation",
+      "set-contract-admin",
+      [Cl.principal(nonAdminPrincipal)],
+      deployer
+    );
+    expect(promote.result).toBeOk(Cl.bool(true));
+
+    const protocolWallet = Cl.contractPrincipal(deployer, "revenue-automation");
+
+    const fromOldAdmin = simnet.callPublicFn(
+      "revenue-automation",
+      "set-protocol-wallet",
+      [protocolWallet],
+      deployer
+    );
+    expect(fromOldAdmin.result).toBeErr(Cl.uint(401n));
+
+    const fromNewAdmin = simnet.callPublicFn(
+      "revenue-automation",
+      "set-protocol-wallet",
+      [protocolWallet],
+      nonAdminPrincipal
+    );
+    expect(fromNewAdmin.result).toBeOk(Cl.bool(true));
   });
 
   it("dlc-orchestrator: should open a DLC contract", () => {

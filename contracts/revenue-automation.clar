@@ -12,8 +12,8 @@
 (define-data-var protocol-wallet principal tx-sender)
 (define-data-var fee-bps uint u100) ;; 100 BPS = 1% Sovereign Tax
 
-(define-read-only (is-admin (sender principal))
-    (is-eq sender (var-get contract-admin))
+(define-read-only (is-admin)
+    (is-eq tx-sender (var-get contract-admin))
 )
 
 ;; @desc Calculate and extract fee natively in STX
@@ -58,7 +58,7 @@
 ;; @desc Update the protocol wallet (Admin only)
 (define-public (set-protocol-wallet (new-wallet principal))
     (begin
-        (asserts! (is-admin tx-sender) ERR_UNAUTHORIZED)
+        (asserts! (is-admin) ERR_UNAUTHORIZED)
         (var-set protocol-wallet new-wallet)
         (ok true)
     )
@@ -67,7 +67,7 @@
 ;; @desc Update contract admin (Admin only)
 (define-public (set-contract-admin (new-admin principal))
     (begin
-        (asserts! (is-admin tx-sender) ERR_UNAUTHORIZED)
+        (asserts! (is-admin) ERR_UNAUTHORIZED)
         (var-set contract-admin new-admin)
         (ok true)
     )
