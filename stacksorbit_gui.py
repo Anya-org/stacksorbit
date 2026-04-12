@@ -12,6 +12,7 @@ import os
 import subprocess
 import threading
 import webbrowser
+import re
 from datetime import datetime, timezone
 import functools
 from typing import Dict, List
@@ -74,6 +75,31 @@ def _format_relative_time_cached(iso_time: str, now_bucket: int) -> str:
         return "Just now"
     except Exception:
         return "N/A"
+
+
+# Bolt ⚡: Pre-compiled regexes for high-performance contract categorization.
+# We use a list of (regex, category) tuples for O(N) matching with O(1) group search.
+_CONTRACT_CAT_PATTERNS = [
+    (re.compile(r"dex|swap|pool|factory|router|amm|liquidity", re.I), "dex"),
+    (re.compile(r"trait|utils|lib|error|constant|math|std", re.I), "base"),
+    (re.compile(r"token|ft-|sip-010", re.I), "tokens"),
+    (re.compile(r"nft|non-fungible|sip-009", re.I), "nft"),
+    (re.compile(r"oracle|aggregator|price|feed", re.I), "oracle"),
+    (re.compile(r"gov|vote|proposal|dao|multisig|treasury", re.I), "governance"),
+    (re.compile(r"security|auth|access|guardian|pause|whitelist", re.I), "security"),
+    (re.compile(r"monitor|track|dashboard|analytics|registry", re.I), "monitoring"),
+]
+
+
+@functools.lru_cache(maxsize=128)
+def _categorize_contract_cached(name: str) -> str:
+    """Bolt ⚡: High-performance contract categorization using cached regex matching."""
+    for regex, category in _CONTRACT_CAT_PATTERNS:
+        if regex.search(name):
+            return category
+    return "other"
+
+
 from stacksorbit_secrets import (
     SECRET_KEYS,
     is_sensitive_key,
@@ -695,10 +721,10 @@ class StacksOrbitGUI(App):
                 filtered_txs = self._all_transactions
             else:
                 # Bolt ⚡: Use pre-calculated search keys for highly efficient O(N) filtering.
-                # Use a generator expression for slightly better memory efficiency on large lists.
+                # We use a direct dictionary lookup for speed, falling back to preparation if missing.
                 filtered_txs = [
                     tx for tx in self._all_transactions
-                    if filter_text in (tx["_search_key"] if "_search_key" in tx else self._prepare_tx_search_key(tx) or tx["_search_key"])
+                    if filter_text in (tx["_search_key"] if "_search_key" in tx else self._prepare_tx_search_key(tx))
                 ]
 
             if filtered_txs:
@@ -759,31 +785,16 @@ class StacksOrbitGUI(App):
 
     def _categorize_contract(self, name: str) -> str:
         """PALETTE: Categorize a contract based on its name."""
-        name_lower = name.lower()
-        if any(w in name_lower for w in ["dex", "swap", "pool", "factory", "router", "amm", "liquidity"]):
-            return "dex"
-        if any(w in name_lower for w in ["trait", "utils", "lib", "error", "constant", "math", "std"]):
-            return "base"
-        if any(w in name_lower for w in ["token", "ft-", "sip-010"]):
-            return "tokens"
-        if any(w in name_lower for w in ["nft", "non-fungible", "sip-009"]):
-            return "nft"
-        if any(w in name_lower for w in ["oracle", "aggregator", "price", "feed"]):
-            return "oracle"
-        if any(w in name_lower for w in ["gov", "vote", "proposal", "dao", "multisig", "treasury"]):
-            return "governance"
-        if any(w in name_lower for w in ["security", "auth", "access", "guardian", "pause", "whitelist"]):
-            return "security"
-        if any(w in name_lower for w in ["monitor", "track", "dashboard", "analytics", "registry"]):
-            return "monitoring"
-        return "other"
+        return _categorize_contract_cached(name)
 
-    def _prepare_tx_search_key(self, tx: Dict) -> None:
+    def _prepare_tx_search_key(self, tx: Dict) -> str:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""
         # Bolt ⚡: Skip re-calculation if the search key already exists.
         if "_search_key" in tx:
-            return
-        tx["_search_key"] = f"{tx.get('tx_id', '')} {tx.get('tx_type', '')} {tx.get('tx_status', '')}".lower()
+            return tx["_search_key"]
+        search_key = f"{tx.get('tx_id', '')} {tx.get('tx_type', '')} {tx.get('tx_status', '')}".lower()
+        tx["_search_key"] = search_key
+        return search_key
 
     def _format_relative_time(self, iso_time: str, now_bucket: int) -> str:
         """Format an ISO timestamp as a relative time string (e.g., '5m ago')."""

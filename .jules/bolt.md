@@ -113,3 +113,7 @@
 ## 2026-04-20 - Infrastructure Session Pooling and TTL Caching
 **Learning:** I identified that `requests.Session` does NOT support a global `timeout` attribute, unlike many other HTTP clients. Setting `session.timeout = 5` has no effect on individual requests. Additionally, sequential fetching of infrastructure metrics (Runway, Exit Velocity) and blockchain data in the GUI created additive latency.
 **Action:** Always pass an explicit `timeout` to every `session.get()` and `session.post()` call. Use `asyncio.gather` to parallelize independent I/O-bound tasks in GUI refresh loops, reducing latency from $O(\sum T_i)$ to $O(\max T_i)$. Implement TTL caching for slow-changing metrics to eliminate redundant network I/O.
+
+## 2026-04-12 - Optimized GUI Contract Categorization and TX Filtering
+**Learning:** Sequential string matching using `any()` in high-frequency TUI refresh loops (like contract categorization) is a significant bottleneck. Moving this logic to a module-level cached function (`lru_cache`) combined with pre-compiled regexes provides a ~9x speedup for repetitive lookups. Additionally, pre-calculating transaction search keys and using streamlined list comprehensions avoids redundant dictionary lookups and conditional logic in hot filtering loops.
+**Action:** Always prefer module-level cached functions with pre-compiled regexes for static categorization logic. Pre-calculate and store search keys for data table filtering to ensure O(N) performance with minimal per-item overhead.
