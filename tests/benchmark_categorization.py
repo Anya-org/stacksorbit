@@ -1,5 +1,6 @@
 import timeit
 import functools
+import re
 
 
 def _categorize_contract_original(name: str) -> str:
@@ -27,9 +28,27 @@ def _categorize_contract_cached(name: str) -> str:
     return _categorize_contract_original(name)
 
 
-if __name__ == "__main__":
-    from stacksorbit_gui import _categorize_contract_cached as _categorize_contract_regex_cached
+_CONTRACT_CAT_PATTERNS = [
+    (re.compile(r"dex|swap|pool|factory|router|amm|liquidity"), "dex"),
+    (re.compile(r"trait|utils|lib|error|constant|math|std"), "base"),
+    (re.compile(r"token|ft-|sip-010"), "tokens"),
+    (re.compile(r"nft|non-fungible|sip-009"), "nft"),
+    (re.compile(r"oracle|aggregator|price|feed"), "oracle"),
+    (re.compile(r"gov|vote|proposal|dao|multisig|treasury"), "governance"),
+    (re.compile(r"security|auth|access|guardian|pause|whitelist"), "security"),
+    (re.compile(r"monitor|track|dashboard|analytics|registry"), "monitoring"),
+]
 
+
+@functools.lru_cache(maxsize=2048)
+def _categorize_contract_regex_cached(name_casefold: str) -> str:
+    for regex, category in _CONTRACT_CAT_PATTERNS:
+        if regex.search(name_casefold):
+            return category
+    return "other"
+
+
+if __name__ == "__main__":
     names = [
         "my-awesome-dex-token-contract",
         "my-awesome-DEX-token-contract",
