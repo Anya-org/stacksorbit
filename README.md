@@ -40,7 +40,7 @@ Ownership and review requirements are defined in [`CODEOWNERS`](./CODEOWNERS).
 
 For a complete guide to developing and using StacksOrbit, please see our new **[Agent Instructions](AGENTS.md)**. This document is the "single source of truth" for all development and deployment information.
 
-The GitHub Pages site lives under `docs/`. Before running Jekyll locally, run `bash ./scripts/sync-pages-includes.sh` to populate `docs/_includes/`.
+The GitHub Pages site lives under `docs/`. Before running Jekyll locally, run `bash ./scripts/sync-pages-includes.sh` from the repository root to populate `docs/_includes/`.
 
 ## 🚀 Quick Start
 
