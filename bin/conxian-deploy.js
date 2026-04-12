@@ -401,7 +401,7 @@ Examples:
   stacksorbit monitor --follow
   stacksorbit verify
 
-For more information, visit: https://github.com/Anya-org/stacksorbit
+For more information, visit: https://github.com/Conxian/stacksorbit
 `);
 }
 

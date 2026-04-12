@@ -3,23 +3,35 @@ import { Cl } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
+// The simnet manifest defines only one standard account, so use contract principals
+// as distinct principals to exercise `stx-transfer?` behavior.
+const protocolWallet = Cl.contractPrincipal(deployer, "dlc-bond");
+const recipient = Cl.contractPrincipal(deployer, "dlc-orchestrator");
 
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
     simnet.mintSTX(deployer, amount);
 
-    const { value: protocolWallet } = simnet.getDataVar(
+    const setProtocolWallet = simnet.callPublicFn(
+      "revenue-automation",
+      "set-protocol-wallet",
+      [protocolWallet],
+      deployer
+    );
+
+    expect(setProtocolWallet.result).toBeOk(Cl.bool(true));
+
+    const { value: storedProtocolWallet } = simnet.getDataVar(
       "revenue-automation",
       "protocol-wallet"
-    ) as any;
-
-    const recipient = protocolWallet;
+    ) as { value: string };
+    expect(storedProtocolWallet).toEqual(`${deployer}.dlc-bond`);
 
     const result = simnet.callPublicFn(
       "revenue-automation",
       "process-revenue-stx",
-      [Cl.uint(amount), Cl.principal(recipient)],
+      [Cl.uint(amount), recipient],
       deployer
     );
 

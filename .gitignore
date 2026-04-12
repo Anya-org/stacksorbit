@@ -69,6 +69,7 @@ logs/
 
 # Documentation
 docs/_build/
+docs/_includes/
 site/
 
 # OS
