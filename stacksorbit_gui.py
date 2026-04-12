@@ -80,22 +80,22 @@ def _format_relative_time_cached(iso_time: str, now_bucket: int) -> str:
 # Bolt ⚡: Pre-compiled regexes for high-performance contract categorization.
 # We use a list of (regex, category) tuples for O(N) matching with O(1) group search.
 _CONTRACT_CAT_PATTERNS = [
-    (re.compile(r"dex|swap|pool|factory|router|amm|liquidity", re.I), "dex"),
-    (re.compile(r"trait|utils|lib|error|constant|math|std", re.I), "base"),
-    (re.compile(r"token|ft-|sip-010", re.I), "tokens"),
-    (re.compile(r"nft|non-fungible|sip-009", re.I), "nft"),
-    (re.compile(r"oracle|aggregator|price|feed", re.I), "oracle"),
-    (re.compile(r"gov|vote|proposal|dao|multisig|treasury", re.I), "governance"),
-    (re.compile(r"security|auth|access|guardian|pause|whitelist", re.I), "security"),
-    (re.compile(r"monitor|track|dashboard|analytics|registry", re.I), "monitoring"),
+    (re.compile(r"dex|swap|pool|factory|router|amm|liquidity"), "dex"),
+    (re.compile(r"trait|utils|lib|error|constant|math|std"), "base"),
+    (re.compile(r"token|ft-|sip-010"), "tokens"),
+    (re.compile(r"nft|non-fungible|sip-009"), "nft"),
+    (re.compile(r"oracle|aggregator|price|feed"), "oracle"),
+    (re.compile(r"gov|vote|proposal|dao|multisig|treasury"), "governance"),
+    (re.compile(r"security|auth|access|guardian|pause|whitelist"), "security"),
+    (re.compile(r"monitor|track|dashboard|analytics|registry"), "monitoring"),
 ]
 
 
-@functools.lru_cache(maxsize=128)
-def _categorize_contract_cached(name: str) -> str:
+@functools.lru_cache(maxsize=2048)
+def _categorize_contract_cached(name_casefold: str) -> str:
     """Bolt ⚡: High-performance contract categorization using cached regex matching."""
     for regex, category in _CONTRACT_CAT_PATTERNS:
-        if regex.search(name):
+        if regex.search(name_casefold):
             return category
     return "other"
 
@@ -785,7 +785,7 @@ class StacksOrbitGUI(App):
 
     def _categorize_contract(self, name: str) -> str:
         """PALETTE: Categorize a contract based on its name."""
-        return _categorize_contract_cached(name)
+        return _categorize_contract_cached(name.casefold())
 
     def _prepare_tx_search_key(self, tx: Dict) -> str:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""
