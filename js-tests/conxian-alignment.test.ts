@@ -25,7 +25,7 @@ describe("Conxian Systemic Alignment", () => {
     const { value: storedProtocolWallet } = simnet.getDataVar(
       "revenue-automation",
       "protocol-wallet"
-    ) as any;
+    ) as { value: string };
     expect(storedProtocolWallet).toEqual(`${deployer}.dlc-bond`);
 
     const result = simnet.callPublicFn(
