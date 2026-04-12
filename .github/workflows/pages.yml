@@ -25,7 +25,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Sync docs source
-        run: ./scripts/sync-pages-includes.sh
+        run: bash ./scripts/sync-pages-includes.sh
 
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
