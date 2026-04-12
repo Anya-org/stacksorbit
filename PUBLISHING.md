@@ -4,6 +4,8 @@
 **Status**: Ready to publish  
 **Repository**: https://github.com/Conxian/stacksorbit
 
+**Note**: This guide was drafted for the initial v1.0.0 publish; update tag/version references for newer releases.
+
 ---
 
 ## 📦 Publishing Checklist

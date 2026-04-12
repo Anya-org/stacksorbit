@@ -4,6 +4,8 @@
 **Repository**: <https://github.com/Conxian/stacksorbit>  
 **Status**: ✅ **READY TO PUBLISH**
 
+**Note**: This checklist was created for v1.0.0; update version references for newer releases.
+
 ---
 
 ## ✅ Pre-Release Checklist

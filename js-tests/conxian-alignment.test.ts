@@ -3,7 +3,7 @@ import { Cl } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
-const treasury = Cl.contractPrincipal(deployer, "placeholder");
+const treasury = Cl.contractPrincipal(deployer, "revenue-automation");
 const recipient = Cl.contractPrincipal(deployer, "dlc-orchestrator");
 
 describe("Conxian Systemic Alignment", () => {
