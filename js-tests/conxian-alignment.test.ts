@@ -9,14 +9,17 @@ const recipient = Cl.contractPrincipal(deployer, "dlc-orchestrator");
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
-    simnet.mintSTX(deployer, 2000000n);
+    const initialBalance = 2n * amount;
+    simnet.mintSTX(deployer, initialBalance);
 
-    simnet.callPublicFn(
+    const setProtocolWallet = simnet.callPublicFn(
       "revenue-automation",
       "set-protocol-wallet",
       [treasury],
       deployer
     );
+
+    expect(setProtocolWallet.result).toBeOk(Cl.bool(true));
 
     const result = simnet.callPublicFn(
       "revenue-automation",
