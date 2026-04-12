@@ -721,11 +721,13 @@ class StacksOrbitGUI(App):
                 filtered_txs = self._all_transactions
             else:
                 # Bolt ⚡: Use pre-calculated search keys for highly efficient O(N) filtering.
-                # We use a direct dictionary lookup for speed, falling back to preparation if missing.
-                filtered_txs = [
-                    tx for tx in self._all_transactions
-                    if filter_text in (tx["_search_key"] if "_search_key" in tx else self._prepare_tx_search_key(tx))
-                ]
+                filtered_txs = []
+                for tx in self._all_transactions:
+                    search_key = tx.get("_search_key")
+                    if search_key is None:
+                        search_key = self._prepare_tx_search_key(tx)
+                    if filter_text in search_key:
+                        filtered_txs.append(tx)
 
             if filtered_txs:
                 # Bolt ⚡: Normalize 'now' to 10s intervals to maximize cache hits across refreshes.
