@@ -3,23 +3,28 @@ import { Cl } from "@stacks/transactions";
 
 const accounts = simnet.getAccounts();
 const deployer = accounts.get("deployer")!;
+const treasury = Cl.contractPrincipal(deployer, "placeholder");
 
 describe("Conxian Systemic Alignment", () => {
   it("revenue-automation: should calculate 1% fee correctly", () => {
     const amount = 1000000n; // 1 STX
-    simnet.mintSTX(deployer, amount);
+    simnet.mintSTX(deployer, amount + 1000000n);
 
-    const { value: protocolWallet } = simnet.getDataVar(
+    const setWalletResult = simnet.callPublicFn(
       "revenue-automation",
-      "protocol-wallet"
-    ) as any;
+      "set-protocol-wallet",
+      [treasury],
+      deployer
+    );
 
-    const recipient = protocolWallet;
+    expect(setWalletResult.result).toBeOk(Cl.bool(true));
+
+    const recipient = treasury;
 
     const result = simnet.callPublicFn(
       "revenue-automation",
       "process-revenue-stx",
-      [Cl.uint(amount), Cl.principal(recipient)],
+      [Cl.uint(amount), recipient],
       deployer
     );
 
