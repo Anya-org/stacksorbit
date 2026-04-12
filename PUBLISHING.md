@@ -2,7 +2,7 @@
 
 **Version**: 1.0.0  
 **Status**: Ready to publish  
-**Repository**: https://github.com/Anya-org/stacksorbit
+**Repository**: https://github.com/Conxian/stacksorbit
 
 ---
 
@@ -43,7 +43,7 @@
    - Copy the token (starts with `npm_...`)
 
 3. **Add to GitHub Secrets**:
-   - Go to: https://github.com/Anya-org/stacksorbit/settings/secrets/actions
+   - Go to: https://github.com/Conxian/stacksorbit/settings/secrets/actions
    - Click "New repository secret"
    - Name: `NPM_TOKEN`
    - Value: Paste your npm token
@@ -64,7 +64,7 @@
    - Copy the token (starts with `pypi-...`)
 
 3. **Add to GitHub Secrets**:
-   - Go to: https://github.com/Anya-org/stacksorbit/settings/secrets/actions
+   - Go to: https://github.com/Conxian/stacksorbit/settings/secrets/actions
    - Click "New repository secret"
    - Name: `PYPI_API_TOKEN`
    - Value: Paste your PyPI token
@@ -88,7 +88,7 @@
 ```
 
 **Check workflow status**:
-- Go to: https://github.com/Anya-org/stacksorbit/actions
+- Go to: https://github.com/Conxian/stacksorbit/actions
 - Look for "Publish StacksOrbit" workflow
 - Verify it runs successfully after configuring tokens
 
@@ -149,7 +149,7 @@ After successful publishing:
 - [ ] Update README badges
 
 ### GitHub Release
-- [ ] Verify at: https://github.com/Anya-org/stacksorbit/releases
+- [ ] Verify at: https://github.com/Conxian/stacksorbit/releases
 - [ ] Check release notes
 - [ ] Verify downloadable assets
 - [ ] Star the repository! ⭐
@@ -201,7 +201,7 @@ stacksorbit
 
 ### Repository
 - **GitHub**: ✅ Published
-  - URL: https://github.com/Anya-org/stacksorbit
+  - URL: https://github.com/Conxian/stacksorbit
   - Branch: main
   - Tag: v1.0.0
   - Commits: 2
@@ -265,7 +265,7 @@ git push origin v1.0.1
 ### GitHub Actions Fails
 
 **Check logs**:
-1. Go to https://github.com/Anya-org/stacksorbit/actions
+1. Go to https://github.com/Conxian/stacksorbit/actions
 2. Click on failed workflow run
 3. Review error messages
 4. Fix issues and re-run
@@ -282,7 +282,7 @@ git push origin v1.0.1
 - **npm Documentation**: https://docs.npmjs.com/
 - **PyPI Documentation**: https://packaging.python.org/
 - **GitHub Actions**: https://docs.github.com/en/actions
-- **StacksOrbit README**: https://github.com/Anya-org/stacksorbit#readme
+- **StacksOrbit README**: https://github.com/Conxian/stacksorbit#readme
 
 ---
 
@@ -303,9 +303,9 @@ Your package is successfully published when:
 ## 📞 Support
 
 If you encounter issues:
-- 📖 Check documentation: https://github.com/Anya-org/stacksorbit#readme
-- 🐛 Open issue: https://github.com/Anya-org/stacksorbit/issues
-- 💬 Discussions: https://github.com/Anya-org/stacksorbit/discussions
+- 📖 Check documentation: https://conxian.github.io/stacksorbit/
+- 🐛 Open issue: https://github.com/Conxian/stacksorbit/issues
+- 💬 Discussions: https://github.com/Conxian/stacksorbit/discussions
 
 ---
 

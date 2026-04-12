@@ -50,12 +50,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Anya-org/stacksorbit.git"
+    "url": "git+https://github.com/Conxian/stacksorbit.git"
   },
   "bugs": {
-    "url": "https://github.com/Anya-org/stacksorbit/issues"
+    "url": "https://github.com/Conxian/stacksorbit/issues"
   },
-  "homepage": "https://github.com/Anya-org/stacksorbit#readme",
+  "homepage": "https://conxian.github.io/stacksorbit/",
   "engines": {
     "node": ">=20.9.0",
     "pnpm": ">=8.0.0"

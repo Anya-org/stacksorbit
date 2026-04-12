@@ -1,7 +1,7 @@
 # StacksOrbit v1.0.0 - Release Checklist
 
 **Release Date**: 2025-10-04  
-**Repository**: <https://github.com/Anya-org/stacksorbit>  
+**Repository**: <https://github.com/Conxian/stacksorbit>  
 **Status**: ✅ **READY TO PUBLISH**
 
 ---
@@ -52,12 +52,12 @@
 1. **NPM_TOKEN**
    - Go to: <https://www.npmjs.com/settings/[username]/tokens>
    - Generate "Automation" token
-   - Add to: <https://github.com/Anya-org/stacksorbit/settings/secrets/actions>
+   - Add to: <https://github.com/Conxian/stacksorbit/settings/secrets/actions>
 
 2. **PYPI_API_TOKEN**
    - Go to: <https://pypi.org/manage/account/token/>
    - Generate token for stacksorbit
-   - Add to: <https://github.com/Anya-org/stacksorbit/settings/secrets/actions>
+   - Add to: <https://github.com/Conxian/stacksorbit/settings/secrets/actions>
 
 ### Step 2: Tag Release ✅
 
@@ -71,7 +71,7 @@ git push origin v1.0.0
 
 ### Step 3: Verify GitHub Actions ⏳
 
-- Go to: <https://github.com/Anya-org/stacksorbit/actions>
+- Go to: <https://github.com/Conxian/stacksorbit/actions>
 - Check "Publish StacksOrbit" workflow
 - Verify tests pass
 - Confirm publishing (after tokens configured)
@@ -96,7 +96,7 @@ stacksorbit --version
 
 ### Step 5: Create GitHub Release ⏳
 
-- Go to: <https://github.com/Anya-org/stacksorbit/releases/new>
+- Go to: <https://github.com/Conxian/stacksorbit/releases/new>
 - Tag: v1.0.0
 - Title: "StacksOrbit v1.0.0 - Initial Release"
 - Description: See template below
@@ -154,7 +154,7 @@ stacksorbit
 
 ## 🔗 Links
 
-- **Repository**: <https://github.com/Anya-org/stacksorbit>
+- **Repository**: <https://github.com/Conxian/stacksorbit>
 - **npm**: <https://www.npmjs.com/package/stacksorbit>
 - **PyPI**: <https://pypi.org/project/stacksorbit/>
 
@@ -198,7 +198,7 @@ See our [roadmap](README.md#roadmap) for planned features in v1.2.0 and v2.0.0.
 
 When complete, verify:
 
-1. ✅ GitHub tag: https://github.com/Anya-org/stacksorbit/releases/tag/v1.0.0
+1. ✅ GitHub tag: https://github.com/Conxian/stacksorbit/releases/tag/v1.0.0
 2. ⏳ npm package: https://www.npmjs.com/package/stacksorbit
 3. ⏳ PyPI package: https://pypi.org/project/stacksorbit/
 4. ⏳ `npm install -g stacksorbit` works globally
