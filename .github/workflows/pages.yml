@@ -25,10 +25,7 @@ jobs:
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Sync docs source
-        shell: bash
-        run: |
-          set -euo pipefail
-          bash ./scripts/sync-pages-includes.sh
+        run: bash ./scripts/sync-pages-includes.sh
 
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
