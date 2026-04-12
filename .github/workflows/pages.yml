@@ -25,10 +25,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Sync docs source
-        run: |
-          mkdir -p docs/_includes
-          cp AGENTS.md docs/_includes/AGENTS.md
-          cp PRD.md docs/_includes/PRD.md
+        run: ./scripts/sync-pages-includes.sh
 
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
