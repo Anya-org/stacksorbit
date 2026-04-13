@@ -21,3 +21,7 @@
 ## 2025-03-24 - [Visual Categorization via Icons]
 **Learning:** In data-dense tables (like contract lists), replacing generic checkmarks with high-fidelity icons (emojis) based on content heuristics significantly improves scannability and user delight. It allows users to quickly differentiate between contract types (e.g., Tokens vs DEX) at a glance.
 **Action:** Implement heuristic-based categorization for list-based data and use specific visual indicators (icons) to represent the underlying purpose or type.
+
+## 2025-04-02 - [Reactive Theme Switching]
+**Learning:** In Textual, themes can be implemented reactively by defining a `theme_name` reactive variable and using a `watch_theme_name` method to dynamically swap CSS classes on the `App` instance. This allows for instant visual feedback without requiring an application restart. For global overrides like background and text color, CSS rules should specifically target the `Screen` widget.
+**Action:** Use reactive properties and CSS class swapping on the `App` instance for seamless, live UI customization.

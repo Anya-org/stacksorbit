@@ -166,6 +166,12 @@ class StacksOrbitGUI(App):
     address = reactive("Not configured")
     unsaved_changes = reactive(False)
     tx_filter = reactive("")
+    theme_name = reactive("standard")
+
+    def watch_theme_name(self, old_theme: str, new_theme: str) -> None:
+        """Watch for theme changes and update the application CSS class."""
+        self.remove_class(f"{old_theme}-theme")
+        self.add_class(f"{new_theme}-theme")
 
     def watch_unsaved_changes(self, unsaved: bool) -> None:
         """Watch for unsaved changes and update the Save button UI."""
@@ -233,7 +239,7 @@ class StacksOrbitGUI(App):
         self._last_transactions = None
         self._last_metrics = {}
         self._deployment_log_lines = []
-        self.theme_name = "standard"
+        self.theme_name = self.config.get("UI_THEME", "standard")
         self.infra = InfrastructureWiring(self.config)
 
     def _load_config(self) -> Dict:
@@ -433,6 +439,21 @@ class StacksOrbitGUI(App):
                         yield Switch(id="show-privkey")
                     yield Label("", id="privkey-error", markup=True)
                     yield Label(
+                        "Sovereign Theme (Light Mode):",
+                        id="theme-label",
+                        classes="clickable-label",
+                    )
+                    with Horizontal(classes="input-group"):
+                        yield Switch(
+                            id="theme-switch",
+                            value=self.theme_name == "sovereign"
+                        )
+                        yield Label(
+                            "🌍 Sovereign" if self.theme_name == "sovereign" else "🌙 Standard",
+                            id="theme-status-label",
+                            classes="switch-label",
+                        )
+                    yield Label(
                         "Stacks Address: [red]*[/red]",
                         markup=True,
                         id="address-label",
@@ -511,6 +532,8 @@ class StacksOrbitGUI(App):
         self.w_deployment_log = self.query_one("#deployment-log", Log)
         self.w_copy_log_btn = self.query_one("#copy-log-btn", Button)
         self.w_show_privkey = self.query_one("#show-privkey", Switch)
+        self.w_theme_switch = self.query_one("#theme-switch", Switch)
+        self.w_theme_status_label = self.query_one("#theme-status-label", Label)
         self.w_tabbed_content = self.query_one(TabbedContent)
 
         # PALETTE: Make dashboard metric cards focusable for keyboard accessibility
@@ -682,6 +705,8 @@ class StacksOrbitGUI(App):
         self.query_one("#privkey-label", Label).tooltip = "Click to focus private key input"
         self.query_one("#address-label", Label).tooltip = "Click to focus address input"
         self.query_one("#show-privkey-label").tooltip = "Toggle private key visibility"
+        self.query_one("#theme-label").tooltip = "Toggle between standard and sovereign themes"
+        self.w_theme_switch.tooltip = "Toggle between standard and sovereign themes"
 
         # PALETTE: Initialize Faucet button visibility
         try:
@@ -1099,6 +1124,11 @@ class StacksOrbitGUI(App):
         """Toggle private key visibility when its label is clicked."""
         self.w_show_privkey.toggle()
 
+    @on(Click, "#theme-label")
+    def on_theme_label_click(self) -> None:
+        """Toggle theme when its label is clicked."""
+        self.w_theme_switch.toggle()
+
     @on(Click, "#contract-details-header-label")
     async def on_contract_details_label_click(self) -> None:
         """PALETTE: Copy contract ID when header label is clicked."""
@@ -1378,6 +1408,18 @@ class StacksOrbitGUI(App):
         try:
             label = self.query_one("#show-privkey-label", Label)
             label.update("Hide" if event.value else "Show")
+        except Exception:
+            pass
+
+    @on(Switch.Changed, "#theme-switch")
+    def on_theme_switch_changed(self, event: Switch.Changed) -> None:
+        """Update the application theme based on switch state."""
+        self.theme_name = "sovereign" if event.value else "standard"
+        self.unsaved_changes = True
+        try:
+            status = "🌍 Sovereign" if event.value else "🌙 Standard"
+            self.w_theme_status_label.update(status)
+            self.notify(f"Theme switched to {status}", severity="information")
         except Exception:
             pass
 
@@ -1697,11 +1739,12 @@ class StacksOrbitGUI(App):
 
         # This function handles the file I/O.
         # By running it in a thread, we prevent the UI from freezing.
-        def _save_config_io(p_address: str):
+        def _save_config_io(p_address: str, p_theme: str):
             config = self._load_config()
 
             # Update non-sensitive configuration
             config["SYSTEM_ADDRESS"] = p_address
+            config["UI_THEME"] = p_theme
 
             # 🛡️ Sentinel: Use centralized atomic and secure config saver.
             # This automatically filters secrets and ensures atomic, secure write.
@@ -1709,12 +1752,13 @@ class StacksOrbitGUI(App):
 
         try:
             # 🛡️ Sentinel: Only save non-sensitive settings to the file.
-            await asyncio.to_thread(_save_config_io, address_val)
+            await asyncio.to_thread(_save_config_io, address_val, self.theme_name)
             self.address = address_val
             self.unsaved_changes = False
 
             # Sync local config
             self.config["SYSTEM_ADDRESS"] = address_val
+            self.config["UI_THEME"] = self.theme_name
             if is_secret_provided:
                 self.config["DEPLOYER_PRIVKEY"] = privkey_val
 
