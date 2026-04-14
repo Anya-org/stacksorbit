@@ -20,8 +20,9 @@ export default defineConfig(async () => {
       environment: "clarinet",
       globals: true,
       pool: "forks",
-      isolate: false,
-      maxWorkers: 1,
+      forks: {
+        singleFork: true,
+      },
       setupFiles: [vitestSetupFilePath],
       environmentOptions: {
         clarinet: {

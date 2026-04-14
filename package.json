@@ -1,6 +1,6 @@
 {
   "name": "stacksorbit",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Modernization of StacksOrbit for native Vitest/Clarinet SDK architecture",
   "main": "bin/enhanced-stacksorbit.js",
   "bin": {
@@ -76,7 +76,7 @@
   },
   "devDependencies": {
     "@stacks/clarinet-sdk": "^3.16.0",
-    "vitest": "^4.1.2",
+    "vitest": "^4.1.4",
     "vitest-environment-clarinet": "^3.0.2",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^8.57.0",
