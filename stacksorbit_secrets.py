@@ -85,6 +85,9 @@ SENSITIVE_SUBSTRINGS = [
     "AZURE",
     "GCP",
     "DIGITALOCEAN",
+    "MFA",
+    "OTP",
+    "TOTP",
 ]
 
 # Bolt ⚡: Pre-compile regex for faster substring matching in high-frequency checks.
@@ -131,7 +134,7 @@ HIGH_CONFIDENCE_SENSITIVE_WORDS = [
     "SESSIONID", "DECRYPT", "APIKEY", "API_KEY", "CLOUDFLARE", "HEROKU",
     "STRIPE", "INFURA", "ALCHEMY", "SENDGRID", "MAILGUN", "TWILIO",
     "SUPABASE", "NEON", "POSTGRES", "MONGODB", "REDIS", "AWS", "AZURE",
-    "GCP", "DIGITALOCEAN"
+    "GCP", "DIGITALOCEAN", "MFA", "OTP", "TOTP", "SIGNATURE",
 ]
 HIGH_CONFIDENCE_SENSITIVE_RE = re.compile(
     "|".join(re.escape(s) for s in HIGH_CONFIDENCE_SENSITIVE_WORDS),
