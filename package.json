@@ -1,7 +1,7 @@
 {
   "name": "stacksorbit",
   "version": "1.2.5",
-  "description": "Modernization of StacksOrbit for native Vitest/Clarinet SDK architecture",
+  "description": "CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
   "main": "bin/enhanced-stacksorbit.js",
   "bin": {
     "stacksorbit": "./bin/enhanced-stacksorbit.js"
@@ -83,7 +83,7 @@
     "prettier": "^3.2.0"
   },
   "python": {
-    "version": ">=3.10",
+    "version": ">=3.8",
     "dependencies": [
       "textual",
       "rich",

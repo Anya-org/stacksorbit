@@ -19,8 +19,8 @@ long_description = (
 
 setup(
     name="stacksorbit",
-    version="1.2.4",
-    description="Ultimate deployment tool for Stacks blockchain with enhanced CLI, monitoring, chainhooks, and user-friendly experience",
+    version="1.2.5",
+    description="CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Anya Chain Labs",
