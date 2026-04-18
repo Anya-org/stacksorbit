@@ -1,6 +1,6 @@
 ;; DLC Orchestrator Contract
 ;; Manages Discrete Log Contracts lifecycle on Stacks.
-;; Copyright (c) 2025 Anya Chain Labs. This software is released under the MIT License.
+;; Copyright (c) 2025 Conxian-Labs. This software is released under the MIT License.
 
 (define-map dlc-contracts
     { dlc-id: (buff 32) }

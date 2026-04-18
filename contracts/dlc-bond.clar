@@ -1,6 +1,6 @@
 ;; DLC Bond Contract
 ;; Handles collateralized bonds using DLCs.
-;; Copyright (c) 2025 Anya Chain Labs. This software is released under the MIT License.
+;; Copyright (c) 2025 Conxian-Labs. This software is released under the MIT License.
 
 (define-constant ERR_INSUFFICIENT_COLLATERAL (err u402))
 
