@@ -2,9 +2,9 @@
 
 StacksOrbit is a CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts.
 
-It is maintained under the Conxian GitHub organization and is used in Conxian deployment workflows, but it is intended to be useful for any Stacks team that wants repeatable deploy/monitor/verify tooling.
+It is maintained in the `Conxian/stacksorbit` repository and used in Conxian deployment workflows, but it is intended to be useful for any Stacks team that wants repeatable deploy/monitor/verify tooling.
 
-The project was originally created by Conxian-Labs and is now maintained in the Conxian repository portfolio.
+> **Naming note:** StacksOrbit originated under **Conxian-Labs** naming. Current repository ownership and active maintenance are under **Conxian**. You may see both names in historical files and references.
 
 ![StacksOrbit TUI Screenshot](stacksorbit-tui-screenshot.svg)
 
@@ -15,30 +15,40 @@ The project was originally created by Conxian-Labs and is now maintained in the 
 
 ## Status
 
-Active development.
+StacksOrbit is actively maintained and used in real deployment workflows.
 
-- The CLI surface and integrations may evolve as Stacks tooling changes.
-- Mainnet usage should be treated as an operator workflow (reviewed and gated), not a one-command push.
+- **Stable areas:** core deploy/monitor/verify workflow and local deployment artifact generation.
+- **Evolving areas:** CLI ergonomics, dashboard UX, and ecosystem integrations as Stacks tooling changes.
+- **Operational note:** mainnet usage should be treated as an operator-reviewed and gated workflow, not a one-command push.
 
-## Intended audience
+## Maintenance expectations
+
+- Maintainers prioritize reliability fixes and security work on the default branch (`main`) (see [SECURITY.md](SECURITY.md)).
+- Feature development is roadmap-driven and best-effort; delivery timelines are not guaranteed.
+- We aim to preserve compatibility in core workflows, but options in evolving areas may change between releases.
+- Community contributions are welcome; review and merge cadence depends on maintainer availability (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+
+## Intended audience and scope
 
 - Protocol engineers shipping Clarity contracts.
 - Operators running deployments and monitoring environments.
 - Teams standardizing deployment workflows across multiple Stacks projects.
 
+StacksOrbit is focused on deployment orchestration and operations. It is not a replacement for contract authoring frameworks.
+
 ## Documentation
 
-- Developer notes and operational guidance: `AGENTS.md`
-- Product/architecture notes: `PRD.md`
-- Publishing and release hygiene: `PUBLISHING.md`, `RELEASE_CHECKLIST.md`
-- GitHub Pages site source: `docs/` (see `scripts/sync-pages-includes.sh`)
+- Developer notes and operational guidance: [AGENTS.md](AGENTS.md)
+- Product/architecture notes: [PRD.md](PRD.md)
+- Publishing and release hygiene: [PUBLISHING.md](PUBLISHING.md), [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
+- GitHub Pages site source: [`docs/`](docs/) (see [`scripts/sync-pages-includes.sh`](scripts/sync-pages-includes.sh))
 
 ## Governance, ownership, and security
 
-- Ownership and review requirements: `CODEOWNERS`
-- Contributing: `CONTRIBUTING.md`
-- Security policy: `SECURITY.md`
-- Governance model: `GOVERNANCE.md`
+- Ownership and review requirements: [CODEOWNERS](CODEOWNERS)
+- Contributing guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Security policy and vulnerability reporting: [SECURITY.md](SECURITY.md)
+- Governance model: [GOVERNANCE.md](GOVERNANCE.md)
 
 ## Quick start (local development)
 
