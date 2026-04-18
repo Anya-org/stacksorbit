@@ -4,7 +4,7 @@ StacksOrbit is a CLI-first deployment and operations toolkit for Stacks / Clarit
 
 It is maintained under the Conxian GitHub organization and is used in Conxian deployment workflows, but it is intended to be useful for any Stacks team that wants repeatable deploy/monitor/verify tooling.
 
-The project was originally created by Anya Chain Labs and is now maintained in the Conxian repository portfolio.
+The project was originally created by Conxian-Labs and is now maintained in the Conxian repository portfolio.
 
 ![StacksOrbit TUI Screenshot](stacksorbit-tui-screenshot.svg)
 

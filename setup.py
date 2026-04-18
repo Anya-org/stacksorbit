@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2025 Anya Chain Labs
+# Copyright (c) 2025 Conxian-Labs
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for full license information.
 
@@ -23,7 +23,7 @@ setup(
     description="CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Anya Chain Labs",
+    author="Conxian-Labs",
     author_email="dev@anyachainlabs.com",
     url="https://github.com/Conxian/stacksorbit",
     project_urls={
