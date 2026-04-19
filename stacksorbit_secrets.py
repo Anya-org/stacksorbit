@@ -213,8 +213,10 @@ def is_sensitive_value(value: str) -> bool:
     val_len = len(value)
     if val_len > 1500:
         # 🛡️ Sentinel: Check boundaries to prevent whitespace-based bypasses.
-        # If the first/last characters are not whitespace, strip() won't reduce size enough.
-        if not value[0].isspace() and not value[-1].isspace():
+        # Bolt ⚡: Use a larger boundary check (500 chars) to skip strip() for large strings
+        # that have minor padding (like newlines) but are guaranteed to exceed secret thresholds.
+        # This prevents full-string memory copies for multi-MB payloads (e.g. source code).
+        if not value[:500].isspace() and not value[-500:].isspace():
             return False
 
     # 🛡️ Sentinel: Strip whitespace before checking length to prevent newline-based bypasses.
