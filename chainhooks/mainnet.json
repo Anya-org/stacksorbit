@@ -33,6 +33,34 @@
               "authorization_header": "Bearer ${MAINNET_WEBHOOK_TOKEN}"
             }
           }
+        },
+        {
+          "name": "DLC Orchestrator Events",
+          "if": {
+            "scope": "contract_call",
+            "contract_identifier": "SP2J1BCZK8Q0CP3W4R1XX9TMKJ1N1S8QZ7K0B5N8.dlc-orchestrator",
+            "method": "open-dlc"
+          },
+          "then": {
+            "http_post": {
+              "url": "https://webhook.stacksorbit.com/mainnet",
+              "authorization_header": "Bearer ${MAINNET_WEBHOOK_TOKEN}"
+            }
+          }
+        },
+        {
+          "name": "DLC Bond Events",
+          "if": {
+            "scope": "contract_call",
+            "contract_identifier": "SP2J1BCZK8Q0CP3W4R1XX9TMKJ1N1S8QZ7K0B5N8.dlc-bond",
+            "method": "stake"
+          },
+          "then": {
+            "http_post": {
+              "url": "https://webhook.stacksorbit.com/mainnet",
+              "authorization_header": "Bearer ${MAINNET_WEBHOOK_TOKEN}"
+            }
+          }
         }
       ]
     }

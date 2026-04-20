@@ -5,10 +5,8 @@
 import { defineConfig } from "vitest/config";
 
 /**
- * Vitest configuration for StacksOrbit.
- * Standardized configuration for Clarinet SDK integration.
- * This configuration uses the @stacks/clarinet-sdk/vitest environment
- * to provide native simnet support for Clarity smart contracts.
+ * Modernized Vitest configuration for StacksOrbit.
+ * Optimized for @stacks/clarinet-sdk ^3.16.0 and Vitest 4.
  */
 export default defineConfig(async () => {
   const { vitestSetupFilePath, getClarinetVitestsArgv } = await import(

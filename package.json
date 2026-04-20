@@ -66,21 +66,21 @@
     "win32"
   ],
   "dependencies": {
-    "@stacks/network": "^7.2.0",
-    "@stacks/transactions": "^7.2.0",
+    "@stacks/network": "^7.3.1",
+    "@stacks/transactions": "^7.4.0",
     "@stacks/wallet-sdk": "^7.2.0",
-    "axios": "^1.6.0",
-    "commander": "^11.0.0",
-    "dotenv": "^16.3.1",
-    "next": "^16.0.1-canary.3"
+    "axios": "^1.14.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.6.1",
+    "next": "^16.2.1"
   },
   "devDependencies": {
     "@stacks/clarinet-sdk": "^3.16.0",
     "vitest": "^4.1.4",
     "vitest-environment-clarinet": "^3.0.2",
-    "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^8.57.0",
-    "prettier": "^3.2.0"
+    "@vitest/coverage-v8": "^4.1.2",
+    "eslint": "^8.57.1",
+    "prettier": "^3.8.1"
   },
   "python": {
     "version": ">=3.8",
