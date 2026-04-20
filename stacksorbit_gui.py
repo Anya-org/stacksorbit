@@ -536,6 +536,21 @@ class StacksOrbitGUI(App):
         self.w_theme_status_label = self.query_one("#theme-status-label", Label)
         self.w_tabbed_content = self.query_one(TabbedContent)
 
+        # PALETTE: Set accessibility labels for icon-heavy buttons to improve screen reader support
+        self.query_one("#copy-dashboard-address-btn", Button).accessibility_label = "Copy dashboard address"
+        self.w_view_dashboard_explorer_btn.accessibility_label = "View dashboard address on explorer"
+        self.w_faucet_btn.accessibility_label = "Open Stacks testnet faucet"
+        self.w_copy_contract_btn.accessibility_label = "Copy contract ID"
+        self.w_copy_source_btn.accessibility_label = "Copy contract source code"
+        self.w_view_explorer_btn.accessibility_label = "View contract on explorer"
+        self.w_copy_tx_btn.accessibility_label = "Copy transaction ID"
+        self.w_view_tx_explorer_btn.accessibility_label = "View transaction on explorer"
+        self.w_copy_log_btn.accessibility_label = "Copy deployment logs"
+        self.w_copy_address_btn.accessibility_label = "Copy settings address"
+        self.w_view_address_explorer_btn.accessibility_label = "View settings address on explorer"
+        self.w_settings_faucet_btn.accessibility_label = "Open settings testnet faucet"
+        self.query_one("#clear-tx-filter-btn", Button).accessibility_label = "Clear transaction filter"
+
         # PALETTE: Make dashboard metric cards focusable for keyboard accessibility
         for card_id in [
             "#metric-network",
