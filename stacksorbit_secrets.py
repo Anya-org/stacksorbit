@@ -88,6 +88,15 @@ SENSITIVE_SUBSTRINGS = [
     "MFA",
     "OTP",
     "TOTP",
+    "DSN",
+    "WEBHOOK",
+    "GITHUB",
+    "GITLAB",
+    "BITBUCKET",
+    "SENTRY",
+    "TELEGRAM",
+    "DISCORD",
+    "SLACK",
 ]
 
 # Bolt ⚡: Pre-compile regex for faster substring matching in high-frequency checks.
@@ -101,7 +110,6 @@ PUBLIC_SUBSTRINGS = [
     "TX_",
     "TXID",
     "HASH",
-    "SIGNATURE",  # Explicitly allow standalone 'SIGNATURE' as public
     "ADDR",
     "PRINCIPAL",
     "SOURCE",
@@ -135,6 +143,8 @@ HIGH_CONFIDENCE_SENSITIVE_WORDS = [
     "STRIPE", "INFURA", "ALCHEMY", "SENDGRID", "MAILGUN", "TWILIO",
     "SUPABASE", "NEON", "POSTGRES", "MONGODB", "REDIS", "AWS", "AZURE",
     "GCP", "DIGITALOCEAN", "MFA", "OTP", "TOTP", "SIGNATURE",
+    "DSN", "WEBHOOK", "GITHUB", "GITLAB", "BITBUCKET", "SENTRY",
+    "TELEGRAM", "DISCORD", "SLACK",
 ]
 HIGH_CONFIDENCE_SENSITIVE_RE = re.compile(
     "|".join(re.escape(s) for s in HIGH_CONFIDENCE_SENSITIVE_WORDS),
