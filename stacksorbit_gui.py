@@ -101,15 +101,26 @@ def _normalize_and_categorize_contract(name: str) -> str:
 
 @functools.lru_cache(maxsize=_CONTRACT_CATEGORIZATION_CACHE_MAXSIZE)
 def _categorize_contract_casefolded_cached(name_casefold: str) -> str:
-    """Internal helper: categorize a casefolded contract name.
-
-    Call `_normalize_and_categorize_contract(name)` unless you already have a
-    casefolded name.
-    """
+    """Bolt ⚡: High-performance contract categorization using cached regex matching."""
     for regex, category in _CONTRACT_CAT_PATTERNS:
         if regex.search(name_casefold):
             return category
     return "other"
+
+
+def _normalize_contract_name(name: str) -> str:
+    """Normalize contract identifiers and filenames into contract names."""
+    normalized = name.strip()
+    if "." in normalized:
+        normalized = normalized.split(".", 1)[1]
+    if normalized.endswith(".clar"):
+        normalized = normalized[:-5]
+    return normalized
+
+
+def _categorize_contract_cached(name: str) -> str:
+    """Backward-compatible alias for normalized contract categorization."""
+    return _normalize_and_categorize_contract(name)
 
 
 from stacksorbit_secrets import (
@@ -773,11 +784,13 @@ class StacksOrbitGUI(App):
                 filtered_txs = self._all_transactions
             else:
                 # Bolt ⚡: Use pre-calculated search keys for highly efficient O(N) filtering.
-                # We use a direct dictionary lookup for speed, falling back to preparation if missing.
-                filtered_txs = [
-                    tx for tx in self._all_transactions
-                    if filter_text in (tx["_search_key"] if "_search_key" in tx else self._prepare_tx_search_key(tx))
-                ]
+                filtered_txs = []
+                for tx in self._all_transactions:
+                    search_key = tx.get("_search_key")
+                    if search_key is None:
+                        search_key = self._prepare_tx_search_key(tx)
+                    if filter_text in search_key:
+                        filtered_txs.append(tx)
 
             if filtered_txs:
                 # Bolt ⚡: Normalize 'now' to 10s intervals to maximize cache hits across refreshes.
@@ -841,9 +854,11 @@ class StacksOrbitGUI(App):
 
     def _prepare_tx_search_key(self, tx: Dict) -> str:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""
-        # Bolt ⚡: Skip re-calculation if the search key already exists.
-        if "_search_key" in tx:
-            return tx["_search_key"]
+        # Bolt ⚡: Skip re-calculation only when a valid cached search key exists.
+        search_key = tx.get("_search_key")
+        if isinstance(search_key, str) and search_key:
+            return search_key
+
         search_key = f"{tx.get('tx_id', '')} {tx.get('tx_type', '')} {tx.get('tx_status', '')}".lower()
         tx["_search_key"] = search_key
         return search_key

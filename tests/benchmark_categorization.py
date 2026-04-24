@@ -1,5 +1,7 @@
 import timeit
 import functools
+import re
+
 
 def _categorize_contract_original(name: str) -> str:
     name_lower = name.lower()
@@ -25,12 +27,61 @@ def _categorize_contract_original(name: str) -> str:
 def _categorize_contract_cached(name: str) -> str:
     return _categorize_contract_original(name)
 
-# Benchmark
-name = "my-awesome-dex-token-contract"
-n = 100000
-t1 = timeit.timeit(lambda: _categorize_contract_original(name), number=n)
-t2 = timeit.timeit(lambda: _categorize_contract_cached(name), number=n)
 
-print(f"Original: {t1:.6f}s")
-print(f"Cached:   {t2:.6f}s")
-print(f"Speedup:  {t1/t2:.2f}x")
+_CONTRACT_CAT_PATTERNS = [
+    (re.compile(r"dex|swap|pool|factory|router|amm|liquidity"), "dex"),
+    (re.compile(r"trait|utils|lib|error|constant|math|std"), "base"),
+    (re.compile(r"token|ft-|sip-010"), "tokens"),
+    (re.compile(r"nft|non-fungible|sip-009"), "nft"),
+    (re.compile(r"oracle|aggregator|price|feed"), "oracle"),
+    (re.compile(r"gov|vote|proposal|dao|multisig|treasury"), "governance"),
+    (re.compile(r"security|auth|access|guardian|pause|whitelist"), "security"),
+    (re.compile(r"monitor|track|dashboard|analytics|registry"), "monitoring"),
+]
+
+
+@functools.lru_cache(maxsize=2048)
+def _categorize_contract_regex_cached(name_casefold: str) -> str:
+    for regex, category in _CONTRACT_CAT_PATTERNS:
+        if regex.search(name_casefold):
+            return category
+    return "other"
+
+
+if __name__ == "__main__":
+    names = [
+        "my-awesome-dex-token-contract",
+        "my-awesome-DEX-token-contract",
+        "sip-010-ft-token",
+        "dao-gov-proposal",
+        "oracle-price-feed",
+        "nft-sip-009-non-fungible",
+        "monitoring-dashboard-analytics",
+        "base-utils-trait-lib",
+    ]
+
+    def run_original() -> None:
+        for name in names:
+            _categorize_contract_original(name)
+
+    def run_cache_only() -> None:
+        for name in names:
+            _categorize_contract_cached(name)
+
+    def run_regex_cache() -> None:
+        for name in names:
+            _categorize_contract_regex_cached(name.casefold())
+
+    rounds = 25000
+
+    _categorize_contract_cached.cache_clear()
+    _categorize_contract_regex_cached.cache_clear()
+
+    t1 = timeit.timeit(run_original, number=rounds)
+    t2 = timeit.timeit(run_cache_only, number=rounds)
+    t3 = timeit.timeit(run_regex_cache, number=rounds)
+
+    print(f"Original:    {t1:.6f}s")
+    print(f"Cache-only:  {t2:.6f}s")
+    print(f"Regex+cache: {t3:.6f}s")
+    print(f"Speedup vs original (regex+cache): {t1/t3:.2f}x")
