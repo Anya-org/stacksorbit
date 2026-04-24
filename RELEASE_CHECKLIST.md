@@ -162,7 +162,7 @@ stacksorbit
 
 ## 🙏 Credits
 
-Built with ❤️ by Anya Chain Labs for the Conxian DeFi Protocol.
+Built with ❤️ by Conxian-Labs for the Conxian DeFi Protocol.
 
 ---
 

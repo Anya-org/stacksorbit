@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "name": "Placeholder Testnet Event Monitor",
-  "description": "Monitors the placeholder contract for owner verification events on Testnet.",
+  "name": "Testnet Event Monitor",
+  "description": "Monitors primary contracts for critical events on Testnet.",
   "chains": [
     {
       "network": "testnet",
@@ -10,8 +10,50 @@
           "name": "Placeholder get-owner Events",
           "if": {
             "scope": "contract_call",
-            "contract_identifier": "ST000000000000000000002Q6VF78.placeholder",
+            "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.placeholder",
             "method": "get-owner"
+          },
+          "then": {
+            "http_post": {
+              "url": "https://webhook.stacksorbit.com/testnet",
+              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
+            }
+          }
+        },
+        {
+          "name": "Revenue Automation Events",
+          "if": {
+            "scope": "contract_call",
+            "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.revenue-automation",
+            "method": "process-revenue-stx"
+          },
+          "then": {
+            "http_post": {
+              "url": "https://webhook.stacksorbit.com/testnet",
+              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
+            }
+          }
+        },
+        {
+          "name": "DLC Orchestrator Events",
+          "if": {
+            "scope": "contract_call",
+            "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.dlc-orchestrator",
+            "method": "open-dlc"
+          },
+          "then": {
+            "http_post": {
+              "url": "https://webhook.stacksorbit.com/testnet",
+              "authorization_header": "Bearer ${TESTNET_WEBHOOK_TOKEN}"
+            }
+          }
+        },
+        {
+          "name": "DLC Bond Events",
+          "if": {
+            "scope": "contract_call",
+            "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.dlc-bond",
+            "method": "stake"
           },
           "then": {
             "http_post": {

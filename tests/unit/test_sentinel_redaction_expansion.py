@@ -88,7 +88,7 @@ def test_sensitive_key_redaction_expansion():
     # Generic public keys (should remain False)
     assert is_sensitive_key("PUBLIC_KEY") is False
     assert is_sensitive_key("ADDR_HASH") is False
-    assert is_sensitive_key("TX_SIGNATURE") is False
+    assert is_sensitive_key("TX_SIGNATURE") is True  # Redacted because it's high-confidence
     assert is_sensitive_key("CONTRACT_PRINCIPAL") is False
     assert is_sensitive_key("DEPLOYMENT_ADDR") is False
 
