@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2025 Anya Chain Labs
+# Copyright (c) 2025 Conxian-Labs
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for full license information.
 
@@ -80,19 +80,27 @@ def _format_relative_time_cached(iso_time: str, now_bucket: int) -> str:
 # Bolt ⚡: Pre-compiled regexes for high-performance contract categorization.
 # We use a list of (regex, category) tuples for O(N) matching with O(1) group search.
 _CONTRACT_CAT_PATTERNS = [
-    (re.compile(r"dex|swap|pool|factory|router|amm|liquidity"), "dex"),
-    (re.compile(r"trait|utils|lib|error|constant|math|std"), "base"),
-    (re.compile(r"token|ft-|sip-010"), "tokens"),
-    (re.compile(r"nft|non-fungible|sip-009"), "nft"),
-    (re.compile(r"oracle|aggregator|price|feed"), "oracle"),
-    (re.compile(r"gov|vote|proposal|dao|multisig|treasury"), "governance"),
-    (re.compile(r"security|auth|access|guardian|pause|whitelist"), "security"),
-    (re.compile(r"monitor|track|dashboard|analytics|registry"), "monitoring"),
+    (re.compile(r"dex|swap|pool|factory|router|amm|liquidity", re.I), "dex"),
+    (re.compile(r"trait|utils|lib|error|constant|math|std", re.I), "base"),
+    (re.compile(r"token|ft-|sip-010", re.I), "tokens"),
+    (re.compile(r"nft|non-fungible|sip-009", re.I), "nft"),
+    (re.compile(r"oracle|aggregator|price|feed", re.I), "oracle"),
+    (re.compile(r"gov|vote|proposal|dao|multisig|treasury", re.I), "governance"),
+    (re.compile(r"security|auth|access|guardian|pause|whitelist", re.I), "security"),
+    (re.compile(r"monitor|track|dashboard|analytics|registry", re.I), "monitoring"),
 ]
 
 
-@functools.lru_cache(maxsize=2048)
-def _categorize_contract_cached_casefolded(name_casefold: str) -> str:
+_CONTRACT_CATEGORIZATION_CACHE_MAXSIZE = 2048
+
+
+def _normalize_and_categorize_contract(name: str) -> str:
+    """Normalize and categorize a contract name using cached regex matching."""
+    return _categorize_contract_casefolded_cached(name.casefold())
+
+
+@functools.lru_cache(maxsize=_CONTRACT_CATEGORIZATION_CACHE_MAXSIZE)
+def _categorize_contract_casefolded_cached(name_casefold: str) -> str:
     """Bolt ⚡: High-performance contract categorization using cached regex matching."""
     for regex, category in _CONTRACT_CAT_PATTERNS:
         if regex.search(name_casefold):
@@ -111,8 +119,8 @@ def _normalize_contract_name(name: str) -> str:
 
 
 def _categorize_contract_cached(name: str) -> str:
-    normalized = _normalize_contract_name(name)
-    return _categorize_contract_cached_casefolded(normalized.casefold())
+    """Backward-compatible alias for normalized contract categorization."""
+    return _normalize_and_categorize_contract(name)
 
 
 from stacksorbit_secrets import (
@@ -181,6 +189,12 @@ class StacksOrbitGUI(App):
     address = reactive("Not configured")
     unsaved_changes = reactive(False)
     tx_filter = reactive("")
+    theme_name = reactive("standard")
+
+    def watch_theme_name(self, old_theme: str, new_theme: str) -> None:
+        """Watch for theme changes and update the application CSS class."""
+        self.remove_class(f"{old_theme}-theme")
+        self.add_class(f"{new_theme}-theme")
 
     def watch_unsaved_changes(self, unsaved: bool) -> None:
         """Watch for unsaved changes and update the Save button UI."""
@@ -248,7 +262,7 @@ class StacksOrbitGUI(App):
         self._last_transactions = None
         self._last_metrics = {}
         self._deployment_log_lines = []
-        self.theme_name = "standard"
+        self.theme_name = self.config.get("UI_THEME", "standard")
         self.infra = InfrastructureWiring(self.config)
 
     def _load_config(self) -> Dict:
@@ -448,6 +462,21 @@ class StacksOrbitGUI(App):
                         yield Switch(id="show-privkey")
                     yield Label("", id="privkey-error", markup=True)
                     yield Label(
+                        "Sovereign Theme (Light Mode):",
+                        id="theme-label",
+                        classes="clickable-label",
+                    )
+                    with Horizontal(classes="input-group"):
+                        yield Switch(
+                            id="theme-switch",
+                            value=self.theme_name == "sovereign"
+                        )
+                        yield Label(
+                            "🌍 Sovereign" if self.theme_name == "sovereign" else "🌙 Standard",
+                            id="theme-status-label",
+                            classes="switch-label",
+                        )
+                    yield Label(
                         "Stacks Address: [red]*[/red]",
                         markup=True,
                         id="address-label",
@@ -526,7 +555,24 @@ class StacksOrbitGUI(App):
         self.w_deployment_log = self.query_one("#deployment-log", Log)
         self.w_copy_log_btn = self.query_one("#copy-log-btn", Button)
         self.w_show_privkey = self.query_one("#show-privkey", Switch)
+        self.w_theme_switch = self.query_one("#theme-switch", Switch)
+        self.w_theme_status_label = self.query_one("#theme-status-label", Label)
         self.w_tabbed_content = self.query_one(TabbedContent)
+
+        # PALETTE: Set accessibility labels for icon-heavy buttons to improve screen reader support
+        self.query_one("#copy-dashboard-address-btn", Button).accessibility_label = "Copy dashboard address"
+        self.w_view_dashboard_explorer_btn.accessibility_label = "View dashboard address on explorer"
+        self.w_faucet_btn.accessibility_label = "Open Stacks testnet faucet"
+        self.w_copy_contract_btn.accessibility_label = "Copy contract ID"
+        self.w_copy_source_btn.accessibility_label = "Copy contract source code"
+        self.w_view_explorer_btn.accessibility_label = "View contract on explorer"
+        self.w_copy_tx_btn.accessibility_label = "Copy transaction ID"
+        self.w_view_tx_explorer_btn.accessibility_label = "View transaction on explorer"
+        self.w_copy_log_btn.accessibility_label = "Copy deployment logs"
+        self.w_copy_address_btn.accessibility_label = "Copy settings address"
+        self.w_view_address_explorer_btn.accessibility_label = "View settings address on explorer"
+        self.w_settings_faucet_btn.accessibility_label = "Open settings testnet faucet"
+        self.query_one("#clear-tx-filter-btn", Button).accessibility_label = "Clear transaction filter"
 
         # PALETTE: Make dashboard metric cards focusable for keyboard accessibility
         for card_id in [
@@ -697,6 +743,8 @@ class StacksOrbitGUI(App):
         self.query_one("#privkey-label", Label).tooltip = "Click to focus private key input"
         self.query_one("#address-label", Label).tooltip = "Click to focus address input"
         self.query_one("#show-privkey-label").tooltip = "Toggle private key visibility"
+        self.query_one("#theme-label").tooltip = "Toggle between standard and sovereign themes"
+        self.w_theme_switch.tooltip = "Toggle between standard and sovereign themes"
 
         # PALETTE: Initialize Faucet button visibility
         try:
@@ -802,7 +850,7 @@ class StacksOrbitGUI(App):
 
     def _categorize_contract(self, name: str) -> str:
         """PALETTE: Categorize a contract based on its name."""
-        return _categorize_contract_cached(name)
+        return _normalize_and_categorize_contract(name)
 
     def _prepare_tx_search_key(self, tx: Dict) -> str:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""
@@ -1118,6 +1166,11 @@ class StacksOrbitGUI(App):
         """Toggle private key visibility when its label is clicked."""
         self.w_show_privkey.toggle()
 
+    @on(Click, "#theme-label")
+    def on_theme_label_click(self) -> None:
+        """Toggle theme when its label is clicked."""
+        self.w_theme_switch.toggle()
+
     @on(Click, "#contract-details-header-label")
     async def on_contract_details_label_click(self) -> None:
         """PALETTE: Copy contract ID when header label is clicked."""
@@ -1397,6 +1450,18 @@ class StacksOrbitGUI(App):
         try:
             label = self.query_one("#show-privkey-label", Label)
             label.update("Hide" if event.value else "Show")
+        except Exception:
+            pass
+
+    @on(Switch.Changed, "#theme-switch")
+    def on_theme_switch_changed(self, event: Switch.Changed) -> None:
+        """Update the application theme based on switch state."""
+        self.theme_name = "sovereign" if event.value else "standard"
+        self.unsaved_changes = True
+        try:
+            status = "🌍 Sovereign" if event.value else "🌙 Standard"
+            self.w_theme_status_label.update(status)
+            self.notify(f"Theme switched to {status}", severity="information")
         except Exception:
             pass
 
@@ -1716,11 +1781,12 @@ class StacksOrbitGUI(App):
 
         # This function handles the file I/O.
         # By running it in a thread, we prevent the UI from freezing.
-        def _save_config_io(p_address: str):
+        def _save_config_io(p_address: str, p_theme: str):
             config = self._load_config()
 
             # Update non-sensitive configuration
             config["SYSTEM_ADDRESS"] = p_address
+            config["UI_THEME"] = p_theme
 
             # 🛡️ Sentinel: Use centralized atomic and secure config saver.
             # This automatically filters secrets and ensures atomic, secure write.
@@ -1728,12 +1794,13 @@ class StacksOrbitGUI(App):
 
         try:
             # 🛡️ Sentinel: Only save non-sensitive settings to the file.
-            await asyncio.to_thread(_save_config_io, address_val)
+            await asyncio.to_thread(_save_config_io, address_val, self.theme_name)
             self.address = address_val
             self.unsaved_changes = False
 
             # Sync local config
             self.config["SYSTEM_ADDRESS"] = address_val
+            self.config["UI_THEME"] = self.theme_name
             if is_secret_provided:
                 self.config["DEPLOYER_PRIVKEY"] = privkey_val
 

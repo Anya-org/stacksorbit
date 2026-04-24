@@ -1,60 +1,63 @@
-# 🚀 StacksOrbit - Ultimate Deployment Tool
+# StacksOrbit
 
-> **The most advanced deployment tool for Stacks blockchain with full CLI capabilities, Hiro API integration, comprehensive monitoring, chainhooks support, and user-friendly experience for everyone.**
+StacksOrbit is a CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts.
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/Anya-org/stacksorbit)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
-[![Node.js](https://img.shields.io/badge/node.js-14+-green.svg)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+It is maintained in the `Conxian/stacksorbit` repository and used in Conxian deployment workflows, but it is intended to be useful for any Stacks team that wants repeatable deploy/monitor/verify tooling.
 
-**Deploy smart contracts to Stacks blockchain with confidence.**
+> **Naming note:** StacksOrbit originated under **Conxian-Labs** naming. Current repository ownership and active maintenance are under **Conxian**. You may see both names in historical files and references.
 
 ![StacksOrbit TUI Screenshot](stacksorbit-tui-screenshot.svg)
 
 ## Purpose
 
-Provide a CLI-first toolkit for building, testing, deploying, monitoring, and verifying Stacks smart contracts.
+- Build, test, deploy, monitor, and verify Clarity contracts across devnet, testnet, and mainnet.
+- Produce deployment artifacts (manifests, histories) locally for traceability.
 
 ## Status
 
-Active development. The CLI surface and integrations may evolve as Stacks tooling and deployment patterns change.
+StacksOrbit is actively maintained and used in real deployment workflows.
 
-## Ownership
+- **Stable areas:** core deploy/monitor/verify workflow and local deployment artifact generation.
+- **Evolving areas:** CLI ergonomics, dashboard UX, and ecosystem integrations as Stacks tooling changes.
+- **Operational note:** mainnet usage should be treated as an operator-reviewed and gated workflow, not a one-command push.
 
-Ownership and review requirements are defined in [`CODEOWNERS`](./CODEOWNERS).
+## Maintenance expectations
 
-## Audience
+- Maintainers prioritize reliability fixes and security work on the default branch (`main`) (see [SECURITY.md](SECURITY.md)).
+- Feature development is roadmap-driven and best-effort; delivery timelines are not guaranteed.
+- We aim to preserve compatibility in core workflows, but options in evolving areas may change between releases.
+- Community contributions are welcome; review and merge cadence depends on maintainer availability (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
-- Protocol engineers shipping Clarity smart contracts.
-- Operators and maintainers running deployments and monitoring environments.
+## Intended audience and scope
+
+- Protocol engineers shipping Clarity contracts.
+- Operators running deployments and monitoring environments.
 - Teams standardizing deployment workflows across multiple Stacks projects.
 
-## Relationship to the Conxian stack
+StacksOrbit is focused on deployment orchestration and operations. It is not a replacement for contract authoring frameworks.
 
-- Used as part of Conxian's contract deployment and operations workflows.
-- Commonly paired with orchestration layers like `conxius-platform`.
+## Documentation
 
----
+- Developer notes and operational guidance: [AGENTS.md](AGENTS.md)
+- Product/architecture notes: [PRD.md](PRD.md)
+- Publishing and release hygiene: [PUBLISHING.md](PUBLISHING.md), [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
+- GitHub Pages site source: [`docs/`](docs/) (see [`scripts/sync-pages-includes.sh`](scripts/sync-pages-includes.sh))
 
-## 📖 Documentation
+## Governance, ownership, and security
 
-For a complete guide to developing and using StacksOrbit, please see our new **[Agent Instructions](AGENTS.md)**. This document is the "single source of truth" for all development and deployment information.
+- Ownership and review requirements: [CODEOWNERS](CODEOWNERS)
+- Contributing guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Security policy and vulnerability reporting: [SECURITY.md](SECURITY.md)
+- Governance model: [GOVERNANCE.md](GOVERNANCE.md)
 
-## 🚀 Quick Start
+The GitHub Pages site lives under `docs/`. Before running Jekyll locally, run `bash ./scripts/sync-pages-includes.sh` from the repository root to populate `docs/_includes/`.
 
-To get started with local development, first install the dependencies:
+## Quick start (local development)
 
 ```bash
 pnpm install
-pip install -r requirements.txt
-```
-
-Then, run the tests:
-
-```bash
+python -m pip install -r requirements.txt
+cp .env.example .env
 pnpm run test:vitest
+python -m pytest tests/ -q
 ```
-
-This will run the test suite and ensure that everything is set up correctly.
-
----
