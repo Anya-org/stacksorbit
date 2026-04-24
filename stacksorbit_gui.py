@@ -795,9 +795,11 @@ class StacksOrbitGUI(App):
 
     def _prepare_tx_search_key(self, tx: Dict) -> str:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""
-        # Bolt ⚡: Skip re-calculation if the search key already exists.
-        if "_search_key" in tx:
-            return tx["_search_key"]
+        # Bolt ⚡: Skip re-calculation only when a valid cached search key exists.
+        search_key = tx.get("_search_key")
+        if isinstance(search_key, str) and search_key:
+            return search_key
+
         search_key = f"{tx.get('tx_id', '')} {tx.get('tx_type', '')} {tx.get('tx_status', '')}".lower()
         tx["_search_key"] = search_key
         return search_key
