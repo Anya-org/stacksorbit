@@ -100,8 +100,19 @@ def _categorize_contract_cached_casefolded(name_casefold: str) -> str:
     return "other"
 
 
+def _normalize_contract_name(name: str) -> str:
+    """Normalize contract identifiers and filenames into contract names."""
+    normalized = name.strip()
+    if "." in normalized:
+        normalized = normalized.split(".", 1)[1]
+    if normalized.endswith(".clar"):
+        normalized = normalized[:-5]
+    return normalized
+
+
 def _categorize_contract_cached(name: str) -> str:
-    return _categorize_contract_cached_casefolded(name.casefold())
+    normalized = _normalize_contract_name(name)
+    return _categorize_contract_cached_casefolded(normalized.casefold())
 
 
 from stacksorbit_secrets import (
