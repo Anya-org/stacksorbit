@@ -91,8 +91,16 @@ _CONTRACT_CAT_PATTERNS = [
 ]
 
 
-@functools.lru_cache(maxsize=2048)
-def _categorize_contract_cached_casefolded(name_casefold: str) -> str:
+_CONTRACT_CATEGORIZATION_CACHE_MAXSIZE = 2048
+
+
+def _normalize_and_categorize_contract(name: str) -> str:
+    """Normalize and categorize a contract name using cached regex matching."""
+    return _categorize_contract_casefolded_cached(name.casefold())
+
+
+@functools.lru_cache(maxsize=_CONTRACT_CATEGORIZATION_CACHE_MAXSIZE)
+def _categorize_contract_casefolded_cached(name_casefold: str) -> str:
     """Bolt ⚡: High-performance contract categorization using cached regex matching."""
     for regex, category in _CONTRACT_CAT_PATTERNS:
         if regex.search(name_casefold):
@@ -101,7 +109,8 @@ def _categorize_contract_cached_casefolded(name_casefold: str) -> str:
 
 
 def _categorize_contract_cached(name: str) -> str:
-    return _categorize_contract_cached_casefolded(name.casefold())
+    """Backward-compatible alias for normalized contract categorization."""
+    return _normalize_and_categorize_contract(name)
 
 
 from stacksorbit_secrets import (
@@ -831,7 +840,7 @@ class StacksOrbitGUI(App):
 
     def _categorize_contract(self, name: str) -> str:
         """PALETTE: Categorize a contract based on its name."""
-        return _categorize_contract_cached(name)
+        return _normalize_and_categorize_contract(name)
 
     def _prepare_tx_search_key(self, tx: Dict) -> str:
         """Bolt ⚡: Pre-calculate searchable key for a transaction."""

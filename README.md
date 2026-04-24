@@ -50,6 +50,8 @@ StacksOrbit is focused on deployment orchestration and operations. It is not a r
 - Security policy and vulnerability reporting: [SECURITY.md](SECURITY.md)
 - Governance model: [GOVERNANCE.md](GOVERNANCE.md)
 
+The GitHub Pages site lives under `docs/`. Before running Jekyll locally, run `bash ./scripts/sync-pages-includes.sh` from the repository root to populate `docs/_includes/`.
+
 ## Quick start (local development)
 
 ```bash
