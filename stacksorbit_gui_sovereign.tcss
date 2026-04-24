@@ -1,6 +1,6 @@
 /* StacksOrbit GUI CSS - Sovereign Earthy Theme */
 
-.sovereign-theme {
+.sovereign-theme Screen {
     background: #FDFBF7;
     color: #121212;
 }

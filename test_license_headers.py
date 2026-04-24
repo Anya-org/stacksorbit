@@ -14,7 +14,7 @@ def test_license_headers():
         assert os.path.exists(file), f"{file} does not exist"
         with open(file, "r") as f:
             content = f.read()
-            assert "Copyright (c) 2025 Anya Chain Labs" in content, f"License missing in {file}"
+            assert "Copyright (c) 2025 Conxian-Labs" in content, f"License missing in {file}"
             assert "MIT License" in content, f"License type missing in {file}"
 
 if __name__ == "__main__":
