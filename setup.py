@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2025 Anya Chain Labs
+# Copyright (c) 2025 Conxian-Labs
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for full license information.
 
@@ -19,18 +19,18 @@ long_description = (
 
 setup(
     name="stacksorbit",
-    version="1.2.0",
-    description="Ultimate deployment tool for Stacks blockchain with enhanced CLI, monitoring, chainhooks, and user-friendly experience",
+    version="1.2.5",
+    description="CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Anya Chain Labs",
+    author="Conxian-Labs",
     author_email="dev@anyachainlabs.com",
-    url="https://github.com/Anya-org/stacksorbit",
+    url="https://github.com/Conxian/stacksorbit",
     project_urls={
-        "Bug Tracker": "https://github.com/Anya-org/stacksorbit/issues",
-        "Documentation": "https://stacksorbit.dev",
-        "Source Code": "https://github.com/Anya-org/stacksorbit",
-        "Discussions": "https://github.com/Anya-org/stacksorbit/discussions",
+        "Bug Tracker": "https://github.com/Conxian/stacksorbit/issues",
+        "Documentation": "https://conxian.github.io/stacksorbit/",
+        "Source Code": "https://github.com/Conxian/stacksorbit",
+        "Discussions": "https://github.com/Conxian/stacksorbit/discussions",
     },
     packages=find_packages(exclude=["tests*", "docs*"]),
     py_modules=["stacksorbit"],

@@ -176,6 +176,6 @@ For each release, ensure:
 
 ---
 
-**Built with ❤️ by [Anya Chain Labs](https://anyachainlabs.com)**
+**Built with ❤️ by [Conxian-Labs](https://anyachainlabs.com)**
 
 *Deploy smart contracts to Stacks blockchain with confidence - now easier than ever!* 🚀

@@ -55,6 +55,10 @@ yarn.lock
 logs/
 *.log
 
+# Local state and deployment artifacts
+.stacksorbit/
+deployment/*.json
+
 # Environment
 *.env
 .env.local
@@ -69,6 +73,7 @@ logs/
 
 # Documentation
 docs/_build/
+docs/_includes/
 site/
 
 # OS
