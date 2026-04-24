@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Anya Chain Labs
+# Copyright (c) 2025 Conxian-Labs
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for full license information.
 
@@ -85,6 +85,18 @@ SENSITIVE_SUBSTRINGS = [
     "AZURE",
     "GCP",
     "DIGITALOCEAN",
+    "MFA",
+    "OTP",
+    "TOTP",
+    "DSN",
+    "WEBHOOK",
+    "GITHUB",
+    "GITLAB",
+    "BITBUCKET",
+    "SENTRY",
+    "TELEGRAM",
+    "DISCORD",
+    "SLACK",
 ]
 
 # Bolt ⚡: Pre-compile regex for faster substring matching in high-frequency checks.
@@ -98,7 +110,6 @@ PUBLIC_SUBSTRINGS = [
     "TX_",
     "TXID",
     "HASH",
-    "SIGNATURE",  # Explicitly allow standalone 'SIGNATURE' as public
     "ADDR",
     "PRINCIPAL",
     "SOURCE",
@@ -131,7 +142,9 @@ HIGH_CONFIDENCE_SENSITIVE_WORDS = [
     "SESSIONID", "DECRYPT", "APIKEY", "API_KEY", "CLOUDFLARE", "HEROKU",
     "STRIPE", "INFURA", "ALCHEMY", "SENDGRID", "MAILGUN", "TWILIO",
     "SUPABASE", "NEON", "POSTGRES", "MONGODB", "REDIS", "AWS", "AZURE",
-    "GCP", "DIGITALOCEAN"
+    "GCP", "DIGITALOCEAN", "MFA", "OTP", "TOTP", "SIGNATURE",
+    "DSN", "WEBHOOK", "GITHUB", "GITLAB", "BITBUCKET", "SENTRY",
+    "TELEGRAM", "DISCORD", "SLACK",
 ]
 HIGH_CONFIDENCE_SENSITIVE_RE = re.compile(
     "|".join(re.escape(s) for s in HIGH_CONFIDENCE_SENSITIVE_WORDS),
@@ -210,8 +223,10 @@ def is_sensitive_value(value: str) -> bool:
     val_len = len(value)
     if val_len > 1500:
         # 🛡️ Sentinel: Check boundaries to prevent whitespace-based bypasses.
-        # If the first/last characters are not whitespace, strip() won't reduce size enough.
-        if not value[0].isspace() and not value[-1].isspace():
+        # Bolt ⚡: Use a larger boundary check (500 chars) to skip strip() for large strings
+        # that have minor padding (like newlines) but are guaranteed to exceed secret thresholds.
+        # This prevents full-string memory copies for multi-MB payloads (e.g. source code).
+        if not value[:500].isspace() and not value[-500:].isspace():
             return False
 
     # 🛡️ Sentinel: Strip whitespace before checking length to prevent newline-based bypasses.

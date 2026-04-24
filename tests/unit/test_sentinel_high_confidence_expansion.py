@@ -39,8 +39,18 @@ def test_normal_public_keys():
         "ADDR_PRINCIPAL",
         "TX_HASH",
         "TX_ID",
-        "SIGNATURE"
     ]
 
     for key in normal_public_keys:
         assert is_sensitive_key(key) is False, f"Key {key} should NOT be sensitive"
+
+
+def test_signature_keys_are_sensitive():
+    """🛡️ Sentinel: Verify that signature-related keys are treated as sensitive."""
+    signature_keys = [
+        "SIGNATURE",
+        "TX_SIGNATURE",
+    ]
+
+    for key in signature_keys:
+        assert is_sensitive_key(key) is True, f"Key {key} should be sensitive"
