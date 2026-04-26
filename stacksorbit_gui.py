@@ -783,14 +783,12 @@ class StacksOrbitGUI(App):
             if not filter_text:
                 filtered_txs = self._all_transactions
             else:
-                # Bolt ⚡: Use pre-calculated search keys for highly efficient O(N) filtering.
-                filtered_txs = []
-                for tx in self._all_transactions:
-                    search_key = tx.get("_search_key")
-                    if search_key is None:
-                        search_key = self._prepare_tx_search_key(tx)
-                    if filter_text in search_key:
-                        filtered_txs.append(tx)
+                # Bolt ⚡: Use high-performance list comprehension for transaction filtering.
+                # Combined with lazy search-key calculation to minimize main-thread overhead.
+                filtered_txs = [
+                    tx for tx in self._all_transactions
+                    if filter_text in (tx.get("_search_key") or self._prepare_tx_search_key(tx))
+                ]
 
             if filtered_txs:
                 # Bolt ⚡: Normalize 'now' to 10s intervals to maximize cache hits across refreshes.
@@ -978,11 +976,6 @@ class StacksOrbitGUI(App):
                 metrics['nonce'] = nonce_display
 
             self._last_metrics = metrics
-
-            now_label = datetime.now().strftime('%H:%M:%S')
-            self.w_last_updated.update(f' [dim]Last updated: {now_label}[/]')
-
-            # Process deployed contracts result
             if isinstance(deployed_contracts, Exception):
                 raise deployed_contracts
 
@@ -998,22 +991,13 @@ class StacksOrbitGUI(App):
                 with self.batch_update():
                     contracts_table.clear()
                     if deployed_contracts:
-                        # Bolt ⚡: Build rows in a list and use add_rows() for atomic, high-performance table population.
-                        contract_rows = []
                         for contract in deployed_contracts:
-                            address, name = contract.get("contract_id", "...").split(".")
+                            cid = contract.get("contract_id", "...")
+                            address, name = cid.split(".") if "." in cid else ("...", cid)
                             # PALETTE: Use categorized icons for visual variety
                             category = self._categorize_contract(name)
                             icon = self.CONTRACT_CATEGORY_MAP.get(category, self.CONTRACT_CATEGORY_MAP["other"])["icon"]
-                            contract_rows.append((icon, name, address))
-
-                        # Note: DataTable.add_rows doesn't take keys in the same way as add_row in some versions,
-                        # so we'll use add_row in a loop if add_rows doesn't support keys.
-                        # Actually, Textual's add_rows doesn't support per-row keys.
-                        # So I will keep add_row but move it to a more efficient loop if possible.
-                        # Wait, if I want keys, I have to use add_row.
-                        for i, row in enumerate(contract_rows):
-                            contracts_table.add_row(*row, key=deployed_contracts[i].get("contract_id"))
+                            contracts_table.add_row(icon, name, address, key=cid)
                     elif self.address != "Not configured":
                         contracts_table.add_row(
                             "", "No contracts found", "Press [F4] to deploy", key="empty-deploy"
@@ -1027,12 +1011,6 @@ class StacksOrbitGUI(App):
             # Process transactions result
             if isinstance(transactions, Exception):
                 raise transactions
-
-            if transactions:
-                # Bolt ⚡: Pre-calculate lower-cased searchable strings for each transaction
-                # to optimize filtering performance in _update_transactions_table.
-                for tx in transactions:
-                    self._prepare_tx_search_key(tx)
 
             # Update last updated label
             now_label = datetime.now().strftime("%H:%M:%S")
