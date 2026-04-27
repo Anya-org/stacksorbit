@@ -78,6 +78,16 @@
     color: #121212;
 }
 
+.sovereign-theme DataTable .datatable--header {
+    background: #F4F0E6;
+    color: #121212;
+}
+
+.sovereign-theme DataTable .datatable--cursor {
+    background: #C25E00;
+    color: white;
+}
+
 .sovereign-theme Input {
     background: #FFFFFF;
     border: round #E0DBCF;
