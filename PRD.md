@@ -586,6 +586,17 @@ StacksOrbit is committed to supporting the latest Clarity language features.
     *   **Regression Testing:** Established a new security regression suite `tests/unit/test_sentinel_infra_hardening.py` and verified the identification and redaction of provider-specific credentials.
     *   **System Integrity:** Confirmed system stability via full Pytest (75 passed) and Vitest (5 passed) suites.
 
+### Session 45: Discoverability & Semantic Visuals (Palette 🎨)
+
+*   **Objective:** Enhance the TUI with micro-UX improvements focused on keyboard discoverability, accessibility, and visual scannability.
+*   **Changes:**
+    *   **Tab Discoverability:** Added explicit function key hints (`[F1]`-`[F5]`) to all `TabPane` titles, providing immediate guidance for keyboard navigation.
+    *   **Semantic Color-Coding:** Implemented a Rich-based color scheme for the Contracts table, automatically color-coding contract names based on their category (e.g., Yellow for Tokens, Cyan for DEX, Red for Security).
+    *   **Keyboard Accessibility:** Hardened dashboard interaction by adding `Space` key support to the `on_key` handler for metric cards, complementing the existing `Enter` key support.
+    *   **Sovereign Theme Polish:** Refined the "Sovereign" theme CSS with custom styling for `DataTable` headers and cursors to ensure high contrast and visual consistency in the earthy palette.
+    *   **System Verification:** Confirmed system integrity via successful execution of `pytest tests/test_gui.py` (7 passed), `pnpm lint`, and full Vitest Simnet suites.
+*   **Status:** Complete.
+
 ### Session Snapshot
 *   **Version:** 1.2.5
 *   **License:** MIT (Standardized)

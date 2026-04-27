@@ -173,15 +173,15 @@ class StacksOrbitGUI(App):
 
     # PALETTE: Visual categorization for contracts.
     CONTRACT_CATEGORY_MAP = {
-        "base": {"icon": "📜", "label": "Base"},
-        "tokens": {"icon": "🪙", "label": "Token"},
-        "nft": {"icon": "🖼️", "label": "NFT"},
-        "dex": {"icon": "🏦", "label": "DEX"},
-        "oracle": {"icon": "🔮", "label": "Oracle"},
-        "governance": {"icon": "⚖️", "label": "Gov"},
-        "security": {"icon": "🛡️", "label": "Security"},
-        "monitoring": {"icon": "📊", "label": "Monitor"},
-        "other": {"icon": "📄", "label": "Contract"},
+        "base": {"icon": "📜", "label": "Base", "color": "dim"},
+        "tokens": {"icon": "🪙", "label": "Token", "color": "yellow"},
+        "nft": {"icon": "🖼️", "label": "NFT", "color": "magenta"},
+        "dex": {"icon": "🏦", "label": "DEX", "color": "cyan"},
+        "oracle": {"icon": "🔮", "label": "Oracle", "color": "blue"},
+        "governance": {"icon": "⚖️", "label": "Gov", "color": "green"},
+        "security": {"icon": "🛡️", "label": "Security", "color": "red"},
+        "monitoring": {"icon": "📊", "label": "Monitor", "color": "white"},
+        "other": {"icon": "📄", "label": "Contract", "color": "dim"},
     }
 
     # Reactive variables
@@ -312,7 +312,7 @@ class StacksOrbitGUI(App):
         yield Header()
 
         with TabbedContent(initial="overview"):
-            with TabPane("📊 Dashboard", id="overview"):
+            with TabPane("📊 [F1] Dashboard", id="overview"):
                 yield LoadingIndicator()
                 with Horizontal(id="address-bar"):
                     yield Label("System Address:", id="system-address-label")
@@ -375,7 +375,7 @@ class StacksOrbitGUI(App):
                     )
                     yield Label("", id="last-updated-label")
 
-            with TabPane("📄 Contracts", id="contracts"):
+            with TabPane("📄 [F2] Contracts", id="contracts"):
                 with Horizontal():
                     yield DataTable(id="contracts-table", zebra_stripes=True)
                     yield Vertical(
@@ -400,7 +400,7 @@ class StacksOrbitGUI(App):
                         classes="details-pane",
                     )
 
-            with TabPane("📜 Transactions", id="transactions"):
+            with TabPane("📜 [F3] Transactions", id="transactions"):
                 with Horizontal(id="tx-filter-bar"):
                     yield Input(placeholder="🔍 Filter transactions (ID, Type, Status)...", id="tx-filter-input")
                     yield Button("✕", id="clear-tx-filter-btn", variant="error")
@@ -417,7 +417,7 @@ class StacksOrbitGUI(App):
                     yield Button("📋", id="copy-selected-tx-btn")
                     yield Button("🌐", id="view-selected-tx-explorer-btn")
 
-            with TabPane("🚀 Deploy", id="deployment"):
+            with TabPane("🚀 [F4] Deploy", id="deployment"):
                 with Vertical():
                     yield LoadingIndicator()
                     yield Log(id="deployment-log")
@@ -439,7 +439,7 @@ class StacksOrbitGUI(App):
                             variant="error",
                         )
 
-            with TabPane("⚙️ Settings", id="settings"):
+            with TabPane("⚙️ [F5] Settings", id="settings"):
                 with VerticalScroll():
                     yield Label(
                         "Private Key: [red]*[/red]",
@@ -994,10 +994,12 @@ class StacksOrbitGUI(App):
                         for contract in deployed_contracts:
                             cid = contract.get("contract_id", "...")
                             address, name = cid.split(".") if "." in cid else ("...", cid)
-                            # PALETTE: Use categorized icons for visual variety
+                            # PALETTE: Use categorized icons and semantic colors for visual variety
                             category = self._categorize_contract(name)
-                            icon = self.CONTRACT_CATEGORY_MAP.get(category, self.CONTRACT_CATEGORY_MAP["other"])["icon"]
-                            contracts_table.add_row(icon, name, address, key=cid)
+                            cat_info = self.CONTRACT_CATEGORY_MAP.get(category, self.CONTRACT_CATEGORY_MAP["other"])
+                            icon = cat_info["icon"]
+                            color = cat_info["color"]
+                            contracts_table.add_row(icon, f"[{color}]{name}[/]", address, key=cid)
                     elif self.address != "Not configured":
                         contracts_table.add_row(
                             "", "No contracts found", "Press [F4] to deploy", key="empty-deploy"
@@ -1163,7 +1165,7 @@ class StacksOrbitGUI(App):
 
     def on_key(self, event: Key) -> None:
         """Handle dashboard metric card interaction via keyboard."""
-        if event.key == "enter" and self.focused:
+        if event.key in ("enter", "space") and self.focused:
             focused_id = self.focused.id
             if focused_id in ("metric-network", "metric-runway", "metric-exit-velocity"):
                 self.action_refresh()
