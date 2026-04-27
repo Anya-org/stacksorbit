@@ -1,6 +1,6 @@
 {
   "name": "stacksorbit",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
   "main": "bin/enhanced-stacksorbit.js",
   "bin": {
@@ -76,9 +76,9 @@
   },
   "devDependencies": {
     "@stacks/clarinet-sdk": "^3.16.0",
-    "vitest": "^4.1.4",
+    "vitest": "^4.1.5",
     "vitest-environment-clarinet": "^3.0.2",
-    "@vitest/coverage-v8": "^4.1.2",
+    "@vitest/coverage-v8": "^4.1.5",
     "eslint": "^8.57.1",
     "prettier": "^3.8.1"
   },
