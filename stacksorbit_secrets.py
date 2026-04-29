@@ -271,21 +271,14 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         # Bolt ⚡: Hoist scalar type checks for non-sensitive collections to bypass redundant
         # function calls and internal checks for integers, floats, booleans, and None.
         # This provides a significant speedup for large numeric data (e.g., blockchain balances).
+        # 🛡️ Sentinel: strings MUST always be processed via redact_recursive to enable value-based
+        # detection, even in public collections, to prevent bypasses.
         if not is_sensitive:
-            if is_public:
-                # Bolt ⚡: Also hoist string check for public collections.
-                # Safe because strings in public collections skip value-based detection.
-                redacted_items = [
-                    sub_item if isinstance(sub_item, (str, int, float, bool)) or sub_item is None
-                    else redact_recursive(sub_item, parent_key, is_sensitive, is_public)
-                    for sub_item in item
-                ]
-            else:
-                redacted_items = [
-                    sub_item if isinstance(sub_item, (int, float, bool)) or sub_item is None
-                    else redact_recursive(sub_item, parent_key, is_sensitive, is_public)
-                    for sub_item in item
-                ]
+            redacted_items = [
+                sub_item if isinstance(sub_item, (int, float, bool)) or sub_item is None
+                else redact_recursive(sub_item, parent_key, is_sensitive, is_public)
+                for sub_item in item
+            ]
         else:
             redacted_items = [
                 redact_recursive(sub_item, parent_key, is_sensitive, is_public)
@@ -308,14 +301,15 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
 
         # Check if the parent key is a known secret or contains a sensitive substring.
         # 🛡️ Sentinel: Also check if the value itself looks like a secret (Defense-in-Depth).
-        # Bolt ⚡: Skip value-based detection if the key is known to be public (e.g. TX_ID).
+        # We ALWAYS perform value-based detection for strings, even if the key is marked public,
+        # to ensure secrets don't leak under non-sensitive or public names.
 
         # Bolt ⚡: Avoid redundant str() conversion and stripping.
         is_val_sensitive = False
         if isinstance(item, str):
             # Bolt ⚡: Skip value-based detection if the key is already marked sensitive.
             # This avoids redundant processing for known secrets.
-            is_val_sensitive = not is_sensitive and not is_public and is_sensitive_value(item)
+            is_val_sensitive = not is_sensitive and is_sensitive_value(item)
 
         if is_sensitive or is_val_sensitive:
             # Skip empty values or common non-secret placeholders
