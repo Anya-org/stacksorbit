@@ -139,8 +139,8 @@ NETWORK=testnet
 
 # Optional Variables (Recommended)
 HIRO_API_KEY=your_hiro_api_key
-CORE_API_URL=https://api.testnet.hiro.so
-STACKS_API_BASE=https://api.testnet.hiro.so
+CORE_API_URL={current_api}
+STACKS_API_BASE={current_api}
 
 # Deployment Configuration
 DEPLOYMENT_MODE=full

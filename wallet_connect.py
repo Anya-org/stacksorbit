@@ -12,6 +12,12 @@ import http.server
 import socketserver
 import webbrowser
 import json
+NETWORK_API_MAP = {
+    "mainnet": "https://api.mainnet.hiro.so",
+    "testnet": "https://api.testnet.hiro.so",
+    "devnet": "http://localhost:3999",
+}
+
 import threading
 import time
 import secrets
@@ -282,7 +288,7 @@ WALLET_CONNECT_HTML = """
             }
             try {
                 const response = await fetch(
-                    `https://api.testnet.hiro.so/extended/v1/address/${address}/balances`
+                    `{api_url}/extended/v1/address/${address}/balances`
                 );
                 const data = await response.json();
                 const stxBalance = parseInt(data.stx?.balance || 0) / 1000000;
@@ -341,16 +347,18 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("X-Frame-Options", "DENY")
             self.send_header("X-XSS-Protection", "0")
             self.send_header("Referrer-Policy", "no-referrer")
+            api_url = NETWORK_API_MAP.get(WalletConnectHandler.network, NETWORK_API_MAP['testnet'])
             self.send_header(
                 "Content-Security-Policy",
-                "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://api.testnet.hiro.so; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none';",
+                f"default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' {api_url}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none';",
             )
             self.send_header(
                 "Permissions-Policy",
                 "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()",
             )
             self.end_headers()
-            self.wfile.write(WALLET_CONNECT_HTML.encode())
+            api_url = NETWORK_API_MAP.get(WalletConnectHandler.network, NETWORK_API_MAP['testnet'])
+            self.wfile.write(WALLET_CONNECT_HTML.replace("{api_url}", api_url).encode())
         else:
             self.send_error(404)
     
@@ -389,7 +397,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
 
                 address = data.get('address')
                 # 🛡️ Sentinel: Validate Stacks address format and network
-                if not address or not validate_stacks_address(address):
+                if not address or not validate_stacks_address(address, network=WalletConnectHandler.network):
                     print(f"⚠️  Invalid Stacks address received: {address}")
                     self.send_error(400, "Invalid Stacks address")
                     return
@@ -417,12 +425,13 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
         pass  # Suppress logging
 
 
-def start_wallet_connect_server(port=8765):
+def start_wallet_connect_server(port=8765, network='testnet'):
     """Start the wallet connect server and open browser"""
     
     # 🛡️ Sentinel: Generate a random session token for security
     token = secrets.token_urlsafe(16)
     WalletConnectHandler.session_token = token
+    WalletConnectHandler.network = network
     url = f"http://127.0.0.1:{port}/?token={token}"
 
     print(f"""
@@ -460,12 +469,12 @@ def start_wallet_connect_server(port=8765):
         address = WalletConnectHandler.connected_address
         
         # Save to config
-        save_wallet_address(address)
+        save_wallet_address(address, network)
         
         return address
 
 
-def save_wallet_address(address):
+def save_wallet_address(address, network):
     """Save the connected wallet address to .env"""
     env_path = Path('.env')
     config = {}
@@ -478,7 +487,7 @@ def save_wallet_address(address):
     # Update with new address
     config["SYSTEM_ADDRESS"] = address
     if "NETWORK" not in config:
-        config["NETWORK"] = "testnet"
+        config["NETWORK"] = network
 
     # 🛡️ Sentinel: Use centralized atomic and secure config saver.
     # This automatically filters secrets and ensures atomic, secure write.

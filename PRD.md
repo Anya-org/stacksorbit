@@ -597,6 +597,17 @@ StacksOrbit is committed to supporting the latest Clarity language features.
     *   **System Verification:** Confirmed system integrity via successful execution of `pytest tests/test_gui.py` (7 passed), `pnpm lint`, and full Vitest Simnet suites.
 *   **Status:** Complete.
 
+
+### Session 47: Mainnet Readiness & Network-Aware Orchestration (Jules)
+
+*   **Objective:** Audit the repository for Mainnet readiness and implement network-aware API orchestration to eliminate hardcoded testnet dependencies.
+*   **Changes:**
+    *   **Dynamic API Orchestration:** Refactored `wallet_connect.py`, `stacksorbit_cli.py`, and `deployment_monitor.py` to use a dynamic `NETWORK_API_MAP`, ensuring correct API endpoints are used for Mainnet (`api.mainnet.hiro.so`), Testnet, and Devnet.
+    *   **Wallet Connect Hardening:** Enhanced `wallet_connect.py` to support network-specific Content-Security-Policy (CSP) and balance fetching, preventing cross-network data leakage.
+    *   **Validation Reinforcement:** Updated `validate_stacks_address` calls in the wallet connection flow to be network-aware, preventing the use of testnet addresses on Mainnet and vice-versa.
+    *   **Utility Alignment:** Synchronized `query_deployer.py` and `verify_address.py` with the global network state via environment variable detection.
+    *   **API URL Correction:** Corrected legacy Hiro API URLs (`api.hiro.so` -> `api.mainnet.hiro.so`) and standardized local Devnet ports to `3999` for consistency with Clarinet defaults.
+*   **Status:** Complete.
 ### Session 46: Foundation Modernization & Root-Up Reinforcement (Jules)
 
 *   **Objective:** Modernize the StacksOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.

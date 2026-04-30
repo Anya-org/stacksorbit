@@ -701,8 +701,14 @@ class SetupWizard:
             "",
             "# Optional Variables (Recommended)",
             "HIRO_API_KEY=your_hiro_api_key",
-            "CORE_API_URL=https://api.testnet.hiro.so",
-            "STACKS_API_BASE=https://api.testnet.hiro.so",
+        api_urls = {
+            "mainnet": "https://api.mainnet.hiro.so",
+            "testnet": "https://api.testnet.hiro.so",
+            "devnet": "http://localhost:3999",
+        }
+        current_api = api_urls.get(self.config['network'], api_urls['testnet'])
+            f"CORE_API_URL={current_api}",
+            f"STACKS_API_BASE={current_api}",
             "",
             "# Deployment Configuration",
             f"DEPLOYMENT_MODE={self.config['deployment_mode']}",

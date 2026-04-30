@@ -1,7 +1,8 @@
+import os
 import requests
 
 def search_contract(name):
-    url = f"https://api.testnet.hiro.so/extended/v1/search?id={name}"
+    url = f"https://api.mainnet.hiro.so/extended/v1/search?id={name}" if os.environ.get('NETWORK') == 'mainnet' else f"https://api.testnet.hiro.so/extended/v1/search?id={name}"
     print(f"Searching for {name} on testnet...")
     res = requests.get(url)
     if res.status_code == 200:
