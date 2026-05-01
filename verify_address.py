@@ -1,7 +1,8 @@
+import os
 import requests
 
 def check_address(address):
-    url = f"https://api.testnet.hiro.so/extended/v1/address/{address}/contracts"
+    url = f"https://api.mainnet.hiro.so/extended/v1/address/{address}/contracts" if os.environ.get('NETWORK') == 'mainnet' else f"https://api.testnet.hiro.so/extended/v1/address/{address}/contracts"
     print(f"Checking contracts for {address}...")
     res = requests.get(url)
     if res.status_code == 200:

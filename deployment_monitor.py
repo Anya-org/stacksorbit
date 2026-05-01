@@ -159,9 +159,9 @@ class DeploymentMonitor:
     def _get_api_url(self) -> str:
         """Get API URL for network"""
         urls = {
-            "mainnet": "https://api.hiro.so",
+            "mainnet": "https://api.mainnet.hiro.so",
             "testnet": "https://api.testnet.hiro.so",
-            "devnet": "http://localhost:20443",
+            "devnet": "http://localhost:3999",
         }
         return urls.get(self.network, urls["testnet"])
 

@@ -1554,7 +1554,7 @@ class StacksOrbitGUI(App):
         try:
             # Run the server in a thread and suppress stdout to keep TUI clean
             with contextlib.redirect_stdout(io.StringIO()):
-                address = await asyncio.to_thread(start_wallet_connect_server)
+                address = await asyncio.to_thread(start_wallet_connect_server, network=self.network)
 
             if address:
                 # Update inputs and internal state

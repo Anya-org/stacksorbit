@@ -11,6 +11,7 @@ def test_wallet_connect_headers():
     handler = MagicMock(spec=WalletConnectHandler)
     handler.path = "/?token=test_token"
     WalletConnectHandler.session_token = "test_token"
+    WalletConnectHandler.network = "testnet"
 
     # Mock the necessary attributes for do_GET
     handler.send_response = MagicMock()
@@ -82,7 +83,7 @@ def test_save_wallet_address_filters_secrets(tmp_path):
 
     with patch("wallet_connect.Path", return_value=env_file), \
          patch("wallet_connect.save_secure_config") as mock_save:
-        save_wallet_address("new_address")
+        save_wallet_address("new_address", "testnet")
 
     # In our refactored version, save_wallet_address uses save_secure_config
     # which handles filtering and permissions.
