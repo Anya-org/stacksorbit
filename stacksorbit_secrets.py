@@ -307,9 +307,10 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         # Bolt ⚡: Avoid redundant str() conversion and stripping.
         is_val_sensitive = False
         if isinstance(item, str):
-            # Bolt ⚡: Skip value-based detection if the key is already marked sensitive.
-            # This avoids redundant processing for known secrets.
-            is_val_sensitive = not is_sensitive and is_sensitive_value(item)
+            # Bolt ⚡: Skip value-based detection if the key is already marked sensitive OR public.
+            # This avoids redundant processing for known secrets and prevents false positives
+            # for public identifiers like TX IDs that look like private keys.
+            is_val_sensitive = not is_sensitive and not is_public and is_sensitive_value(item)
 
         if is_sensitive or is_val_sensitive:
             # Skip empty values or common non-secret placeholders
