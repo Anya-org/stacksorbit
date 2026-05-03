@@ -701,12 +701,14 @@ class SetupWizard:
             "",
             "# Optional Variables (Recommended)",
             "HIRO_API_KEY=your_hiro_api_key",
+        ]
         api_urls = {
             "mainnet": "https://api.mainnet.hiro.so",
             "testnet": "https://api.testnet.hiro.so",
             "devnet": "http://localhost:3999",
         }
-        current_api = api_urls.get(self.config['network'], api_urls['testnet'])
+        current_api = api_urls.get(self.config["network"], api_urls["testnet"])
+        config_lines.extend([
             f"CORE_API_URL={current_api}",
             f"STACKS_API_BASE={current_api}",
             "",
@@ -727,7 +729,7 @@ class SetupWizard:
             "# Security",
             "# Never commit this file to version control!",
             "# Add .env to your .gitignore file",
-        ]
+        ])
 
         return "\n".join(config_lines)
 
