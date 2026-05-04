@@ -1074,13 +1074,29 @@ class StacksOrbitGUI(App):
     def on_transactions_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         """PALETTE: Fluid UI - Update transaction action bar as the user scrolls."""
         tx_id = event.row_key.value
-        if tx_id:
-            self.selected_tx_id = tx_id
-            self.w_copy_tx_btn.disabled = False
-            self.w_view_tx_explorer_btn.disabled = False
-            self.w_tx_status_label.update(
-                f"Selected: [cyan]{tx_id[:16]}...[/cyan] [dim][c]opy [e]xplorer[/]"
-            )
+        if not tx_id or tx_id.startswith("empty-"):
+            self.selected_tx_id = None
+            self.w_copy_tx_btn.disabled = True
+            self.w_view_tx_explorer_btn.disabled = True
+            self.w_tx_status_label.update("Select a transaction to see actions")
+            return
+
+        self.selected_tx_id = tx_id
+        self.w_copy_tx_btn.disabled = False
+        self.w_view_tx_explorer_btn.disabled = False
+
+        # BOLT ⚡: Find transaction object for enriched details
+        tx_obj = next((tx for tx in self._all_transactions if tx.get("tx_id") == tx_id), {})
+
+        nonce = tx_obj.get("nonce", "-")
+        fee = tx_obj.get("fee_rate", tx_obj.get("fee", "-"))
+        tx_type = tx_obj.get("tx_type", "unknown").replace("_", " ")
+
+        # Display enriched info: ID, Type, Nonce, Fee
+        self.w_tx_status_label.update(
+            f"Selected: [cyan]{tx_id[:16]}...[/cyan] [dim]|[/] [yellow]{tx_type}[/] "
+            f"[dim]| Nonce:[/] {nonce} [dim]| Fee:[/] {fee} [dim]| [c]opy [e]xplorer[/]"
+        )
 
     @on(DataTable.RowSelected, "#transactions-table")
     def on_transactions_row_selected(self, event: DataTable.RowSelected) -> None:
