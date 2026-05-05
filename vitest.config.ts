@@ -7,6 +7,7 @@ import { defineConfig } from "vitest/config";
 /**
  * Modernized Vitest configuration for StacksOrbit.
  * Optimized for @stacks/clarinet-sdk ^3.16.0 and Vitest 4.
+ * Root-Up synchronized.
  */
 export default defineConfig(async () => {
   const { vitestSetupFilePath, getClarinetVitestsArgv } = await import(
