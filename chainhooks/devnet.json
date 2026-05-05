@@ -53,7 +53,7 @@
           "if": {
             "scope": "contract_call",
             "contract_identifier": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.dlc-bond",
-            "method": "stake"
+            "method": "issue-bond"
           },
           "then": {
             "http_post": {
