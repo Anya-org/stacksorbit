@@ -30,6 +30,7 @@ SENSITIVE_SUBSTRINGS = [
     "KEY",
     "SECRET",
     "SENSITIVE",
+    "ACCESS",
     "TOKEN",
     "PASS",
     "PWD",
@@ -134,7 +135,7 @@ HEX_RE = re.compile(r"^[0-9a-fA-F]+$")
 # These words represent clear security risks and must trigger redaction even when paired
 # with public identifiers (e.g., 'PUBLIC_JWT', 'ADDR_TOKEN').
 HIGH_CONFIDENCE_SENSITIVE_WORDS = [
-    "PRIV", "SECRET", "MNEMONIC", "PASS", "AUTH", "PHRASE", "RECOVERY",
+    "PRIV", "SECRET", "MNEMONIC", "PASS", "AUTH", "ACCESS", "PHRASE", "RECOVERY",
     "SEED", "PWD", "XPRV", "MASTER", "VAULT", "ADMIN", "ROOT", "JWT",
     "BEARER", "SALT", "CRED", "SESS", "TOKEN", "KUBECONFIG", "DOCKER",
     "DATABASE", "DB_", "SENSITIVE", "ENCRYPT", "BIP3", "CERT", "PKCS",
@@ -307,10 +308,11 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         # Bolt ⚡: Avoid redundant str() conversion and stripping.
         is_val_sensitive = False
         if isinstance(item, str):
-            # Bolt ⚡: Skip value-based detection if the key is already marked sensitive OR public.
-            # This avoids redundant processing for known secrets and prevents false positives
-            # for public identifiers like TX IDs that look like private keys.
-            is_val_sensitive = not is_sensitive and not is_public and is_sensitive_value(item)
+            # Bolt ⚡: Skip value-based detection if the key is already marked sensitive.
+            # This avoids redundant processing for known secrets.
+            # 🛡️ Sentinel: Value-based detection is ALWAYS performed for strings even in public
+            # contexts to prevent accidental leaks under non-sensitive keys (Defense-in-Depth).
+            is_val_sensitive = not is_sensitive and is_sensitive_value(item)
 
         if is_sensitive or is_val_sensitive:
             # Skip empty values or common non-secret placeholders
