@@ -25,3 +25,7 @@
 ## 2025-04-02 - [Reactive Theme Switching]
 **Learning:** In Textual, themes can be implemented reactively by defining a `theme_name` reactive variable and using a `watch_theme_name` method to dynamically swap CSS classes on the `App` instance. This allows for instant visual feedback without requiring an application restart. For global overrides like background and text color, CSS rules should specifically target the `Screen` widget.
 **Action:** Use reactive properties and CSS class swapping on the `App` instance for seamless, live UI customization.
+
+## 2025-05-15 - [Multi-Channel Feedback for Copy Actions]
+**Learning:** For high-value copy actions (like wallet addresses), providing feedback on both the trigger (button icon change) and the target data label (temporary "Copied!" text) ensures the user notices the success even if their focus is split. This is especially important in high-density dashboards where small icon changes might be missed.
+**Action:** Implement dual-channel feedback (button + label) for critical copy operations.
