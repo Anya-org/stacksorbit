@@ -28,6 +28,17 @@
     color: #121212;
 }
 
+.sovereign-theme #address-bar,
+.sovereign-theme #transaction-actions,
+.sovereign-theme #tx-filter-bar {
+    background: #FFFFFF;
+    border: solid #E0DBCF;
+    height: auto;
+    align: center middle;
+    margin-bottom: 1;
+    padding: 0 1;
+}
+
 .sovereign-theme Tab:hover {
     background: #EBE6D9;
 }

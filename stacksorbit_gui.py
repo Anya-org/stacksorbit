@@ -827,7 +827,12 @@ class StacksOrbitGUI(App):
                     )
             else:
                 transactions_table.add_row(
-                    "🔍", f"No matches for '{filter_text}'", "Try a different search term.", "", ""
+                    "🔍",
+                    f"No matches for '{filter_text}'",
+                    "[dim]Click or [Enter] to clear filter[/]",
+                    "",
+                    "",
+                    key="empty-clear-filter",
                 )
 
         count_display = f"({len(filtered_txs)}/{len(self._all_transactions)} matches)"
@@ -1109,6 +1114,8 @@ class StacksOrbitGUI(App):
             self.action_refresh()
         elif tx_id == "empty-settings":
             self.w_tabbed_content.active = "settings"
+        elif tx_id == "empty-clear-filter":
+            self.action_clear_tx_filter()
         else:
             self.copy_to_clipboard(tx_id)
             self.notify(f"Transaction ID copied: {tx_id}", severity="information")
@@ -1120,13 +1127,16 @@ class StacksOrbitGUI(App):
             self.copy_to_clipboard(self.address)
             self.notify("Address copied to clipboard", severity="information")
 
-            # PALETTE: Visual feedback on the adjacent copy button
+            # PALETTE: Enhanced visual feedback on both button and label
             try:
                 btn = self.query_one("#copy-dashboard-address-btn", Button)
+                label = self.w_display_address
                 if btn.label != "✅":
                     btn.label = "✅"
+                    label.update("[green]Copied to clipboard![/]")
                     await asyncio.sleep(1)
                     btn.label = "📋"
+                    label.update(self.address)
             except Exception:
                 pass
 
@@ -1644,10 +1654,15 @@ class StacksOrbitGUI(App):
             self.copy_to_clipboard(self.address)
             self.notify("Address copied to clipboard", severity="information")
             btn = self.query_one("#copy-dashboard-address-btn", Button)
+            label = self.w_display_address
+
+            # PALETTE: Enhanced visual feedback on both button and label
             if btn.label != "✅":
                 btn.label = "✅"
+                label.update("[green]Copied to clipboard![/]")
                 await asyncio.sleep(1)
                 btn.label = "📋"
+                label.update(self.address)
 
     @on(Button.Pressed, "#copy-contract-id-btn")
     async def on_copy_contract_id_pressed(self) -> None:
