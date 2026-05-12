@@ -598,6 +598,16 @@ StacksOrbit is committed to supporting the latest Clarity language features.
     *   **Regression Testing:** Established a new security regression suite `tests/unit/test_sentinel_infra_hardening.py` and verified the identification and redaction of provider-specific credentials.
     *   **System Integrity:** Confirmed system stability via full Pytest (75 passed) and Vitest (5 passed) suites.
 
+### Session 49: Foundation Alignment & Dependency Modernization (Jules)
+
+*   **Objective:** Modernize the StacksOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Changes:**
+    *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
+    *   **Dependency Modernization:** Updated `package.json` with latest stable versions: `@stacks/clarinet-sdk` (^3.17.0), `vitest` (^4.1.6), and `@vitest/coverage-v8` (^4.1.6). Bumped project version to 1.2.8.
+    *   **Environment Setup:** Successfully configured the development environment, including Python `setuptools` and `requests` for the full system suite.
+    *   **System Verification:** Confirmed full-system integrity via successful execution of Vitest Simnet tests (7 passed) and Pytest core suites (125 passed).
+*   **Status:** Complete.
+
 ### Session 45: Discoverability & Semantic Visuals (Palette 🎨)
 
 *   **Objective:** Enhance the TUI with micro-UX improvements focused on keyboard discoverability, accessibility, and visual scannability.
@@ -632,7 +642,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 *   **Status:** Complete.
 
 ### Session Snapshot
-*   **Version:** 1.2.6
+*   **Version:** 1.2.8
 *   **License:** MIT (Standardized)
 *   **Documentation:** Root-Up Protocol Active
 *   **Tests:** Passed (Vitest Simnet & Pytest)
