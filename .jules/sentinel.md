@@ -60,7 +60,7 @@
 ## 2026-02-17 - Local Server Anti-Caching and Defensive Sanitization
 **Vulnerability:** The local wallet connection server lacked anti-caching headers, potentially persisting sensitive session tokens in browser caches. It also lacked client-side input sanitization before making external API calls.
 **Learning:** Local development servers that manage sensitive state via URL parameters must explicitly prevent caching to minimize the "persistence footprint" of session tokens. Additionally, defense-in-depth requires sanitizing user-provided data (like blockchain addresses) at the earliest possible entry point, even in the frontend.
-**Prevention:** Apply strict anti-caching headers (`Cache-Control: no-store`) to all authentication-related endpoints. Implement regex-based sanitization in client-side scripts before dispatching requests to external APIs. Expand global secret detection keyword lists as new sensitive data types (e.g., certificates, SSH keys) are identified.
+**Prevention:** Apply strict anti-caching headers (`Cache-Control: no-store`) to all authentication-related endpoints. Implement regex-based sanitization in client-side scripts before dispatching requests to external APIs. Expand global secret detection keyword lists as new sensitive data types (e.g., certificates, SSH keys) identified.
 
 ## 2026-02-18 - Keyword Hardening & Secure Persistence
 **Vulnerability:** Incomplete list of sensitive keywords in the central security module left potential secrets (like JWT tokens, salts, or API keys) unprotected during configuration persistence and logging. Additionally, .env values lacked newline escaping, which could be exploited for configuration injection.
@@ -146,11 +146,6 @@
 **Vulnerability:** Accidental exposure of service-specific credentials (e.g., GitHub tokens, Slack webhooks, Sentry DSNs) in logs or configuration artifacts because they lacked explicit pattern-based detection.
 **Learning:** Generic keywords like 'SECRET' or 'TOKEN' may miss provider-specific identifiers that don't follow standard naming conventions. Furthermore, treat signatures as potentially sensitive by default ensures a higher security floor for cryptographic data that might be mislabeled in protocols.
 **Prevention:** Maintain an expansive and proactive list of sensitive keywords covering popular development platforms (GitHub, GitLab, Discord) and infrastructure patterns (DSN, Webhook). Eliminate broad public-data exclusions for keywords like 'SIGNATURE' that are frequently reused for sensitive signing material.
-
-## 2026-04-17 - Mandatory Value-Based Redaction for Public Contexts
-**Vulnerability:** Sensitive strings (private keys and mnemonics) were bypassing redaction when stored under "public" configuration keys (e.g., `PUBLIC_DATA`, `TX_ID`) or within public collections. This occurred because "performance optimizations" in the recursive redaction logic were skipping value-based scanning for any field or list item associated with a public identifier.
-**Learning:** Optimization strategies in security-critical code must never prioritize performance over the core policy of 'Defense-in-Depth'. Categorizing a data structure as "public" based on its key name is a heuristic that can be easily abused or accidentally bypassed. Value-based detection should be treated as an immutable barrier for all string data.
-**Prevention:** Eliminate conditional bypasses for value-based secret detection. Ensure that all string values undergo content validation (`is_sensitive_value`) regardless of their container's identifiers or metadata. Reserve performance optimizations (like scalar hoisting) exclusively for non-string types that cannot contain the targeted secrets.
 
 ## 2026-05-06 - Mandatory Value-Based Redaction for Public Contexts
 **Vulnerability:** Sensitive strings (private keys and mnemonics) were bypassing redaction when stored under "public" configuration keys (e.g., `TX_ID`, `PUBLIC_DATA`) because the redaction logic skipped value scanning for keys marked as public.
