@@ -276,12 +276,8 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         # This provides a significant speedup for large numeric data (e.g., blockchain balances).
         # 🛡️ Sentinel: Value-based detection is ALWAYS performed for strings even in public
         # contexts to prevent accidental leaks under non-sensitive keys (Defense-in-Depth).
-        # Bolt ⚡: When in a public context, we can safely hoist strings to the fast-path
-        # to avoid O(N) value-based detection, providing a major speedup for public data.
         if not is_sensitive:
             fast_types = (int, float, bool)
-            if is_public:
-                fast_types = (int, float, bool, str)
 
             redacted_items = [
                 sub_item if isinstance(sub_item, fast_types) or sub_item is None
@@ -305,9 +301,6 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         if not is_sensitive:
             if isinstance(item, (int, float, bool)) or item is None:
                 return item
-            # Bolt ⚡: Fast-fail for strings in public contexts.
-            if is_public and isinstance(item, str):
-                return item
 
         if item is None:
             return None
@@ -320,11 +313,9 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         # Bolt ⚡: Avoid redundant str() conversion and stripping.
         is_val_sensitive = False
         if isinstance(item, str):
-            # Bolt ⚡: Skip value-based detection if the key is already marked sensitive OR public.
-            # This avoids redundant processing for known secrets and public blockchain data.
             # 🛡️ Sentinel: Value-based detection is performed for strings to prevent leaks,
-            # but we trust the 'public' marker to skip this O(N) check for performance.
-            is_val_sensitive = not is_sensitive and not is_public and is_sensitive_value(item)
+            # even in public contexts (Defense-in-Depth).
+            is_val_sensitive = not is_sensitive and is_sensitive_value(item)
 
         if is_sensitive or is_val_sensitive:
             # Skip empty values or common non-secret placeholders
