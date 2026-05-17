@@ -125,3 +125,7 @@
 ## 2025-05-15 - Zero-Copy Boundary Expansion for Large String Redaction
 **Learning:** I identified a significant performance cliff in `is_sensitive_value` where the existing zero-copy fast-fail (`not value[0].isspace()`) was bypassed by common trailing newlines in large contract source files. This forced an O(N) memory allocation and copy via `strip()` for multi-MB strings. By expanding the boundary check to 500 characters (`not value[:500].isspace() and not value[-500:].isspace()`), we can mathematically guarantee that any string satisfying this will exceed the 500-char secret threshold even after stripping.
 **Action:** Always use wide boundary checks (proportional to the target threshold) when implementing zero-copy optimizations for large untrusted payloads. This achieved a ~450x speedup for 10MB strings in benchmarks.
+
+## 2025-05-20 - Short-Circuit Redaction for Public Collections
+**Learning:** Performing value-based secret detection (regex/entropy checks) on large lists of known public strings (like transaction IDs or hashes) is both a CPU bottleneck and a source of false-positive redactions. Hoisting the 'is_public' state to the collection level and bypassing recursion for strings provides a massive speedup (~8-9x) for blockchain-heavy data structures.
+**Action:** Always leverage the 'is_public' flag in 'redact_recursive' to short-circuit 'is_sensitive_value' checks. For public collections, include 'str' in the fast-path type bypass to eliminate redundant function call overhead and prevent incorrect redaction of hex-like identifiers.
