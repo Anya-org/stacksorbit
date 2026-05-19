@@ -29,3 +29,7 @@
 ## 2025-05-15 - [Multi-Channel Feedback for Copy Actions]
 **Learning:** For high-value copy actions (like wallet addresses), providing feedback on both the trigger (button icon change) and the target data label (temporary "Copied!" text) ensures the user notices the success even if their focus is split. This is especially important in high-density dashboards where small icon changes might be missed.
 **Action:** Implement dual-channel feedback (button + label) for critical copy operations.
+
+## 2025-06-12 - [Context-Aware Data Extraction]
+**Learning:** In a data-heavy dashboard, users frequently need to extract specific values. Implementing context-aware copy logic that detects focused 'metric cards' and provides clean, text-only copies (via OSC 52 for terminal compatibility) significantly reduces user friction compared to manual selection. Explicitly cleaning UI markup from the copied string is essential for a professional experience.
+**Action:** Map the universal copy shortcut [c] to a context-aware dispatcher that intelligently handles focused data widgets and provides descriptive notifications.
