@@ -712,25 +712,25 @@ class StacksOrbitGUI(App):
 
         # Add tooltips to metric cards for better clarity
         self.query("#network-status").first().parent.tooltip = (
-            f"Current status of the Stacks API ({self.monitor.api_url}). Click or [Enter] to refresh [r]."
+            f"Current status of the Stacks API ({self.monitor.api_url}). [Enter] to refresh [r], [c] to copy."
         )
         self.query("#contract-count").first().parent.tooltip = (
-            "Total number of contracts deployed by this address. Click or [Enter] to browse [F2]."
+            "Total contracts deployed by this address. [Enter] to browse [F2], [c] to copy."
         )
         self.query("#balance").first().parent.tooltip = (
-            "Available STX balance in this account. Click or [Enter] to view transactions [F3]."
+            "Available STX balance in this account. [Enter] to view transactions [F3], [c] to copy."
         )
         self.query("#nonce").first().parent.tooltip = (
-            "Current account nonce (next transaction number). Click or [Enter] to view transactions [F3]."
+            "Current account nonce (next transaction number). [Enter] to view transactions [F3], [c] to copy."
         )
         self.query("#block-height").first().parent.tooltip = (
-            "Current Stacks blockchain height. Click or [Enter] to view transactions [F3]."
+            "Current Stacks blockchain height. [Enter] to view transactions [F3], [c] to copy."
         )
         self.query("#runway").first().parent.tooltip = (
-            "Project runway in months. Requires Supabase integration. Click or [Enter] to refresh [r]."
+            "Project runway in months. Requires Supabase integration. [r] to refresh, [c] to copy."
         )
         self.query("#exit-velocity").first().parent.tooltip = (
-            "Project exit velocity in ZAR. Requires Supabase integration. Click or [Enter] to refresh [r]."
+            "Project exit velocity in ZAR. Requires Supabase integration. [r] to refresh, [c] to copy."
         )
 
         # Dashboard navigation tooltips
@@ -1241,10 +1241,42 @@ class StacksOrbitGUI(App):
         """Switch to a specific tab."""
         self.w_tabbed_content.active = tab_id
 
+    def copy_to_clipboard(self, text: str) -> None:
+        """PALETTE: Copy text to the system clipboard using OSC 52 escape sequences."""
+        import base64
+        try:
+            # OSC 52 is a standard for clipboard access over SSH/terminals.
+            # It works in most modern terminal emulators.
+            b64_text = base64.b64encode(text.encode("utf-8")).decode("utf-8")
+            # Write directly to stdout to ensure it reaches the terminal emulator.
+            print(f"\033]52;c;{b64_text}\a", end="", flush=True)
+        except Exception as e:
+            self.notify(f"Clipboard error: {e}", severity="error")
+
     async def action_context_copy(self) -> None:
         """Unified 'Copy' [c] shortcut dispatcher. PALETTE: Enhanced efficiency."""
         tab = self.w_tabbed_content.active
         if tab == "overview":
+            # PALETTE: Context-aware copy for dashboard metrics
+            if self.focused and self.focused.id:
+                metric_map = {
+                    "metric-network": ("Network Status", self.w_network_status),
+                    "metric-contracts": ("Contracts Count", self.w_contract_count),
+                    "metric-balance": ("Balance", self.w_balance),
+                    "metric-nonce": ("Nonce", self.w_nonce),
+                    "metric-height": ("Block Height", self.w_block_height),
+                    "metric-runway": ("Runway", self.w_runway),
+                    "metric-exit-velocity": ("Exit Velocity", self.w_exit_velocity),
+                }
+                if self.focused.id in metric_map:
+                    label, widget = metric_map[self.focused.id]
+                    # Extract plain text from markup-heavy labels
+                    value = str(widget.renderable)
+                    clean_value = re.sub(r"\[.*?\]", "", value).replace("● ", "").strip()
+                    self.copy_to_clipboard(clean_value)
+                    self.notify(f"Copied {label}: {clean_value}", severity="information")
+                    return
+
             await self.on_copy_dashboard_address_pressed()
         elif tab == "contracts":
             await self.on_copy_contract_id_pressed()
