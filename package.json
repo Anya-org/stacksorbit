@@ -1,6 +1,6 @@
 {
   "name": "stacksorbit",
-  "version": "1.2.9",
+  "version": "1.3.0",
   "description": "CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
   "main": "bin/enhanced-stacksorbit.js",
   "bin": {
@@ -68,19 +68,28 @@
   "dependencies": {
     "@stacks/network": "^7.3.1",
     "@stacks/transactions": "^7.4.0",
-    "@stacks/wallet-sdk": "^7.2.0",
-    "axios": "^1.14.0",
-    "commander": "^11.1.0",
-    "dotenv": "^16.6.1",
-    "next": "^16.2.1"
+    "@stacks/wallet-sdk": "^7.4.0",
+    "axios": "^1.16.1",
+    "commander": "^14.0.3",
+    "dotenv": "^17.4.2",
+    "lodash": "^4.18.1",
+    "next": "^16.2.6"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.15",
+      "lodash": "^4.18.1"
+    }
   },
   "devDependencies": {
-    "@stacks/clarinet-sdk": "^3.17.0",
-    "vitest": "^4.1.6",
-    "vitest-environment-clarinet": "^3.0.2",
-    "@vitest/coverage-v8": "^4.1.6",
+    "@stacks/clarinet-sdk": "^3.18.1",
+    "@vitest/coverage-v8": "^4.1.7",
     "eslint": "^8.57.1",
-    "prettier": "^3.8.1"
+    "postcss": "^8.5.15",
+    "prettier": "^3.8.1",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7",
+    "vitest-environment-clarinet": "^3.0.2"
   },
   "python": {
     "version": ">=3.8",

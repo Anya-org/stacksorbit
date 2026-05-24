@@ -2,12 +2,12 @@
 # Python 3.8+ required
 
 # Core dependencies for enhanced CLI functionality
-python-dotenv>=1.0.0
+python-dotenv>=1.2.2
 toml>=0.10.2
-requests>=2.31.0
-pyyaml>=6.0.1
+requests>=2.34.2
+pyyaml>=6.0.3
 colorama>=0.4.6
-textual>=0.65.1
+textual>=8.2.7
 
 # GUI dependencies (included with Python)
 # tkinter (included with Python)
@@ -20,13 +20,13 @@ textual>=0.65.1
 # Note: Node.js dependencies handled by package.json
 
 # Development dependencies (optional)
-pytest>=7.0.0
+pytest>=9.0.3
 pytest-cov>=4.0.0
 pytest-mock>=3.10.0
 pytest-asyncio
-black>=23.0.0
-pylint>=2.17.0
-mypy>=1.0.0
+black>=26.5.1
+pylint>=4.0.5
+mypy>=2.1.0
 
 # Additional tools for enhanced deployment
 psutil>=5.9.0  # System monitoring

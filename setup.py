@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name="stacksorbit",
-    version="1.2.5",
+    version="1.3.0",
     description="CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -46,15 +46,15 @@ setup(
     ],
     extras_require={
         "dev": [
-            "pytest>=7.0.0",
+            "pytest>=9.0.3",
             "pytest-cov>=4.0.0",
             "pytest-asyncio",
-            "black>=23.0.0",
-            "pylint>=2.17.0",
-            "mypy>=1.0.0",
+            "black>=26.5.1",
+            "pylint>=4.0.5",
+            "mypy>=2.1.0",
         ],
         "test": [
-            "pytest>=7.0.0",
+            "pytest>=9.0.3",
             "pytest-mock>=3.10.0",
             "pytest-asyncio",
         ],
