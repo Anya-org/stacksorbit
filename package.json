@@ -1,22 +1,22 @@
 {
-  "name": "stacksorbit",
+  "name": "conxius-orbit",
   "version": "1.2.8",
   "description": "CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
-  "main": "bin/enhanced-stacksorbit.js",
+  "main": "bin/conxius-orbit.js",
   "bin": {
-    "stacksorbit": "./bin/enhanced-stacksorbit.js"
+    "conxius-orbit": "./bin/conxius-orbit.js"
   },
   "scripts": {
-    "start": "node bin/enhanced-stacksorbit.js",
-    "setup": "python stacksorbit_cli.py setup",
-    "deploy": "python stacksorbit_cli.py deploy",
-    "monitor": "python stacksorbit_cli.py monitor",
-    "verify": "python stacksorbit_cli.py verify",
-    "dashboard": "python stacksorbit_cli.py dashboard",
-    "diagnose": "python stacksorbit_cli.py diagnose",
-    "detect": "python stacksorbit_auto_detect.py",
+    "start": "node bin/conxius-orbit.js",
+    "setup": "python conxius_orbit_cli.py setup",
+    "deploy": "python conxius_orbit_cli.py deploy",
+    "monitor": "python conxius_orbit_cli.py monitor",
+    "verify": "python conxius_orbit_cli.py verify",
+    "dashboard": "python conxius_orbit_cli.py dashboard",
+    "diagnose": "python conxius_orbit_cli.py diagnose",
+    "detect": "python conxius_orbit_auto_detect.py",
     "check": "python conxian_testnet_deploy.py check",
-    "gui": "python stacksorbit_cli.py dashboard",
+    "gui": "python conxius_orbit_cli.py dashboard",
     "test": "pnpm run test:vitest",
     "test:unit": "python -m pytest tests/ -q",
     "test:integration": "python -m pytest tests/integration/ -q",
@@ -40,25 +40,26 @@
     "devtools",
     "web3",
     "clarinet",
-    "defi"
+    "defi",
+    "conxius"
   ],
   "author": {
     "name": "Conxian-Labs",
-    "email": "dev@anyachainlabs.com",
-    "url": "https://anyachainlabs.com"
+    "email": "dev@conxian.com",
+    "url": "https://conxian.com"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Conxian/stacksorbit.git"
+    "url": "git+https://github.com/Conxian/conxius-orbit.git"
   },
   "bugs": {
-    "url": "https://github.com/Conxian/stacksorbit/issues"
+    "url": "https://github.com/Conxian/conxius-orbit/issues"
   },
-  "homepage": "https://conxian.github.io/stacksorbit/",
+  "homepage": "https://conxian.github.io/conxius-orbit/",
   "engines": {
-    "node": ">=20.9.0",
-    "pnpm": ">=8.0.0"
+    "node": ">=20.19.0",
+    "pnpm": ">=9.0.0"
   },
   "os": [
     "darwin",
