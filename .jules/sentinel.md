@@ -151,3 +151,8 @@
 **Vulnerability:** Sensitive strings (private keys and mnemonics) were bypassing redaction when stored under "public" configuration keys (e.g., `TX_ID`, `PUBLIC_DATA`) because the redaction logic skipped value scanning for keys marked as public.
 **Learning:** Performance optimizations in security logic must not compromise defense-in-depth. Relying on key-name heuristics to skip content-based scanning creates a significant bypass vector if secrets are accidentally mislabeled or stored in public-looking containers.
 **Prevention:** Always perform value-based detection for string data regardless of the container's metadata or parent key identifiers. Reserve performance optimizations exclusively for non-string types that cannot contain the targeted secrets.
+
+## 2026-05-20 - Performance Optimization Regression in Redaction
+**Vulnerability:** A regression was introduced where "Bolt" performance optimizations once again bypassed value-based scanning for strings in "public" contexts, re-opening the secret leak vector for mislabeled data.
+**Learning:** Security controls that involve data scanning are frequent targets for "optimization" because they are computationally expensive. These optimizations often introduce subtle bypasses if they rely on metadata (like key names) that can be manipulated or misused.
+**Prevention:** Performance optimizations must be strictly constrained to data types that cannot contain secrets (e.g., non-strings). Never allow metadata-based heuristics to skip content-based security checks for variable-content types like strings.
