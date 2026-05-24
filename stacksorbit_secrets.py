@@ -274,10 +274,8 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         # Bolt ⚡: Hoist scalar type checks for non-sensitive collections to bypass redundant
         # function calls and internal checks for integers, floats, booleans, and None.
         # This provides a significant speedup for large numeric data (e.g., blockchain balances).
-        # Bolt ⚡: For public contexts, we also hoist string checks to avoid redundant recursion.
         if not is_sensitive:
-            # 🛡️ Sentinel: In public contexts (is_public=True), we can safely bypass recursion for strings.
-            fast_types = (int, float, bool, str) if is_public else (int, float, bool)
+            fast_types = (int, float, bool)
 
             redacted_items = [
                 sub_item if isinstance(sub_item, fast_types) or sub_item is None
@@ -314,9 +312,9 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
         is_val_sensitive = False
         if isinstance(item, str):
             # 🛡️ Sentinel: Value-based detection is performed for strings to prevent leaks.
-            # Bolt ⚡: Skip expensive value-based detection for fields already marked as public
-            # (e.g. TX_ID, HASH) to avoid false-positive redaction of public blockchain data.
-            is_val_sensitive = not is_sensitive and not is_public and is_sensitive_value(item)
+            # We ALWAYS perform value-based detection for strings, even if the key is marked public,
+            # to ensure secrets don't leak under non-sensitive or public names.
+            is_val_sensitive = not is_sensitive and is_sensitive_value(item)
 
         if is_sensitive or is_val_sensitive:
             # Skip empty values or common non-secret placeholders
