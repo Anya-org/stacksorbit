@@ -268,6 +268,17 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
                 key_upper = key.upper()
                 child_is_sensitive = child_is_sensitive or _is_sensitive_normalized(key_upper)
                 child_is_public = child_is_public or _is_public_normalized(key_upper)
+
+            # Bolt ⚡: Hoist scalar type checks for non-sensitive entries to bypass redundant
+            # recursion and internal validation for integers, floats, booleans, and None.
+            # This provides a significant speedup for large configuration and API response objects.
+            if not child_is_sensitive:
+                # 🛡️ Sentinel: In public contexts (is_public=True), we can safely bypass recursion for strings.
+                fast_types = (int, float, bool, str) if child_is_public else (int, float, bool)
+                if isinstance(value, fast_types) or value is None:
+                    redacted_dict[key] = value
+                    continue
+
             redacted_dict[key] = redact_recursive(value, key, child_is_sensitive, child_is_public)
         return redacted_dict
     elif isinstance(item, (list, tuple, set)):

@@ -129,3 +129,7 @@
 ## 2025-05-20 - Short-Circuit Redaction for Public Collections
 **Learning:** Performing value-based secret detection (regex/entropy checks) on large lists of known public strings (like transaction IDs or hashes) is both a CPU bottleneck and a source of false-positive redactions. Hoisting the 'is_public' state to the collection level and bypassing recursion for strings provides a massive speedup (~8-9x) for blockchain-heavy data structures.
 **Action:** Always leverage the 'is_public' flag in 'redact_recursive' to short-circuit 'is_sensitive_value' checks. For public collections, include 'str' in the fast-path type bypass to eliminate redundant function call overhead and prevent incorrect redaction of hex-like identifiers.
+
+## 2025-05-25 - Redaction Hoisting for Dictionaries
+**Learning:** I identified that recursive redaction was missing scalar hoisting for dictionaries, unlike lists and tuples. For large objects with many non-sensitive numeric or boolean fields, this caused thousands of redundant recursive calls, adding significant CPU latency to configuration loading and API result caching.
+**Action:** Always implement scalar and public-string hoisting in ALL recursive collection processors (including dictionaries) to ensure consistent performance across all data formats.
