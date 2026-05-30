@@ -1,23 +1,25 @@
 # Conxius Orbit
 
-Conxius Orbit is a supporting deployment toolkit in the Conxian portfolio.
+Conxius Orbit is public deployment tooling for contract deployment and environment setup around the Conxian ecosystem.
 
-## Role
+## Purpose
 
-This repository exists to support deployment workflows and builder tooling around smart contract and environment setup.
+Support deployment workflows, contract rollout tasks, and builder tooling tied to setup and environment coordination.
 
-## Owns
+## Status
 
-- deployment-oriented tooling
-- workflow support for contract deployment
-- narrow builder tooling tied to setup and deployment tasks
+Active development.
 
-## Does not own
+## Scope
 
-- canonical network adapter logic
-- shared-core ownership
-- strategic portfolio center
+This repository owns deployment-oriented tooling and builder workflows. It does not own canonical protocol logic, shared-core governance, or private operational records.
 
-## Relationship to the portfolio
+## Governance relation
 
-This repo supports the strategic builder-platform stack but is not itself the center of the platform architecture.
+This repository is maintained by Conxian Labs as ecosystem tooling supporting public protocol development.
+
+## Contact
+
+- General: [info@conxian-labs.com](mailto:info@conxian-labs.com)
+- Support: [support@conxian-labs.com](mailto:support@conxian-labs.com)
+- Security: [security@conxian-labs.com](mailto:security@conxian-labs.com)
