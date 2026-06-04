@@ -82,3 +82,10 @@ Thumbs.db
 test-results/
 playwright-report/
 .env
+
+# local workspace / agent metadata
+.idx/
+.jules/
+.Jules/
+.gemini/
+.trae/
