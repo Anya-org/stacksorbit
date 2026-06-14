@@ -1,10 +1,16 @@
 name: CI
 
+# Secure CI workflow with pinned actions and explicit permissions.
+# Pinned to commit SHAs to prevent supply chain attacks via mutable tags.
+
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -18,20 +24,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d202383bd # v4.7.1
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@b52d7e3823e17d7219603d4ad859d99c36940854 # v4.0.1
         with:
           node-version: '20'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@fe114fa871147a46494191d8e178120e2a39f60b # v4.0.0
         with:
           version: '10'
 
@@ -61,9 +67,9 @@ jobs:
 
       - name: Upload coverage (optional)
         if: matrix.os == 'ubuntu-latest' && hashFiles('coverage.xml') != ''
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         with:
           files: ./coverage.xml
           flags: unittests
-          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: codecov-${{ matrix.os }}-${{ matrix.python-version }}
           fail_ci_if_error: false

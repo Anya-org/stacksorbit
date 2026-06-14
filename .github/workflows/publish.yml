@@ -1,5 +1,8 @@
 name: Publish StacksOrbit
 
+# Secure Publish workflow with pinned actions and explicit permissions.
+# Includes tag-to-version validation to ensure release integrity.
+
 on:
   push:
     tags:
@@ -17,6 +20,9 @@ on:
         type: boolean
         default: true
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Run Tests
@@ -27,10 +33,10 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11']
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d202383bd # v4.7.1
         with:
           python-version: ${{ matrix.python-version }}
       
@@ -41,12 +47,12 @@ jobs:
           sudo apt-get install -y python3-tk
       
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@b52d7e3823e17d7219603d4ad859d99c36940854 # v4.0.1
         with:
           node-version: '20'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@fe114fa871147a46494191d8e178120e2a39f60b # v4.0.0
         with:
           version: '10'
       
@@ -80,35 +86,48 @@ jobs:
       
       - name: Upload coverage (optional)
         if: hashFiles('coverage.xml') != ''
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         with:
           files: ./coverage.xml
           flags: unittests
-          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: codecov-${{ matrix.os }}-${{ matrix.python-version }}
           fail_ci_if_error: false
 
   publish-npm:
     name: Publish to npm
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_npm == 'true')
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       
+      - name: Verify tag matches package version
+        if: github.event_name == 'push'
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Tag version ($TAG_VERSION) does not match package.json version ($PACKAGE_VERSION)"
+            false
+          fi
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d202383bd # v4.7.1
         with:
           python-version: '3.11'
       
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@b52d7e3823e17d7219603d4ad859d99c36940854 # v4.0.1
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@fe114fa871147a46494191d8e178120e2a39f60b # v4.0.0
         with:
           version: '10'
       
@@ -127,13 +146,25 @@ jobs:
     name: Publish to PyPI
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_pypi == 'true')
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       
+      - name: Verify tag matches setup.py version
+        if: github.event_name == 'push'
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          SETUP_VERSION=$(python setup.py --version)
+          if [ "$TAG_VERSION" != "$SETUP_VERSION" ]; then
+            echo "Tag version ($TAG_VERSION) does not match setup.py version ($SETUP_VERSION)"
+            false
+          fi
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d202383bd # v4.7.1
         with:
           python-version: '3.11'
       
@@ -149,26 +180,27 @@ jobs:
         run: twine check dist/*
       
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@812844510e059f14c403f65e19995bf72a8894a0 # v1.8.11
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
           skip_existing: true
 
   create-release:
     name: Create GitHub Release
     needs: [publish-npm, publish-pypi]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: github.event_name == 'push'
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       
       - name: Extract version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
       
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c90c00ffc7c041036972f1b8c1b9aed1140d2 # v1
         with:
           name: StacksOrbit v${{ steps.get_version.outputs.VERSION }}
           body: |
