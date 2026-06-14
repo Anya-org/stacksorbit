@@ -1,5 +1,8 @@
 name: Dependency Review
 
+# Secure Dependency Review workflow with pinned action reference and explicit permissions.
+# This workflow uses the shared Conxian repository definition for consistent policy enforcement.
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -9,7 +12,7 @@ permissions:
 
 jobs:
   dependency-review:
-    uses: Conxian/.github/.github/workflows/dependency-review.yml@main
+    uses: Conxian/.github/.github/workflows/dependency-review.yml@3c20d62f8f19839959ac12ec958570a8ab262e45 # main
     permissions:
       contents: read
       pull-requests: write
