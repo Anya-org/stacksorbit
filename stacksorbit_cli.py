@@ -328,7 +328,7 @@ class SetupWizard:
         total_tests += 1
         print("🔍 Testing configuration...")
         try:
-            from enhanced_conxian_deployment import EnhancedConfigManager
+            from scripts.enhanced_conxian_deployment import EnhancedConfigManager
 
             config_manager = EnhancedConfigManager(".env")
             config = config_manager.load_config()
@@ -778,7 +778,7 @@ class UltimateStacksOrbit:
     def __init__(self):
         self.project_root = Path.cwd()
         self.config_path = ".env"
-        self.templates_path = "deployment_templates.json"
+        self.templates_path = os.path.join(os.path.dirname(__file__), "settings", "deployment_templates.json")
         self._config_manager = None
         self._config = None
         self._monitor = None
@@ -790,7 +790,7 @@ class UltimateStacksOrbit:
     def config_manager(self):
         """Bolt ⚡: Lazily initialize shared configuration manager."""
         if self._config_manager is None:
-            from enhanced_conxian_deployment import EnhancedConfigManager
+            from scripts.enhanced_conxian_deployment import EnhancedConfigManager
 
             self._config_manager = EnhancedConfigManager(self.config_path)
         return self._config_manager
@@ -815,7 +815,7 @@ class UltimateStacksOrbit:
 
     def _load_templates(self) -> Dict:
         """Load deployment templates"""
-        template_file = Path(__file__).parent / self.templates_path
+        template_file = Path(self.templates_path)
         if template_file.exists():
             with open(template_file, "r") as f:
                 return json.load(f)
@@ -915,7 +915,7 @@ class UltimateStacksOrbit:
             return 1
 
         # Initialize deployer
-        from enhanced_conxian_deployment import EnhancedConxianDeployer
+        from scripts.enhanced_conxian_deployment import EnhancedConxianDeployer
 
         run_pnpm_tests = bool(options.get("run_pnpm_tests")) or bool(
             options.get("dry_run")
@@ -1049,7 +1049,7 @@ class UltimateStacksOrbit:
         expected_contracts = options.get("contracts")
         if not expected_contracts:
             # Try to load from Clarinet.toml
-            from deployment_verifier import load_expected_contracts
+            from scripts.deployment_verifier import load_expected_contracts
 
             expected_contracts = load_expected_contracts()
 
@@ -1060,7 +1060,7 @@ class UltimateStacksOrbit:
             return 1
 
         # Initialize verifier
-        from deployment_verifier import DeploymentVerifier
+        from scripts.deployment_verifier import DeploymentVerifier
 
         verifier = DeploymentVerifier(
             network=config.get("NETWORK", "testnet"), config=config
@@ -1188,7 +1188,7 @@ class UltimateStacksOrbit:
         # 4. Contract Analysis
         print("📦 Contract Analysis...")
         try:
-            from enhanced_conxian_deployment import EnhancedConxianDeployer
+            from scripts.enhanced_conxian_deployment import EnhancedConxianDeployer
 
             # Bolt ⚡: Pass the shared monitor instance to the deployer.
             deployer = EnhancedConxianDeployer(
@@ -1460,7 +1460,7 @@ class UltimateStacksOrbit:
 
     def run_devnet(self, options: Dict) -> int:
         """Run local development network"""
-        from local_devnet import LocalDevnet
+        from scripts.local_devnet import LocalDevnet
 
         # Load configuration (Bolt ⚡: use shared lazy property)
         config = self.config

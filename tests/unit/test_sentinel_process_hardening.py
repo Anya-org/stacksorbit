@@ -3,7 +3,7 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 from pathlib import Path
-from enhanced_conxian_deployment import EnhancedConxianDeployer
+from scripts.enhanced_conxian_deployment import EnhancedConxianDeployer
 from stacksorbit_secrets import is_sensitive_key, redact_recursive
 
 def test_api_key_redaction_expansion():
@@ -34,7 +34,7 @@ def test_deploy_single_contract_env_hardening():
     }
 
     # Mock Path and subprocess.run
-    with patch("enhanced_conxian_deployment.Path") as mock_path:
+    with patch("scripts.enhanced_conxian_deployment.Path") as mock_path:
         # Set up mock_path to make the script and contract files "exist"
         mock_js_script = MagicMock()
         mock_js_script.exists.return_value = True
@@ -53,7 +53,7 @@ def test_deploy_single_contract_env_hardening():
 
         mock_path.side_effect = side_effect
 
-        with patch("enhanced_conxian_deployment.subprocess.run") as mock_run:
+        with patch("scripts.enhanced_conxian_deployment.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
                 stdout=json.dumps({"success": True, "txId": "0x123"}),
                 returncode=0

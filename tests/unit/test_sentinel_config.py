@@ -1,6 +1,6 @@
 import os
 import unittest
-from enhanced_conxian_deployment import EnhancedConfigManager
+from scripts.enhanced_conxian_deployment import EnhancedConfigManager
 
 class TestSentinelConfig(unittest.TestCase):
 

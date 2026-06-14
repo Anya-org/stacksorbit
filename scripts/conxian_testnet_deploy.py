@@ -23,9 +23,9 @@ if sys.platform == "win32":
 
 # Import our enhanced modules
 from stacksorbit_secrets import is_sensitive_key, redact_recursive, save_secure_config
-from enhanced_conxian_deployment import EnhancedConfigManager, EnhancedConxianDeployer
+from scripts.enhanced_conxian_deployment import EnhancedConfigManager, EnhancedConxianDeployer
 from deployment_monitor import DeploymentMonitor
-from deployment_verifier import DeploymentVerifier, load_expected_contracts
+from scripts.deployment_verifier import DeploymentVerifier, load_expected_contracts
 
 
 class ConxianTestnetDeployer:

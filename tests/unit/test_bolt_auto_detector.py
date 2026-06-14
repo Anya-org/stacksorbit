@@ -2,7 +2,7 @@ import pytest
 import re
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from enhanced_auto_detector import GenericStacksAutoDetector
+from scripts.enhanced_auto_detector import GenericStacksAutoDetector
 
 def test_sorting_priority_logic():
     detector = GenericStacksAutoDetector()

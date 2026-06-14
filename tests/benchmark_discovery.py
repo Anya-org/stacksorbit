@@ -2,7 +2,7 @@
 import time
 from pathlib import Path
 from unittest.mock import MagicMock
-from enhanced_auto_detector import GenericStacksAutoDetector
+from scripts.enhanced_auto_detector import GenericStacksAutoDetector
 
 def benchmark():
     # Mocking external calls

@@ -5,7 +5,7 @@ import sys
 # Add parent directory to path to import modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from enhanced_conxian_deployment import EnhancedConfigManager
+from scripts.enhanced_conxian_deployment import EnhancedConfigManager
 
 
 class TestConfigValidators(unittest.TestCase):

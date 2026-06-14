@@ -138,7 +138,7 @@ from stacksorbit_secrets import (
 class StacksOrbitGUI(App):
     """A Textual dashboard for StacksOrbit."""
 
-    CSS_PATH = ["stacksorbit_gui.tcss", "stacksorbit_gui_sovereign.tcss"]
+    CSS_PATH = ["styles/dashboard.tcss", "styles/stacksorbit_gui.tcss", "styles/stacksorbit_gui_sovereign.tcss"]
 
     BINDINGS = [
         Binding("d", "toggle_dark", "Toggle dark mode"),
