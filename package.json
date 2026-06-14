@@ -2,12 +2,12 @@
   "name": "conxius-orbit",
   "version": "1.2.8",
   "description": "CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
-  "main": "bin/conxius-orbit.js",
+  "main": "bin/stacksorbit.js",
   "bin": {
-    "conxius-orbit": "./bin/conxius-orbit.js"
+    "conxius-orbit": "./bin/stacksorbit.js"
   },
   "scripts": {
-    "start": "node bin/conxius-orbit.js",
+    "start": "node bin/stacksorbit.js",
     "setup": "python conxius_orbit_cli.py setup",
     "deploy": "python conxius_orbit_cli.py deploy",
     "monitor": "python conxius_orbit_cli.py monitor",

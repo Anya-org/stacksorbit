@@ -8,8 +8,8 @@ from pathlib import Path
 # Add parent directory to path to import modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from enhanced_conxian_deployment import EnhancedConxianDeployer, EnhancedConfigManager
-from deployment_verifier import DeploymentVerifier
+from scripts.enhanced_conxian_deployment import EnhancedConxianDeployer, EnhancedConfigManager
+from scripts.deployment_verifier import DeploymentVerifier
 
 class TestConxianFullIntegration(unittest.TestCase):
     """Full integration tests for Conxian using Stacksorbit"""
@@ -106,7 +106,7 @@ class TestConxianFullIntegration(unittest.TestCase):
             
             # Using a private method or internal logic if available, otherwise just checking init
             # If load_expected_contracts is a standalone function in deployment_verifier.py:
-            from deployment_verifier import load_expected_contracts
+            from scripts.deployment_verifier import load_expected_contracts
             expected = load_expected_contracts()
             self.assertTrue(len(expected) > 0, "Should find contracts in Clarinet.toml")
             self.assertIn("cxd-token", expected, "Should find cxd-token")

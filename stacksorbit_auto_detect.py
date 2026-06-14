@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 # Import the generic auto-detector
-from enhanced_auto_detector import GenericStacksAutoDetector
+from scripts.enhanced_auto_detector import GenericStacksAutoDetector
 
 
 class StacksOrbitCLIIntegration:

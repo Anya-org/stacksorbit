@@ -1694,7 +1694,7 @@ class GenericStacksAutoDetector:
         }
 
         try:
-            from enhanced_conxian_deployment import EnhancedConfigManager
+            from scripts.enhanced_conxian_deployment import EnhancedConfigManager
             from deployment_monitor import DeploymentMonitor
 
             # Use deployment monitor if available
