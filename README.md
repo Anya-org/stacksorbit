@@ -1,6 +1,6 @@
 # Conxius Orbit
 
-Conxius Orbit is public deployment tooling for contract deployment and environment setup around the Conxian ecosystem.
+Conxius Orbit is public deployment and operator tooling around the broader Conxian ecosystem.
 
 ## Purpose
 
@@ -8,7 +8,7 @@ Support deployment workflows, contract rollout tasks, and builder tooling tied t
 
 ## Status
 
-**Active development.** This repository is a public tooling surface and should be treated as deployment-oriented ecosystem infrastructure rather than the canonical protocol source of truth.
+**Active development.** This repository is a public tooling surface and should be treated as deployment-oriented support infrastructure rather than the canonical protocol source of truth.
 
 ## Scope
 
@@ -16,11 +16,11 @@ This repository owns deployment-oriented tooling, rollout helpers, and builder w
 
 ## Governance relation
 
-This repository is maintained by Conxian Labs as ecosystem tooling supporting public protocol development.
+This repository is maintained by Conxian-Labs as ecosystem tooling supporting public protocol development and operations.
 
 ## Relationship to the Conxian stack
 
-- `Conxian` is the protocol core.
+- `Conxian` is the protocol and DAO-facing core.
 - `conxian-gateway` and `conxian-nexus` provide middleware and state services around deployed systems.
 - `conxius-platform` provides broader platform and environment scaffolding.
 
