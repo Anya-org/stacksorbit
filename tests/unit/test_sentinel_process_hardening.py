@@ -6,32 +6,28 @@ from pathlib import Path
 from scripts.enhanced_conxian_deployment import EnhancedConxianDeployer
 from stacksorbit_secrets import is_sensitive_key, redact_recursive
 
+
 def test_api_key_redaction_expansion():
     """🛡️ Sentinel: Verify that APIKEY and API_KEY are now redacted even with public prefixes."""
     assert is_sensitive_key("PUBLIC_API_KEY") is True
     assert is_sensitive_key("ADDR_APIKEY") is True
 
-    config = {
-        "PUBLIC_API_KEY": "secret-api-123",
-        "ADDR_APIKEY": "secret-api-456"
-    }
+    config = {"PUBLIC_API_KEY": "secret-api-123", "ADDR_APIKEY": "secret-api-456"}
     redacted = redact_recursive(config)
     assert redacted["PUBLIC_API_KEY"] == "<redacted>"
     assert redacted["ADDR_APIKEY"] == "<redacted>"
+
 
 def test_deploy_single_contract_env_hardening():
     """🛡️ Sentinel: Verify that DEPLOYER_PRIVKEY is passed via env and removed from CLI args."""
     config = {
         "DEPLOYER_PRIVKEY": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "NETWORK": "testnet",
-        "SYSTEM_ADDRESS": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
+        "SYSTEM_ADDRESS": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
     }
     deployer = EnhancedConxianDeployer(config)
 
-    contract = {
-        "name": "my-contract",
-        "path": "contracts/my-contract.clar"
-    }
+    contract = {"name": "my-contract", "path": "contracts/my-contract.clar"}
 
     # Mock Path and subprocess.run
     with patch("scripts.enhanced_conxian_deployment.Path") as mock_path:
@@ -55,8 +51,7 @@ def test_deploy_single_contract_env_hardening():
 
         with patch("scripts.enhanced_conxian_deployment.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
-                stdout=json.dumps({"success": True, "txId": "0x123"}),
-                returncode=0
+                stdout=json.dumps({"success": True, "txId": "0x123"}), returncode=0
             )
 
             tx_id = deployer._deploy_single_contract(contract)

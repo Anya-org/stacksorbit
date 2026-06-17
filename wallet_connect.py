@@ -12,13 +12,13 @@ import http.server
 import socketserver
 import webbrowser
 import json
+
 NETWORK_API_MAP = {
     "mainnet": "https://api.mainnet.hiro.so",
     "testnet": "https://api.testnet.hiro.so",
     "devnet": "http://localhost:3999",
 }
 
-import threading
 import time
 import secrets
 import urllib.parse
@@ -123,10 +123,10 @@ WALLET_CONNECT_HTML = """
         .copy-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
         .info { margin-top: 20px; font-size: 14px; color: #888; }
         .qr-section { margin: 20px 0; }
-        #qrcode { 
-            display: inline-block; 
-            padding: 15px; 
-            background: white; 
+        #qrcode {
+            display: inline-block;
+            padding: 15px;
+            background: white;
             border-radius: 10px;
             margin: 10px 0;
         }
@@ -140,20 +140,20 @@ WALLET_CONNECT_HTML = """
         <div class="logo">🚀</div>
         <h1>StacksOrbit</h1>
         <p class="subtitle">Connect your Stacks wallet for testnet deployment</p>
-        
+
         <div id="connect-section">
             <button class="btn" id="connectBtn" onclick="connectWallet()">
                 Connect Leather/Xverse Wallet
             </button>
-            
+
             <div class="qr-section hidden" id="qr-section">
                 <p>Or scan with mobile wallet:</p>
                 <div id="qrcode"></div>
             </div>
         </div>
-        
+
         <div id="status" class="status hidden"></div>
-        
+
         <div class="info">
             <p>Network: <strong>Testnet</strong></p>
             <p>This will connect your wallet for contract deployment</p>
@@ -162,30 +162,30 @@ WALLET_CONNECT_HTML = """
 
     <script>
         let connectedAddress = null;
-        
+
         async function connectWallet() {
             const btn = document.getElementById('connectBtn');
             const status = document.getElementById('status');
-            
+
             btn.disabled = true;
             btn.textContent = 'Connecting...';
-            
+
             // Check for Stacks wallet
-            if (typeof window.StacksProvider !== 'undefined' || 
+            if (typeof window.StacksProvider !== 'undefined' ||
                 typeof window.LeatherProvider !== 'undefined' ||
                 typeof window.XverseProviders !== 'undefined') {
-                
+
                 try {
                     // Try Leather/Hiro Wallet first
                     const provider = window.StacksProvider || window.LeatherProvider;
-                    
+
                     if (provider) {
                         const response = await provider.request({
                             method: 'stx_requestAccounts'
                         });
-                        
+
                         if (response && response.addresses) {
-                            const testnetAddr = response.addresses.find(a => 
+                            const testnetAddr = response.addresses.find(a =>
                                 a.address.startsWith('ST')
                             );
                             if (testnetAddr) {
@@ -196,13 +196,13 @@ WALLET_CONNECT_HTML = """
                             }
                         }
                     }
-                    
+
                     // Try Xverse
                     if (window.XverseProviders) {
                         const xverse = window.XverseProviders.StacksProvider;
                         const response = await xverse.request('getAddresses', {});
                         if (response.result && response.result.addresses) {
-                            const testnetAddr = response.result.addresses.find(a => 
+                            const testnetAddr = response.result.addresses.find(a =>
                                 a.address.startsWith('ST')
                             );
                             if (testnetAddr) {
@@ -213,7 +213,7 @@ WALLET_CONNECT_HTML = """
                             }
                         }
                     }
-                    
+
                     showError('Could not get testnet address. Make sure wallet is on testnet.');
                 } catch (err) {
                     showError('Connection failed: ' + err.message);
@@ -222,11 +222,11 @@ WALLET_CONNECT_HTML = """
                 showError('No Stacks wallet detected. Please install Leather or Xverse wallet.');
                 showQRCode();
             }
-            
+
             btn.disabled = false;
             btn.textContent = 'Connect Leather/Xverse Wallet';
         }
-        
+
         function showSuccess(address) {
             const status = document.getElementById('status');
             status.className = 'status success';
@@ -242,7 +242,7 @@ WALLET_CONNECT_HTML = """
             `;
             document.getElementById('connected-addr').textContent = address;
             status.classList.remove('hidden');
-            
+
             fetchBalance(address);
         }
 
@@ -254,7 +254,7 @@ WALLET_CONNECT_HTML = """
             copyBtn.textContent = '✅';
             setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
         }
-        
+
         function showError(message) {
             const status = document.getElementById('status');
             status.className = 'status error';
@@ -262,11 +262,11 @@ WALLET_CONNECT_HTML = """
             document.getElementById('error-text').textContent = '❌ ' + message;
             status.classList.remove('hidden');
         }
-        
+
         function showQRCode() {
             const qrSection = document.getElementById('qr-section');
             qrSection.classList.remove('hidden');
-            
+
             // Generate QR code with wallet connect URL
             const connectUrl = window.location.href;
             QRCode.toCanvas(document.createElement('canvas'), connectUrl, {
@@ -279,7 +279,7 @@ WALLET_CONNECT_HTML = """
                 }
             });
         }
-        
+
         async function fetchBalance(address) {
             // 🛡️ Sentinel: Validate address before fetching to prevent malformed requests
             if (!address || !/^[ST][0-9ABCDEFGHJKMNPQRSTVWXYZ]{26,45}$/i.test(address)) {
@@ -292,14 +292,14 @@ WALLET_CONNECT_HTML = """
                 );
                 const data = await response.json();
                 const stxBalance = parseInt(data.stx?.balance || 0) / 1000000;
-                
+
                 const status = document.getElementById('status');
                 status.innerHTML += `<p class="balance">Balance: ${stxBalance.toFixed(6)} STX</p>`;
             } catch (err) {
                 console.error('Failed to fetch balance:', err);
             }
         }
-        
+
         function sendToServer(address) {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
@@ -315,12 +315,13 @@ WALLET_CONNECT_HTML = """
 </html>
 """
 
+
 class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
     """HTTP handler for wallet connection"""
-    
+
     connected_address = None
     session_token = None
-    
+
     def do_GET(self):
         # 🛡️ Sentinel: Validate session token for all GET requests to prevent unauthorized access.
         if "?" not in self.path:
@@ -332,7 +333,11 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
         token = query.get("token", [None])[0]
 
         # 🛡️ Sentinel: Use secrets.compare_digest to prevent timing attacks
-        if not token or not WalletConnectHandler.session_token or not secrets.compare_digest(token, WalletConnectHandler.session_token):
+        if (
+            not token
+            or not WalletConnectHandler.session_token
+            or not secrets.compare_digest(token, WalletConnectHandler.session_token)
+        ):
             print("⚠️  Unauthorized GET attempt: Invalid session token")
             self.send_error(403, "Invalid session token")
             return
@@ -347,7 +352,9 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("X-Frame-Options", "DENY")
             self.send_header("X-XSS-Protection", "0")
             self.send_header("Referrer-Policy", "no-referrer")
-            api_url = NETWORK_API_MAP.get(WalletConnectHandler.network, NETWORK_API_MAP['testnet'])
+            api_url = NETWORK_API_MAP.get(
+                WalletConnectHandler.network, NETWORK_API_MAP["testnet"]
+            )
             self.send_header(
                 "Content-Security-Policy",
                 f"default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' {api_url}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none';",
@@ -357,15 +364,17 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
                 "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()",
             )
             self.end_headers()
-            api_url = NETWORK_API_MAP.get(WalletConnectHandler.network, NETWORK_API_MAP['testnet'])
+            api_url = NETWORK_API_MAP.get(
+                WalletConnectHandler.network, NETWORK_API_MAP["testnet"]
+            )
             self.wfile.write(WALLET_CONNECT_HTML.replace("{api_url}", api_url).encode())
         else:
             self.send_error(404)
-    
+
     def do_POST(self):
-        if self.path == '/wallet-connected':
+        if self.path == "/wallet-connected":
             try:
-                content_length = int(self.headers.get('Content-Length', 0))
+                content_length = int(self.headers.get("Content-Length", 0))
                 # 🛡️ Sentinel: DoS Protection - limit request body size and prevent negative values
                 if content_length < 0:
                     self.send_error(400, "Invalid Content-Length")
@@ -383,27 +392,33 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
                     self.send_error(400, "Bad Request: JSON body must be a dictionary")
                     return
 
-                token = data.get('token')
+                token = data.get("token")
                 # 🛡️ Sentinel: Validate session token to prevent unauthorized overrides.
                 # Use secrets.compare_digest to prevent timing attacks and ensure type safety.
                 if (
                     not isinstance(token, str)
                     or not WalletConnectHandler.session_token
-                    or not secrets.compare_digest(token, WalletConnectHandler.session_token)
+                    or not secrets.compare_digest(
+                        token, WalletConnectHandler.session_token
+                    )
                 ):
                     print("⚠️  Unauthorized connection attempt: Invalid session token")
                     self.send_error(403, "Invalid session token")
                     return
 
-                address = data.get('address')
+                address = data.get("address")
                 # 🛡️ Sentinel: Validate Stacks address format and network
-                if not address or not validate_stacks_address(address, network=WalletConnectHandler.network):
+                if not address or not validate_stacks_address(
+                    address, network=WalletConnectHandler.network
+                ):
                     print(f"⚠️  Invalid Stacks address received: {address}")
                     self.send_error(400, "Invalid Stacks address")
                     return
 
                 WalletConnectHandler.connected_address = address
-                print(f"\n✅ Wallet connected and validated: {WalletConnectHandler.connected_address}")
+                print(
+                    f"\n✅ Wallet connected and validated: {WalletConnectHandler.connected_address}"
+                )
 
                 self.send_response(200)
                 self.send_header("Content-type", "application/json; charset=utf-8")
@@ -413,21 +428,27 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_header("X-Content-Type-Options", "nosniff")
                 self.send_header("X-XSS-Protection", "0")
                 self.end_headers()
-                self.wfile.write(json.dumps({'status': 'ok'}).encode())
-            except (json.JSONDecodeError, ValueError, KeyError, TypeError, AttributeError) as e:
+                self.wfile.write(json.dumps({"status": "ok"}).encode())
+            except (
+                json.JSONDecodeError,
+                ValueError,
+                KeyError,
+                TypeError,
+                AttributeError,
+            ) as e:
                 # 🛡️ Sentinel: Include AttributeError to prevent 500 errors on malformed payloads.
                 print(f"⚠️  Error processing wallet connection: {e}")
                 self.send_error(400, "Bad Request")
         else:
             self.send_error(404)
-    
+
     def log_message(self, format, *args):
         pass  # Suppress logging
 
 
-def start_wallet_connect_server(port=8765, network='testnet'):
+def start_wallet_connect_server(port=8765, network="testnet"):
     """Start the wallet connect server and open browser"""
-    
+
     # 🛡️ Sentinel: Generate a random session token for security
     token = secrets.token_urlsafe(16)
     WalletConnectHandler.session_token = token
@@ -447,41 +468,42 @@ def start_wallet_connect_server(port=8765, network='testnet'):
 ║  or click "Connect" if using browser extension               ║
 ╚══════════════════════════════════════════════════════════════╝
 """)
-    
+
     socketserver.TCPServer.allow_reuse_address = True
     # 🛡️ Sentinel: Bind only to localhost (127.0.0.1) for security.
     with socketserver.TCPServer(("127.0.0.1", port), WalletConnectHandler) as httpd:
         # Open browser
         webbrowser.open(url)
-        
+
         print("Waiting for wallet connection... (Press Ctrl+C to cancel)")
-        
+
         # Wait for connection
         timeout = 300  # 5 minutes
         start_time = time.time()
-        
+
         while WalletConnectHandler.connected_address is None:
             httpd.handle_request()
             if time.time() - start_time > timeout:
                 print("\n⏰ Timeout waiting for wallet connection")
                 return None
-        
+
         address = WalletConnectHandler.connected_address
-        
+
         # Save to config
         save_wallet_address(address, network)
-        
+
         return address
 
 
 def save_wallet_address(address, network):
     """Save the connected wallet address to .env"""
-    env_path = Path('.env')
+    env_path = Path(".env")
     config = {}
 
     if env_path.exists():
         # Load existing config to preserve other non-sensitive settings
         from dotenv import dotenv_values
+
         config = dotenv_values(dotenv_path=env_path)
 
     # Update with new address
@@ -496,18 +518,18 @@ def save_wallet_address(address, network):
     print(f"\n✅ Saved wallet address to .env: {address}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
-    
+
     port = 8765
     if len(sys.argv) > 1:
         try:
             port = int(sys.argv[1])
         except ValueError:
             pass
-    
+
     address = start_wallet_connect_server(port)
-    
+
     if address:
         print(f"""
 ╔══════════════════════════════════════════════════════════════╗

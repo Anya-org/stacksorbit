@@ -1,6 +1,7 @@
 import pytest
 from stacksorbit_secrets import redact_recursive
 
+
 def test_redact_bytes():
     """Test that bytes objects are correctly redacted."""
     key = "DEPLOYER_PRIVKEY"
@@ -9,6 +10,7 @@ def test_redact_bytes():
     redacted = redact_recursive(config)
     assert redacted[key] == b"<redacted>"
 
+
 def test_redact_tuple():
     """Test that tuple objects are correctly redacted."""
     key = "DEPLOYER_PRIVKEY"
@@ -16,6 +18,7 @@ def test_redact_tuple():
     config = {key: value}
     redacted = redact_recursive(config)
     assert redacted[key] == ("<redacted>", "<redacted>")
+
 
 def test_redact_set():
     """Test that set objects are correctly redacted."""
@@ -26,8 +29,10 @@ def test_redact_set():
     # set will collapse multiple identical "<redacted>" strings
     assert redacted[key] == {"<redacted>"}
 
+
 def test_redact_unknown_object():
     """Test that unknown objects are correctly redacted."""
+
     class SecretObject:
         def __str__(self):
             return "secret_representation"
@@ -38,31 +43,31 @@ def test_redact_unknown_object():
     redacted = redact_recursive(config)
     assert redacted[key] == "<redacted>"
 
+
 def test_no_redact_safe_types():
     """Test that safe types are NOT redacted when the key is NOT sensitive."""
     config = {
         "PUBLIC_NAME": "public_value",
         "PUBLIC_DATA": b"public_bytes",
-        "PUBLIC_INFO": ("public", "tuple")
+        "PUBLIC_INFO": ("public", "tuple"),
     }
     redacted = redact_recursive(config)
     assert redacted["PUBLIC_NAME"] == "public_value"
     assert redacted["PUBLIC_DATA"] == b"public_bytes"
     assert redacted["PUBLIC_INFO"] == ("public", "tuple")
 
+
 def test_nested_mixed_containers():
     """Test redaction in nested mixed containers."""
     config = {
         "METADATA": {
-            "SENSITIVE_DATA": [
-                b"bytes_secret",
-                {"nested_key": ("tuple_secret",)}
-            ]
+            "SENSITIVE_DATA": [b"bytes_secret", {"nested_key": ("tuple_secret",)}]
         }
     }
     redacted = redact_recursive(config)
     assert redacted["METADATA"]["SENSITIVE_DATA"][0] == b"<redacted>"
     assert redacted["METADATA"]["SENSITIVE_DATA"][1]["nested_key"] == ("<redacted>",)
+
 
 def test_sensitive_key_redaction_expansion():
     """🛡️ Sentinel: Verify that newly added high-confidence keywords are redacted even with public prefixes."""
@@ -88,16 +93,21 @@ def test_sensitive_key_redaction_expansion():
     # Generic public keys (should remain False)
     assert is_sensitive_key("PUBLIC_KEY") is False
     assert is_sensitive_key("ADDR_HASH") is False
-    assert is_sensitive_key("TX_SIGNATURE") is True  # Redacted because it's high-confidence
+    assert (
+        is_sensitive_key("TX_SIGNATURE") is True
+    )  # Redacted because it's high-confidence
     assert is_sensitive_key("CONTRACT_PRINCIPAL") is False
     assert is_sensitive_key("DEPLOYMENT_ADDR") is False
+
 
 def test_case_insensitivity():
     """🛡️ Sentinel: Verify that detection is case-insensitive."""
     from stacksorbit_secrets import is_sensitive_key
+
     assert is_sensitive_key("public_recovery_phrase") is True
     assert is_sensitive_key("Addr_Seed_Phrase") is True
     assert is_sensitive_key("Public_Key") is False
+
 
 def test_new_redaction_keywords():
     """🛡️ Sentinel: Verify that new high-confidence keywords are redacted."""
@@ -118,11 +128,12 @@ def test_new_redaction_keywords():
         "CSRF_SECRET": "csrf789",
         "SESSID": "sid000",
         "SESSIONID": "sid111",
-        "DECRYPT_PASS": "pass222"
+        "DECRYPT_PASS": "pass222",
     }
     redacted = redact_recursive(config)
     for key in config:
         assert redacted[key] == "<redacted>"
+
 
 def test_new_placeholders_preserved():
     """🛡️ Sentinel: Verify that new placeholders are preserved."""
@@ -133,7 +144,7 @@ def test_new_placeholders_preserved():
 
     config = {
         "OAUTH_TOKEN": "your_oauth_token_here",
-        "SESSION_COOKIE": "your_cookie_here"
+        "SESSION_COOKIE": "your_cookie_here",
     }
     redacted = redact_recursive(config)
     assert redacted["OAUTH_TOKEN"] == "your_oauth_token_here"

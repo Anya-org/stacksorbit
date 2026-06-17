@@ -1,6 +1,7 @@
 import pytest
 from stacksorbit_secrets import is_sensitive_key
 
+
 def test_high_confidence_expansion():
     """🛡️ Sentinel: Verify that expanded high-confidence keywords are redacted even with public prefixes."""
 
@@ -12,11 +13,12 @@ def test_high_confidence_expansion():
         "PUBLIC_GPG_KEY",
         "ADDR_PKCS12_CERT",
         "TX_SSH_PRIVATE_KEY",
-        "SYSTEM_PEM_FILE"
+        "SYSTEM_PEM_FILE",
     ]
 
     for key in new_sensitive_composite_keys:
         assert is_sensitive_key(key) is True, f"Key {key} should be sensitive"
+
 
 def test_existing_high_confidence():
     """🛡️ Sentinel: Verify that existing high-confidence keywords still work correctly."""
@@ -26,11 +28,12 @@ def test_existing_high_confidence():
         "TX_AUTH_KEY",
         "PUBLIC_RECOVERY_PHRASE",
         "ADDR_SEED_PHRASE",
-        "PUBLIC_DB_PASSWORD"
+        "PUBLIC_DB_PASSWORD",
     ]
 
     for key in existing_sensitive_composite_keys:
         assert is_sensitive_key(key) is True, f"Key {key} should be sensitive"
+
 
 def test_normal_public_keys():
     """🛡️ Sentinel: Verify that normal public keys without high-confidence keywords are NOT sensitive."""

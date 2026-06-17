@@ -4,6 +4,7 @@ import shutil
 import tempfile
 from stacksorbit_secrets import is_safe_path
 
+
 class TestSentinelPathSafety(unittest.TestCase):
 
     def setUp(self):
@@ -48,5 +49,6 @@ class TestSentinelPathSafety(unittest.TestCase):
     def test_should_reject_relative_traversal(self):
         self.assertFalse(is_safe_path(self.test_dir, "../outside/secret.txt"))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -2,6 +2,7 @@ import os
 import unittest
 from scripts.enhanced_conxian_deployment import EnhancedConfigManager
 
+
 class TestSentinelConfig(unittest.TestCase):
 
     def setUp(self):
@@ -34,7 +35,7 @@ class TestSentinelConfig(unittest.TestCase):
             "NETWORK": "testnet",
             "SYSTEM_ADDRESS": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
             "DEPLOYER_PRIVKEY": "mock_private_key_string_for_testing_purposes_only_1234567890abcde",
-            "SOME_API_TOKEN": "sensitive_token_value"
+            "SOME_API_TOKEN": "sensitive_token_value",
         }
 
         config_manager.save_config(config_to_save)
@@ -44,9 +45,12 @@ class TestSentinelConfig(unittest.TestCase):
             content = f.read()
 
         self.assertIn("NETWORK=testnet", content)
-        self.assertIn("SYSTEM_ADDRESS=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM", content)
+        self.assertIn(
+            "SYSTEM_ADDRESS=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM", content
+        )
         self.assertNotIn("DEPLOYER_PRIVKEY", content)
         self.assertNotIn("SOME_API_TOKEN", content)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

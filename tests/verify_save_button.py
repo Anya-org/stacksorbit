@@ -1,8 +1,8 @@
-
 import asyncio
 from pathlib import Path
 import os
 from stacksorbit_gui import StacksOrbitGUI
+
 
 async def main():
     """
@@ -24,7 +24,7 @@ async def main():
 
         # Switch to the Settings tab by pressing the right arrow key multiple times
         await pilot.press("right", "right", "right", "right")
-        await pilot.pause(0.1) # Allow UI to update
+        await pilot.pause(0.1)  # Allow UI to update
 
         # Click the save button
         await pilot.click("#save-config-btn")
@@ -39,6 +39,7 @@ async def main():
 
         # Clean up the dummy .env file
         os.remove(".env.test_palette")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

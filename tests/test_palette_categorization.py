@@ -4,6 +4,7 @@ from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import DataTable
 from textual.widgets.data_table import RowKey
 
+
 @pytest.mark.asyncio
 async def test_contract_categorization():
     """Test that contracts are correctly categorized based on their name."""
@@ -38,6 +39,7 @@ async def test_contract_categorization():
     # Other
     assert app._categorize_contract("random-contract") == "other"
 
+
 @pytest.mark.asyncio
 async def test_contract_details_header_with_category():
     """Verify that the Contract Details header includes categorization info."""
@@ -55,7 +57,7 @@ async def test_contract_details_header_with_category():
             DataTable.RowHighlighted(
                 data_table=contracts_table,
                 row_key=RowKey("ST123.my-token"),
-                cursor_row=0
+                cursor_row=0,
             )
         )
         await pilot.pause()

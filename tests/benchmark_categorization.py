@@ -5,9 +5,15 @@ import re
 
 def _categorize_contract_original(name: str) -> str:
     name_lower = name.lower()
-    if any(w in name_lower for w in ["dex", "swap", "pool", "factory", "router", "amm", "liquidity"]):
+    if any(
+        w in name_lower
+        for w in ["dex", "swap", "pool", "factory", "router", "amm", "liquidity"]
+    ):
         return "dex"
-    if any(w in name_lower for w in ["trait", "utils", "lib", "error", "constant", "math", "std"]):
+    if any(
+        w in name_lower
+        for w in ["trait", "utils", "lib", "error", "constant", "math", "std"]
+    ):
         return "base"
     if any(w in name_lower for w in ["token", "ft-", "sip-010"]):
         return "tokens"
@@ -15,13 +21,23 @@ def _categorize_contract_original(name: str) -> str:
         return "nft"
     if any(w in name_lower for w in ["oracle", "aggregator", "price", "feed"]):
         return "oracle"
-    if any(w in name_lower for w in ["gov", "vote", "proposal", "dao", "multisig", "treasury"]):
+    if any(
+        w in name_lower
+        for w in ["gov", "vote", "proposal", "dao", "multisig", "treasury"]
+    ):
         return "governance"
-    if any(w in name_lower for w in ["security", "auth", "access", "guardian", "pause", "whitelist"]):
+    if any(
+        w in name_lower
+        for w in ["security", "auth", "access", "guardian", "pause", "whitelist"]
+    ):
         return "security"
-    if any(w in name_lower for w in ["monitor", "track", "dashboard", "analytics", "registry"]):
+    if any(
+        w in name_lower
+        for w in ["monitor", "track", "dashboard", "analytics", "registry"]
+    ):
         return "monitoring"
     return "other"
+
 
 @functools.lru_cache(maxsize=128)
 def _categorize_contract_cached(name: str) -> str:

@@ -2,6 +2,7 @@ import pytest
 from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import Input
 
+
 @pytest.mark.asyncio
 async def test_tx_clear_filter_functionality():
     """Verify that the clear filter button and ESC key work as expected."""
@@ -9,7 +10,7 @@ async def test_tx_clear_filter_functionality():
     app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
 
     async with app.run_test() as pilot:
-        await pilot.press("f3") # Switch to transactions tab
+        await pilot.press("f3")  # Switch to transactions tab
 
         filter_input = app.query_one("#tx-filter-input", Input)
         clear_btn = app.query_one("#clear-tx-filter-btn")

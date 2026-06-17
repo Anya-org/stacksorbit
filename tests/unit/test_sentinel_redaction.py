@@ -1,13 +1,14 @@
 import unittest
 from stacksorbit_secrets import redact_recursive
 
+
 class TestSentinelRedaction(unittest.TestCase):
 
     def test_basic_redaction(self):
         data = {
             "NETWORK": "testnet",
             "DEPLOYER_PRIVKEY": "mock_private_key_string_for_testing_purposes_only_1234567890abcde",
-            "HIRO_API_KEY": "some_api_key"
+            "HIRO_API_KEY": "some_api_key",
         }
         redacted = redact_recursive(data)
         self.assertEqual(redacted["NETWORK"], "testnet")
@@ -16,14 +17,11 @@ class TestSentinelRedaction(unittest.TestCase):
 
     def test_recursive_redaction(self):
         data = {
-            "project": {
-                "name": "my_project",
-                "secret_token": "hidden_token"
-            },
+            "project": {"name": "my_project", "secret_token": "hidden_token"},
             "contracts": [
                 {"name": "token", "owner_pass": "secret123"},
-                {"name": "dex", "admin_key": "secret456"}
-            ]
+                {"name": "dex", "admin_key": "secret456"},
+            ],
         }
         redacted = redact_recursive(data)
         self.assertEqual(redacted["project"]["name"], "my_project")
@@ -36,7 +34,7 @@ class TestSentinelRedaction(unittest.TestCase):
             "DEPLOYER_PRIVKEY": "your_private_key_here",
             "HIRO_API_KEY": "your_hiro_api_key",
             "SYSTEM_ADDRESS": "your_stacks_address_here",
-            "EMPTY_KEY": ""
+            "EMPTY_KEY": "",
         }
         redacted = redact_recursive(data)
         self.assertEqual(redacted["DEPLOYER_PRIVKEY"], "your_private_key_here")
@@ -49,10 +47,7 @@ class TestSentinelRedaction(unittest.TestCase):
             "MY_PASSWORD": "secret_pass",
             "AUTH_PORT": 8080,
             "SYSTEM_MNEMONIC": "word1 word2...",
-            "nested": {
-                "PRIVATE_VAL": 123.45,
-                "USER_PWD": "password"
-            }
+            "nested": {"PRIVATE_VAL": 123.45, "USER_PWD": "password"},
         }
         redacted = redact_recursive(data)
         self.assertEqual(redacted["MY_PASSWORD"], "<redacted>")
@@ -64,12 +59,7 @@ class TestSentinelRedaction(unittest.TestCase):
     def test_nested_sensitive_parent(self):
         # 🛡️ Sentinel: Regression test for nested secret exposure.
         # Even if inner keys are generic, they should be redacted if the parent is sensitive.
-        data = {
-            "DEPLOYER_PRIVKEY": {
-                "a": "actual_secret",
-                "b": "some_info"
-            }
-        }
+        data = {"DEPLOYER_PRIVKEY": {"a": "actual_secret", "b": "some_info"}}
         redacted = redact_recursive(data)
         self.assertEqual(redacted["DEPLOYER_PRIVKEY"]["a"], "<redacted>")
         self.assertEqual(redacted["DEPLOYER_PRIVKEY"]["b"], "<redacted>")
@@ -84,22 +74,29 @@ class TestSentinelRedaction(unittest.TestCase):
             "ENCRYPTED_DATA": "data...",
             "VAULT_SECRET": "vault123",
             "SESSION_COOKIE": "cookie123",
-            "APP_SESSID": "sess123"
+            "APP_SESSID": "sess123",
         }
         redacted = redact_recursive(data)
         for key in data:
-            self.assertEqual(redacted[key], "<redacted>", f"Key {key} should be redacted")
+            self.assertEqual(
+                redacted[key], "<redacted>", f"Key {key} should be redacted"
+            )
 
     def test_new_placeholders(self):
         # 🛡️ Sentinel: Test new placeholders added in this session.
         data = {
             "SYSTEM_MNEMONIC": "your_mnemonic_here",
             "SEED_PHRASE": "your_seed_phrase_here",
-            "RECOVERY": "your_recovery_phrase_here"
+            "RECOVERY": "your_recovery_phrase_here",
         }
         redacted = redact_recursive(data)
         for key, val in data.items():
-            self.assertEqual(redacted[key], val, f"Placeholder {val} for key {key} should be preserved")
+            self.assertEqual(
+                redacted[key],
+                val,
+                f"Placeholder {val} for key {key} should be preserved",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

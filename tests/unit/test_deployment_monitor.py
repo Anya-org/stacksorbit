@@ -6,9 +6,12 @@ import sys
 from pathlib import Path
 
 # Add parent directory to path to import modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 
 from deployment_monitor import DeploymentMonitor
+
 
 class TestDeploymentMonitorCache(unittest.TestCase):
     """Tests for the caching functionality in DeploymentMonitor."""
@@ -20,9 +23,11 @@ class TestDeploymentMonitorCache(unittest.TestCase):
         if os.path.exists(self.test_cache_path):
             os.remove(self.test_cache_path)
 
-        self.monitor = DeploymentMonitor(network='testnet', config={'LOG_LEVEL': 'DEBUG'})
+        self.monitor = DeploymentMonitor(
+            network="testnet", config={"LOG_LEVEL": "DEBUG"}
+        )
         self.monitor.cache_path = Path(self.test_cache_path)
-        self.monitor.cache = {} # Start with empty cache
+        self.monitor.cache = {}  # Start with empty cache
         # Lower the expiry for faster testing
         self.monitor.cache_expiry = 2
 
@@ -31,7 +36,7 @@ class TestDeploymentMonitorCache(unittest.TestCase):
         if os.path.exists(self.test_cache_path):
             os.remove(self.test_cache_path)
 
-    @patch('requests.Session.get')
+    @patch("requests.Session.get")
     def test_get_recent_transactions_caching(self, mock_get):
         """Verify that get_recent_transactions caches results."""
         # Mock the API response
@@ -45,7 +50,7 @@ class TestDeploymentMonitorCache(unittest.TestCase):
         # --- First call (should hit API) ---
         result1 = self.monitor.get_recent_transactions(address)
         self.assertEqual(len(result1), 1)
-        self.assertEqual(result1[0]['tx_id'], "0x123")
+        self.assertEqual(result1[0]["tx_id"], "0x123")
         mock_get.assert_called_once()
 
         # --- Second call (should be cached) ---
@@ -63,5 +68,6 @@ class TestDeploymentMonitorCache(unittest.TestCase):
         # The mock should now have been called a second time
         self.assertEqual(mock_get.call_count, 2)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

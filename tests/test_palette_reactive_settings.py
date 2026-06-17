@@ -1,7 +1,7 @@
-
 import pytest
 from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import Button, Input
+
 
 @pytest.mark.asyncio
 async def test_reactive_settings_buttons():
@@ -41,8 +41,8 @@ async def test_reactive_settings_buttons():
         await pilot.pause(0.1)
         # Check current length to be sure it's invalid (< 28 chars)
         assert len(address_input.value) < 28
-        assert copy_btn.disabled is False # Still has text
-        assert explorer_btn.disabled is True # but invalid address
+        assert copy_btn.disabled is False  # Still has text
+        assert explorer_btn.disabled is True  # but invalid address
 
         # Test 4: Back to valid
         address_input.value = valid_address
@@ -52,6 +52,7 @@ async def test_reactive_settings_buttons():
         await pilot.pause(0.1)
         assert copy_btn.disabled is False
         assert explorer_btn.disabled is False
+
 
 @pytest.mark.asyncio
 async def test_reactive_dashboard_address_update():

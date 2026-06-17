@@ -3,6 +3,7 @@ from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import Button
 from unittest.mock import MagicMock
 
+
 @pytest.mark.asyncio
 async def test_address_explorer_buttons_exist():
     """Verify that the new address explorer buttons exist and have correct tooltips."""
@@ -10,7 +11,10 @@ async def test_address_explorer_buttons_exist():
     # Mock monitor to avoid API calls during app startup
     app.monitor = MagicMock()
     app.monitor.api_url = "https://api.testnet.hiro.so"
-    app.monitor.check_api_status.return_value = {"status": "online", "block_height": 100}
+    app.monitor.check_api_status.return_value = {
+        "status": "online",
+        "block_height": 100,
+    }
     app.monitor.get_account_info.return_value = {"balance": "0", "nonce": 0}
     app.monitor.get_deployed_contracts.return_value = []
     app.monitor.get_recent_transactions.return_value = []
@@ -24,12 +28,15 @@ async def test_address_explorer_buttons_exist():
         assert settings_explorer_btn is not None
 
         # Check tooltips
-        assert dashboard_explorer_btn.tooltip == "View your address on Hiro Explorer [e]"
+        assert (
+            dashboard_explorer_btn.tooltip == "View your address on Hiro Explorer [e]"
+        )
         assert settings_explorer_btn.tooltip == "View address on Hiro Explorer [e]"
 
         # Check Network Status tooltip
         network_status_card = app.query("#network-status").first().parent
         assert "https://api.testnet.hiro.so" in str(network_status_card.tooltip)
+
 
 @pytest.mark.asyncio
 async def test_address_explorer_initial_state():
@@ -40,8 +47,14 @@ async def test_address_explorer_initial_state():
     app_with_addr.monitor = MagicMock()
 
     async with app_with_addr.run_test() as pilot:
-        assert app_with_addr.query_one("#view-dashboard-explorer-btn", Button).disabled is False
-        assert app_with_addr.query_one("#view-address-explorer-btn", Button).disabled is False
+        assert (
+            app_with_addr.query_one("#view-dashboard-explorer-btn", Button).disabled
+            is False
+        )
+        assert (
+            app_with_addr.query_one("#view-address-explorer-btn", Button).disabled
+            is False
+        )
 
     # Test with "Not configured" address
     app_no_addr = StacksOrbitGUI()
@@ -49,5 +62,10 @@ async def test_address_explorer_initial_state():
     app_no_addr.monitor = MagicMock()
 
     async with app_no_addr.run_test() as pilot:
-        assert app_no_addr.query_one("#view-dashboard-explorer-btn", Button).disabled is True
-        assert app_no_addr.query_one("#view-address-explorer-btn", Button).disabled is True
+        assert (
+            app_no_addr.query_one("#view-dashboard-explorer-btn", Button).disabled
+            is True
+        )
+        assert (
+            app_no_addr.query_one("#view-address-explorer-btn", Button).disabled is True
+        )

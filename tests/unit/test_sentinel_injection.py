@@ -2,6 +2,7 @@ import os
 import unittest
 from stacksorbit_secrets import save_secure_config
 
+
 class TestSentinelInjection(unittest.TestCase):
 
     def setUp(self):
@@ -18,7 +19,7 @@ class TestSentinelInjection(unittest.TestCase):
             "NORMAL_VAR": "normal_value",
             "INJECTED\nVAR": "injected_value",
             "INJECTED\rVAR": "injected_value_r",
-            "VAR_WITH=EQUALS": "value_with_equals"
+            "VAR_WITH=EQUALS": "value_with_equals",
         }
 
         save_secure_config(self.test_file, malicious_config)
@@ -41,5 +42,6 @@ class TestSentinelInjection(unittest.TestCase):
         lines = [line.strip() for line in content.split("\n") if line.strip()]
         self.assertEqual(len(lines), 4)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

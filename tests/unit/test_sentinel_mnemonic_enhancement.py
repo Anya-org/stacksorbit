@@ -4,6 +4,7 @@
 import pytest
 from stacksorbit_secrets import is_sensitive_value, redact_recursive
 
+
 def test_international_mnemonic_detection():
     # Spanish mnemonic (contains 2-letter word 'as', all lowercase)
     spanish = "as abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
@@ -12,6 +13,7 @@ def test_international_mnemonic_detection():
     # Chinese mnemonic (single characters, non-caseable)
     chinese = "的 一 是 在 不 了 有 人 这 中 大 来"
     assert is_sensitive_value(chinese) is True
+
 
 def test_casing_requirements():
     # All lowercase English mnemonic
@@ -33,6 +35,7 @@ def test_casing_requirements():
     sentence12 = "The quick brown fox jumps over the lazy dog and then runs now"
     assert is_sensitive_value(sentence12) is False
 
+
 def test_sensitive_key_redaction():
     # Fields that are NOT in PUBLIC_SUBSTRINGS should be redacted if they contain a mnemonic
     sensitive_fields = ["MEMO", "NOTE", "COMMENT", "MESSAGE"]
@@ -42,6 +45,7 @@ def test_sensitive_key_redaction():
         data = {field: mnemonic}
         redacted = redact_recursive(data)
         assert redacted[field] == "<redacted>"
+
 
 def test_non_public_redaction():
     # A generic key with a value that looks like a mnemonic should still be redacted

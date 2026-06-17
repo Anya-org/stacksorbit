@@ -3,8 +3,10 @@ import asyncio
 from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import Input, DataTable, Label, TabbedContent
 
+
 async def mock_async_none(*args, **kwargs):
     return None
+
 
 @pytest.mark.asyncio
 async def test_tx_filtering_logic(monkeypatch):
@@ -16,9 +18,21 @@ async def test_tx_filtering_logic(monkeypatch):
 
     # Mock data
     mock_txs = [
-        {"tx_id": "0x1234567890abcdef", "tx_type": "smart_contract", "tx_status": "success"},
-        {"tx_id": "0xabcdef1234567890", "tx_type": "contract_call", "tx_status": "pending"},
-        {"tx_id": "0x5555555555555555", "tx_type": "token_transfer", "tx_status": "failed"},
+        {
+            "tx_id": "0x1234567890abcdef",
+            "tx_type": "smart_contract",
+            "tx_status": "success",
+        },
+        {
+            "tx_id": "0xabcdef1234567890",
+            "tx_type": "contract_call",
+            "tx_status": "pending",
+        },
+        {
+            "tx_id": "0x5555555555555555",
+            "tx_type": "token_transfer",
+            "tx_status": "failed",
+        },
     ]
 
     async with app.run_test() as pilot:
@@ -59,6 +73,7 @@ async def test_tx_filtering_logic(monkeypatch):
         app._update_transactions_table()
         assert table.row_count == 3
 
+
 @pytest.mark.asyncio
 async def test_tx_filter_focus_shortcut(monkeypatch):
     """Verify that the '/' shortcut focuses the filter input."""
@@ -83,6 +98,7 @@ async def test_tx_filter_focus_shortcut(monkeypatch):
 
         assert app.focused is not None
         assert app.focused.id == "tx-filter-input"
+
 
 @pytest.mark.asyncio
 async def test_tx_filter_input_event(monkeypatch):
