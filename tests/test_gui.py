@@ -4,6 +4,7 @@ from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import DataTable, Input
 from textual.widgets.data_table import RowKey
 
+
 @pytest.mark.asyncio
 async def test_gui_launches():
     """Test that the GUI launches without errors."""
@@ -12,14 +13,19 @@ async def test_gui_launches():
         assert pilot is not None
         await pilot.press("q")
 
+
 @pytest.mark.asyncio
 async def test_contract_highlighting_triggers_details_fetch():
     """Verify highlighting a contract triggers the details fetch."""
     app = StacksOrbitGUI()
-    with patch.object(app, 'fetch_contract_details', new_callable=AsyncMock) as mock_fetch:
+    with patch.object(
+        app, "fetch_contract_details", new_callable=AsyncMock
+    ) as mock_fetch:
         async with app.run_test() as pilot:
             contracts_table = app.query_one("#contracts-table")
-            contracts_table.add_row("✅", "test-contract", "ST123...", key="ST123.test-contract")
+            contracts_table.add_row(
+                "✅", "test-contract", "ST123...", key="ST123.test-contract"
+            )
             await pilot.pause()
 
             # Simulate the row highlighted event
@@ -27,7 +33,7 @@ async def test_contract_highlighting_triggers_details_fetch():
                 DataTable.RowHighlighted(
                     data_table=contracts_table,
                     row_key=RowKey("ST123.test-contract"),
-                    cursor_row=0
+                    cursor_row=0,
                 )
             )
             await pilot.pause()
@@ -35,14 +41,17 @@ async def test_contract_highlighting_triggers_details_fetch():
             # Assert
             mock_fetch.assert_called_once_with("ST123.test-contract")
 
+
 @pytest.mark.asyncio
 async def test_contract_selection_copies_id():
     """Verify selecting a contract (Enter/Click) copies the ID."""
     app = StacksOrbitGUI()
-    with patch.object(app, 'copy_to_clipboard') as mock_copy:
+    with patch.object(app, "copy_to_clipboard") as mock_copy:
         async with app.run_test() as pilot:
             contracts_table = app.query_one("#contracts-table")
-            contracts_table.add_row("✅", "test-contract", "ST123...", key="ST123.test-contract")
+            contracts_table.add_row(
+                "✅", "test-contract", "ST123...", key="ST123.test-contract"
+            )
             await pilot.pause()
 
             # Simulate the row selection event
@@ -50,13 +59,14 @@ async def test_contract_selection_copies_id():
                 DataTable.RowSelected(
                     data_table=contracts_table,
                     row_key=RowKey("ST123.test-contract"),
-                    cursor_row=0
+                    cursor_row=0,
                 )
             )
             await pilot.pause()
 
             # Assert
             mock_copy.assert_called_once_with("ST123.test-contract")
+
 
 @pytest.mark.asyncio
 async def test_validation_error_messages():
@@ -86,12 +96,15 @@ async def test_validation_error_messages():
         # Invalid private key
         privkey_input.value = "too-short"
         app.on_privkey_changed(Input.Changed(privkey_input, "too-short"))
-        assert "❌ Must be a 64 or 66 character hex string" in str(privkey_error.render())
+        assert "❌ Must be a 64 or 66 character hex string" in str(
+            privkey_error.render()
+        )
 
         # Valid private key
         privkey_input.value = "a" * 64
         app.on_privkey_changed(Input.Changed(privkey_input, privkey_input.value))
         assert "✅ Valid" in str(privkey_error.render())
+
 
 @pytest.mark.asyncio
 async def test_transaction_selection_enables_buttons():
@@ -112,7 +125,9 @@ async def test_transaction_selection_enables_buttons():
         app._last_transactions = [{"tx_id": "0x1234567890abcdef"}]
 
         # Add a row to the table
-        transactions_table.add_row("0x1234...", "token-transfer", "success", "100", key="0x1234567890abcdef")
+        transactions_table.add_row(
+            "0x1234...", "token-transfer", "success", "100", key="0x1234567890abcdef"
+        )
         await pilot.pause()
 
         # Simulate the row highlighted event
@@ -120,7 +135,7 @@ async def test_transaction_selection_enables_buttons():
             DataTable.RowHighlighted(
                 data_table=transactions_table,
                 row_key=RowKey("0x1234567890abcdef"),
-                cursor_row=0
+                cursor_row=0,
             )
         )
         await pilot.pause()
@@ -130,6 +145,7 @@ async def test_transaction_selection_enables_buttons():
         assert explorer_btn.disabled is False
         assert "0x1234567890abcd" in str(status_label.render())
         assert app.selected_tx_id == "0x1234567890abcdef"
+
 
 @pytest.mark.asyncio
 async def test_validation_includes_char_count():
@@ -170,11 +186,15 @@ async def test_validation_includes_char_count():
         assert f"({len(valid_pk)}/64 or 66)" in str(privkey_error.render())
         assert "✅ Valid" in str(privkey_error.render())
 
+
 @pytest.mark.asyncio
 async def test_wallet_connect_button_triggers_worker():
     """Verify that clicking the wallet connect button triggers the worker."""
     app = StacksOrbitGUI()
-    with patch("wallet_connect.start_wallet_connect_server", return_value="ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM") as mock_server:
+    with patch(
+        "wallet_connect.start_wallet_connect_server",
+        return_value="ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+    ) as mock_server:
         async with app.run_test() as pilot:
             # Switch to settings tab
             await pilot.press("f5")

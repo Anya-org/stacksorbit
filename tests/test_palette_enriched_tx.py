@@ -4,6 +4,7 @@ from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import DataTable
 from textual.widgets.data_table import RowKey
 
+
 @pytest.mark.asyncio
 async def test_enriched_transaction_details():
     """Verify that highlighting a transaction displays enriched details in the action bar."""
@@ -20,14 +21,16 @@ async def test_enriched_transaction_details():
         await pilot.pause()
 
         # POPULATE AFTER STARTUP
-        app._all_transactions = [{
-            "tx_id": tx_id,
-            "tx_type": "contract_call",
-            "tx_status": "success",
-            "nonce": 42,
-            "fee_rate": "1500",
-            "block_height": 100
-        }]
+        app._all_transactions = [
+            {
+                "tx_id": tx_id,
+                "tx_type": "contract_call",
+                "tx_status": "success",
+                "nonce": 42,
+                "fee_rate": "1500",
+                "block_height": 100,
+            }
+        ]
 
         tx_table = app.query_one("#transactions-table", DataTable)
         status_label = app.query_one("#tx-status-label")
@@ -39,9 +42,7 @@ async def test_enriched_transaction_details():
         # Simulate row highlighting
         app.on_transactions_row_highlighted(
             DataTable.RowHighlighted(
-                data_table=tx_table,
-                row_key=RowKey(tx_id),
-                cursor_row=0
+                data_table=tx_table, row_key=RowKey(tx_id), cursor_row=0
             )
         )
         await pilot.pause()
@@ -53,6 +54,7 @@ async def test_enriched_transaction_details():
         assert "contract call" in rendered_text
         assert "Nonce: 42" in rendered_text
         assert "Fee: 1500" in rendered_text
+
 
 @pytest.mark.asyncio
 async def test_enriched_transaction_details_empty_state():
@@ -70,9 +72,7 @@ async def test_enriched_transaction_details_empty_state():
         # Simulate an "empty-refresh" row highlighting (e.g. "No transactions found")
         app.on_transactions_row_highlighted(
             DataTable.RowHighlighted(
-                data_table=tx_table,
-                row_key=RowKey("empty-refresh"),
-                cursor_row=0
+                data_table=tx_table, row_key=RowKey("empty-refresh"), cursor_row=0
             )
         )
         await pilot.pause()

@@ -3,6 +3,7 @@ from unittest.mock import patch
 from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import Label, Static, Button
 
+
 @pytest.mark.asyncio
 async def test_dashboard_address_bar_exists():
     """Verify that the new address bar and its components exist in the Dashboard."""
@@ -12,7 +13,10 @@ async def test_dashboard_address_bar_exists():
         assert address_bar is not None
         assert "System Address:" in str(address_bar.query_one(Label).render())
         assert address_bar.query_one("#display-address", Static) is not None
-        assert "📋" in str(address_bar.query_one("#copy-dashboard-address-btn", Button).label)
+        assert "📋" in str(
+            address_bar.query_one("#copy-dashboard-address-btn", Button).label
+        )
+
 
 @pytest.mark.asyncio
 async def test_network_status_dot():
@@ -22,6 +26,7 @@ async def test_network_status_dot():
         await app.update_data()
         status_label = app.query_one("#network-status")
         assert "●" in str(status_label.render())
+
 
 @pytest.mark.asyncio
 async def test_address_synchronization():

@@ -3,6 +3,7 @@ import sys
 import os
 from stacksorbit_secrets import redact_recursive
 
+
 def generate_benchmark_data(num_contracts=50, source_size_kb=100):
     """Generate data structure with many large strings."""
     # Create a string that is approximately source_size_kb
@@ -16,14 +17,15 @@ def generate_benchmark_data(num_contracts=50, source_size_kb=100):
             {
                 "name": f"contract_{i}",
                 "source_code": source,
-                "metadata": {"version": "1.0", "author": "Bolt"}
+                "metadata": {"version": "1.0", "author": "Bolt"},
             }
             for i in range(num_contracts)
         ],
         "metrics": [i for i in range(1000)],
-        "is_active": True
+        "is_active": True,
     }
     return data
+
 
 def run_benchmark():
     print("⚡ Bolt: Initializing Redaction Benchmark...")
@@ -41,6 +43,7 @@ def run_benchmark():
 
     avg_time = (end - start) / iterations
     print(f"📊 Average Redaction Time (5MB dataset): {avg_time:.6f}s")
+
 
 if __name__ == "__main__":
     run_benchmark()

@@ -2,6 +2,7 @@ import time
 import sys
 from stacksorbit_secrets import is_sensitive_value
 
+
 def benchmark_is_sensitive():
     print("⚡ Bolt: Benchmarking is_sensitive_value directly...")
 
@@ -19,6 +20,7 @@ def benchmark_is_sensitive():
 
     avg_time = (end - start) / iterations
     print(f"📊 Average is_sensitive_value Time (10MB string): {avg_time:.6f}s")
+
 
 if __name__ == "__main__":
     benchmark_is_sensitive()

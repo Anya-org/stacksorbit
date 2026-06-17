@@ -1,6 +1,7 @@
 import unittest
 from stacksorbit_secrets import validate_private_key
 
+
 class TestPKValidation(unittest.TestCase):
     def test_valid_pks(self):
         self.assertTrue(validate_private_key("a" * 64))
@@ -23,6 +24,7 @@ class TestPKValidation(unittest.TestCase):
     def test_non_string(self):
         self.assertFalse(validate_private_key(None))
         self.assertFalse(validate_private_key(123))
+
 
 if __name__ == "__main__":
     unittest.main()

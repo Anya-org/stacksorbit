@@ -17,6 +17,7 @@ import argparse
 from pathlib import Path
 from typing import Dict, List, Optional
 from datetime import datetime
+
 # Bolt ⚡: Moved heavy imports inside methods to minimize CLI startup latency.
 # Standard library imports remain at the top.
 from stacksorbit_secrets import (
@@ -708,28 +709,30 @@ class SetupWizard:
             "devnet": "http://localhost:3999",
         }
         current_api = api_urls.get(self.config["network"], api_urls["testnet"])
-        config_lines.extend([
-            f"CORE_API_URL={current_api}",
-            f"STACKS_API_BASE={current_api}",
-            "",
-            "# Deployment Configuration",
-            f"DEPLOYMENT_MODE={self.config['deployment_mode']}",
-            f"BATCH_SIZE={self.config['batch_size']}",
-            f"PARALLEL_DEPLOY={str(self.config.get('parallel_deploy', False)).lower()}",
-            "",
-            "# Monitoring Configuration",
-            "MONITORING_ENABLED=true",
-            "LOG_LEVEL=INFO",
-            "SAVE_LOGS=true",
-            "",
-            "# Validation",
-            "VALIDATE_TRANSACTIONS=true",
-            "CONFIRMATION_TIMEOUT=300",
-            "",
-            "# Security",
-            "# Never commit this file to version control!",
-            "# Add .env to your .gitignore file",
-        ])
+        config_lines.extend(
+            [
+                f"CORE_API_URL={current_api}",
+                f"STACKS_API_BASE={current_api}",
+                "",
+                "# Deployment Configuration",
+                f"DEPLOYMENT_MODE={self.config['deployment_mode']}",
+                f"BATCH_SIZE={self.config['batch_size']}",
+                f"PARALLEL_DEPLOY={str(self.config.get('parallel_deploy', False)).lower()}",
+                "",
+                "# Monitoring Configuration",
+                "MONITORING_ENABLED=true",
+                "LOG_LEVEL=INFO",
+                "SAVE_LOGS=true",
+                "",
+                "# Validation",
+                "VALIDATE_TRANSACTIONS=true",
+                "CONFIRMATION_TIMEOUT=300",
+                "",
+                "# Security",
+                "# Never commit this file to version control!",
+                "# Add .env to your .gitignore file",
+            ]
+        )
 
         return "\n".join(config_lines)
 
@@ -778,7 +781,9 @@ class UltimateStacksOrbit:
     def __init__(self):
         self.project_root = Path.cwd()
         self.config_path = ".env"
-        self.templates_path = os.path.join(os.path.dirname(__file__), "settings", "deployment_templates.json")
+        self.templates_path = os.path.join(
+            os.path.dirname(__file__), "settings", "deployment_templates.json"
+        )
         self._config_manager = None
         self._config = None
         self._monitor = None
@@ -857,7 +862,9 @@ class UltimateStacksOrbit:
             # 🛡️ Sentinel: Prevent sensitive information disclosure.
             # A generic error message is shown to the user by default.
             # Detailed error information is only visible in verbose mode.
-            print(f"\n{Fore.RED}❌ An unexpected error occurred (use --verbose for details).{Style.RESET_ALL}")
+            print(
+                f"\n{Fore.RED}❌ An unexpected error occurred (use --verbose for details).{Style.RESET_ALL}"
+            )
             if kwargs.get("verbose"):
                 print(f"   Error details: {e}")
                 import traceback
@@ -1118,7 +1125,9 @@ class UltimateStacksOrbit:
             if options.get("verbose"):
                 print(f"{Fore.RED}❌ Configuration error: {e}{Style.RESET_ALL}")
             else:
-                print(f"{Fore.RED}❌ Configuration error (use --verbose for details){Style.RESET_ALL}")
+                print(
+                    f"{Fore.RED}❌ Configuration error (use --verbose for details){Style.RESET_ALL}"
+                )
             diagnosis["issues"].append(str(e))
             diagnosis["scores"]["config"] = 0
 
@@ -1144,7 +1153,9 @@ class UltimateStacksOrbit:
             if options.get("verbose"):
                 print(f"{Fore.RED}❌ Network error: {e}{Style.RESET_ALL}")
             else:
-                print(f"{Fore.RED}❌ Network error (use --verbose for details){Style.RESET_ALL}")
+                print(
+                    f"{Fore.RED}❌ Network error (use --verbose for details){Style.RESET_ALL}"
+                )
             diagnosis["issues"].append(str(e))
             diagnosis["scores"]["network"] = 0
 
@@ -1177,7 +1188,9 @@ class UltimateStacksOrbit:
                 if options.get("verbose"):
                     print(f"{Fore.RED}❌ Account check error: {e}{Style.RESET_ALL}")
                 else:
-                    print(f"{Fore.RED}❌ Account check error (use --verbose for details){Style.RESET_ALL}")
+                    print(
+                        f"{Fore.RED}❌ Account check error (use --verbose for details){Style.RESET_ALL}"
+                    )
                 diagnosis["issues"].append(str(e))
                 diagnosis["scores"]["account"] = 0
         else:
@@ -1209,7 +1222,9 @@ class UltimateStacksOrbit:
             if options.get("verbose"):
                 print(f"{Fore.RED}❌ Contract analysis error: {e}{Style.RESET_ALL}")
             else:
-                print(f"{Fore.RED}❌ Contract analysis error (use --verbose for details){Style.RESET_ALL}")
+                print(
+                    f"{Fore.RED}❌ Contract analysis error (use --verbose for details){Style.RESET_ALL}"
+                )
             diagnosis["issues"].append(str(e))
             diagnosis["scores"]["contracts"] = 0
 
@@ -1257,7 +1272,9 @@ class UltimateStacksOrbit:
             if options.get("verbose"):
                 print(f"{Fore.RED}❌ Dependencies check error: {e}{Style.RESET_ALL}")
             else:
-                print(f"{Fore.RED}❌ Dependencies check error (use --verbose for details){Style.RESET_ALL}")
+                print(
+                    f"{Fore.RED}❌ Dependencies check error (use --verbose for details){Style.RESET_ALL}"
+                )
             diagnosis["issues"].append(str(e))
             diagnosis["scores"]["dependencies"] = 0
 
@@ -1395,7 +1412,9 @@ class UltimateStacksOrbit:
         try:
             # 1. Clarinet Check (Basic syntax check)
             if options.get("clarinet_only") or not options.get("vitest_only"):
-                print(f"{Fore.YELLOW}🔍 Running Clarinet syntax checks...{Style.RESET_ALL}")
+                print(
+                    f"{Fore.YELLOW}🔍 Running Clarinet syntax checks...{Style.RESET_ALL}"
+                )
                 try:
                     # Stream output to terminal so user can see progress
                     result = subprocess.run(
@@ -1415,7 +1434,9 @@ class UltimateStacksOrbit:
                         if options.get("clarinet_only"):
                             return 1
                 except FileNotFoundError:
-                    print(f"{Fore.YELLOW}⚠️  Clarinet not found. Skipping syntax checks.{Style.RESET_ALL}")
+                    print(
+                        f"{Fore.YELLOW}⚠️  Clarinet not found. Skipping syntax checks.{Style.RESET_ALL}"
+                    )
                     if options.get("clarinet_only"):
                         return 1
 
@@ -1425,8 +1446,12 @@ class UltimateStacksOrbit:
 
                 # Check if node_modules exists
                 if not (self.project_root / "node_modules").exists():
-                    print(f"{Fore.YELLOW}📦 node_modules not found. Running pnpm install...{Style.RESET_ALL}")
-                    subprocess.run(["pnpm", "install"], cwd=self.project_root, check=True)
+                    print(
+                        f"{Fore.YELLOW}📦 node_modules not found. Running pnpm install...{Style.RESET_ALL}"
+                    )
+                    subprocess.run(
+                        ["pnpm", "install"], cwd=self.project_root, check=True
+                    )
 
                 test_command = ["pnpm", "run", "test:vitest"]
 
@@ -1455,6 +1480,7 @@ class UltimateStacksOrbit:
             if options.get("verbose"):
                 print(f"   Error details: {e}")
                 import traceback
+
                 traceback.print_exc()
             return 1
 
@@ -1760,7 +1786,9 @@ def main():
         # 🛡️ Sentinel: Prevent sensitive information disclosure.
         # A generic error message is shown to the user.
         # The detailed exception is only logged in verbose mode.
-        print(f"\n{Fore.RED}❌ An unexpected error occurred (use --verbose for details).{Style.RESET_ALL}")
+        print(
+            f"\n{Fore.RED}❌ An unexpected error occurred (use --verbose for details).{Style.RESET_ALL}"
+        )
         if args.verbose:
             print(f"   Error details: {e}")
             import traceback

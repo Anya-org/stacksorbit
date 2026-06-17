@@ -26,6 +26,8 @@ genesis:
   - signers
   - signers-voting
   - costs-4
+  - costs-5
+  - pox-5
 plan:
   batches:
   - id: 0
@@ -34,25 +36,25 @@ plan:
       contract-name: dlc-bond
       emulated-sender: ST3N7D4F8TDBNPAN7W6CJ5RGF5DAW5MGHNEGTCR6R
       path: contracts/dlc-bond.clar
-      clarity-version: 1
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: dlc-orchestrator
       emulated-sender: ST3N7D4F8TDBNPAN7W6CJ5RGF5DAW5MGHNEGTCR6R
       path: contracts/dlc-orchestrator.clar
-      clarity-version: 1
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: placeholder
       emulated-sender: ST3N7D4F8TDBNPAN7W6CJ5RGF5DAW5MGHNEGTCR6R
       path: contracts/placeholder.clar
-      clarity-version: 1
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: sip-010-ft-trait
       emulated-sender: ST3N7D4F8TDBNPAN7W6CJ5RGF5DAW5MGHNEGTCR6R
       path: contracts/sip-standards/sip-010-ft-trait.clar
-      clarity-version: 1
+      clarity-version: 4
     - transaction-type: emulated-contract-publish
       contract-name: revenue-automation
       emulated-sender: ST3N7D4F8TDBNPAN7W6CJ5RGF5DAW5MGHNEGTCR6R
       path: contracts/revenue-automation.clar
-      clarity-version: 1
-    epoch: '2.05'
+      clarity-version: 4
+    epoch: '3.4'

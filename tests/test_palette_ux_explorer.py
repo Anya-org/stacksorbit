@@ -4,6 +4,7 @@ from stacksorbit_gui import StacksOrbitGUI
 from textual.widgets import Button, DataTable
 from textual.widgets.data_table import RowKey
 
+
 @pytest.mark.asyncio
 async def test_dashboard_navigation_from_metrics():
     """Verify that clicking dashboard metrics navigates to correct tabs."""
@@ -24,17 +25,23 @@ async def test_dashboard_navigation_from_metrics():
         await pilot.click("#metric-balance")
         assert app.query_one("TabbedContent").active == "transactions"
 
+
 @pytest.mark.asyncio
 async def test_buttons_enable_on_selection():
     """Verify that the buttons enable when a contract is highlighted."""
     app = StacksOrbitGUI()
     # Mock the monitor to avoid real API calls and provide valid data for UI
     app.monitor = MagicMock()
-    app.monitor.check_api_status.return_value = {"status": "online", "block_height": 100}
+    app.monitor.check_api_status.return_value = {
+        "status": "online",
+        "block_height": 100,
+    }
     app.monitor.get_account_info.return_value = {"balance": "0", "nonce": 0}
     app.monitor.get_deployed_contracts.return_value = []
     app.monitor.get_recent_transactions.return_value = []
-    app.monitor.get_contract_details.return_value = {"source_code": "(define-public (hello) (ok u1))"}
+    app.monitor.get_contract_details.return_value = {
+        "source_code": "(define-public (hello) (ok u1))"
+    }
 
     async with app.run_test() as pilot:
         # For this test, we'll manually call the handler with a mock event

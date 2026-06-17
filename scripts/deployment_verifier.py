@@ -160,7 +160,7 @@ class DeploymentVerifier:
                 balance_val = int(balance_raw)
         except (ValueError, TypeError):
             balance_val = 0
-            
+
         balance = balance_val / 1000000
         nonce = account_info.get("nonce", 0)
 
@@ -292,7 +292,7 @@ class DeploymentVerifier:
                 balance_val = int(balance_raw)
         except (ValueError, TypeError):
             balance_val = 0
-            
+
         balance = balance_val / 1000000
         nonce = account_info.get("nonce", 0)
 

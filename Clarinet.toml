@@ -1,7 +1,11 @@
 [project]
 name = "StacksOrbit"
+authors = []
+description = ""
+telemetry = false
+requirements = []
 clarinet_version = "3.12.0"
-epoch = "3.0"
+epoch = "latest"
 
 [accounts]
 deployer = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
@@ -9,17 +13,37 @@ deployer = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
 [simnet]
 mnemonic = "cute bird surprise boring old news cake design aisle helmet choose tree"
 
-[contracts.placeholder]
-path = "contracts/placeholder.clar"
+[repl.analysis]
+passes = ["check_checker"]
 
-[contracts.revenue-automation]
-path = "contracts/revenue-automation.clar"
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
 
 [contracts.dlc-orchestrator]
 path = "contracts/dlc-orchestrator.clar"
+clarity_version = 4
+epoch = "latest"
+
+[contracts.revenue-automation]
+path = "contracts/revenue-automation.clar"
+clarity_version = 4
+epoch = "latest"
+depends_on = ["sip-010-ft-trait"]
+
+[contracts.placeholder]
+path = "contracts/placeholder.clar"
+clarity_version = 4
+epoch = "latest"
 
 [contracts.dlc-bond]
 path = "contracts/dlc-bond.clar"
+clarity_version = 4
+epoch = "latest"
 
 [contracts.sip-010-ft-trait]
 path = "contracts/sip-standards/sip-010-ft-trait.clar"
+clarity_version = 4
+epoch = "latest"

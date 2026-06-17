@@ -76,7 +76,9 @@ class EnhancedConfigManager:
         # 🛡️ Sentinel: Enforce security policy - no secrets in .env
         for key, value in file_config.items():
             # Bolt ⚡: Check both key name and value for secrets to provide defense-in-depth.
-            if (is_sensitive_key(key) or is_sensitive_value(value)) and not is_placeholder(value):
+            if (
+                is_sensitive_key(key) or is_sensitive_value(value)
+            ) and not is_placeholder(value):
                 error_message = (
                     f"🛡️ Sentinel Security Error: Secret key '{key}' found in .env file.\n"
                     "   Storing secrets in plaintext files is a critical security risk and is not permitted.\n"
@@ -103,11 +105,22 @@ class EnhancedConfigManager:
                 if k in file_config
                 or k in SECRET_KEYS
                 or k.startswith(("STACKS_", "STACKSORBIT_"))
-                or k in ("PROJECT_ROOT", "HIRO_API_KEY", "DEPLOYMENT_MODE",
-                         "BATCH_SIZE", "CONFIRMATION_TIMEOUT", "MONITORING_ENABLED",
-                         "LOG_LEVEL", "SAVE_LOGS", "VALIDATE_TRANSACTIONS",
-                         "PARALLEL_DEPLOY", "SYSTEM_ADDRESS", "NETWORK",
-                         "CORE_API_URL")
+                or k
+                in (
+                    "PROJECT_ROOT",
+                    "HIRO_API_KEY",
+                    "DEPLOYMENT_MODE",
+                    "BATCH_SIZE",
+                    "CONFIRMATION_TIMEOUT",
+                    "MONITORING_ENABLED",
+                    "LOG_LEVEL",
+                    "SAVE_LOGS",
+                    "VALIDATE_TRANSACTIONS",
+                    "PARALLEL_DEPLOY",
+                    "SYSTEM_ADDRESS",
+                    "NETWORK",
+                    "CORE_API_URL",
+                )
             }
         )
 
@@ -226,7 +239,7 @@ class EnhancedConxianDeployer:
         self.pnpm_test_script = pnpm_test_script
         self.clarinet_check_timeout = clarinet_check_timeout
         self.pre_check_results: Dict[str, bool] = {}
-        
+
         # Bolt ⚡: Debug project root resolution
         project_root = self.config.get("PROJECT_ROOT")
         if project_root:
@@ -335,7 +348,9 @@ class EnhancedConxianDeployer:
                 if self.verbose:
                     print(f"[ERROR] {check_name} check failed: {e}")
                 else:
-                    print(f"[ERROR] {check_name} check failed (use --verbose for details)")
+                    print(
+                        f"[ERROR] {check_name} check failed (use --verbose for details)"
+                    )
                 all_passed = False
 
         print(
@@ -422,7 +437,9 @@ class EnhancedConxianDeployer:
             if self.verbose:
                 print(f"[ERROR] Could not run compilation check: {e}")
             else:
-                print("[ERROR] Could not run compilation check (use --verbose for details)")
+                print(
+                    "[ERROR] Could not run compilation check (use --verbose for details)"
+                )
             return False
 
     def _check_pnpm_tests(self) -> bool:
@@ -666,9 +683,15 @@ class EnhancedConxianDeployer:
             try:
                 tx_id = self._deploy_single_contract(contract)
                 if tx_id == "ALREADY_EXISTS":
-                    print(f"[INFO] {contract['name']} already exists on-chain. Marking as successful.")
+                    print(
+                        f"[INFO] {contract['name']} already exists on-chain. Marking as successful."
+                    )
                     results["successful"].append(
-                        {"name": contract["name"], "tx_id": "ALREADY_EXISTS", "status": "exists"}
+                        {
+                            "name": contract["name"],
+                            "tx_id": "ALREADY_EXISTS",
+                            "status": "exists",
+                        }
                     )
                     continue
 
@@ -698,7 +721,9 @@ class EnhancedConxianDeployer:
                 if self.verbose:
                     print(f"[ERROR] {contract['name']} failed: {e}")
                 else:
-                    print(f"[ERROR] {contract['name']} failed (use --verbose for details)")
+                    print(
+                        f"[ERROR] {contract['name']} failed (use --verbose for details)"
+                    )
                 results["failed"].append({"name": contract["name"], "error": str(e)})
 
             # Small delay between deployments
@@ -854,7 +879,7 @@ class EnhancedConxianDeployer:
                 current_data["name"] = current_contract
                 current_data["full_path"] = (
                     str(clarinet_path.parent / current_data["path"])
-                        if current_data.get("path")
+                    if current_data.get("path")
                     else ""
                 )
                 contracts.append(current_data)
@@ -941,7 +966,7 @@ class EnhancedConxianDeployer:
     def _deploy_single_contract(self, contract: Dict) -> Optional[str]:
         """Deploy a single contract using Stacks SDK via Node.js wrapper"""
         print(f"Deploying {contract['name']}...")
-        
+
         # In a dry run, return a fake transaction ID
         if self.config.get("DEPLOYMENT_MODE") == "dry_run":
             time.sleep(1)
@@ -970,9 +995,9 @@ class EnhancedConxianDeployer:
             cmd = [
                 "node",
                 str(js_script.resolve()),
-                contract['name'],
+                contract["name"],
                 str(contract_path),
-                self.config.get("NETWORK", "testnet")
+                self.config.get("NETWORK", "testnet"),
             ]
 
             # 🛡️ Sentinel: Pass the private key via environment variables to prevent process list leaks.
@@ -986,22 +1011,27 @@ class EnhancedConxianDeployer:
                 text=True,
                 check=True,
                 env=env,
-                cwd=str(script_root)
+                cwd=str(script_root),
             )
             output = json.loads(result.stdout)
 
             if output.get("success"):
                 return output.get("txId")
             else:
-                print(f"[ERROR] Deployment failed: {output.get('error')} - {output.get('reason')}")
+                print(
+                    f"[ERROR] Deployment failed: {output.get('error')} - {output.get('reason')}"
+                )
                 return None
 
         except subprocess.CalledProcessError as e:
             err_detail = e.stderr.strip() if e.stderr else "no stderr"
             out_detail = e.stdout.strip() if e.stdout else "no stdout"
-            
+
             # 🛡️ Intelligence: Detect if contract already exists
-            if "ContractAlreadyExists" in out_detail or "ContractAlreadyExists" in err_detail:
+            if (
+                "ContractAlreadyExists" in out_detail
+                or "ContractAlreadyExists" in err_detail
+            ):
                 return "ALREADY_EXISTS"
 
             print(f"[ERROR] Node.js execution failed (exit {e.returncode})")
@@ -1015,7 +1045,6 @@ class EnhancedConxianDeployer:
         except Exception as e:
             print(f"[ERROR] Unexpected deployment error: {str(e)}")
             return None
-
 
     def _estimate_gas(self, contract: Dict) -> float:
         """Estimate gas cost for contract deployment"""

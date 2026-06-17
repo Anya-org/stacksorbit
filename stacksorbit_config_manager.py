@@ -41,7 +41,9 @@ class ConfigManager:
             # We iterate over all keys in the file and use is_sensitive_key and is_sensitive_value to identify secrets.
             for key, value in file_vars.items():
                 # Bolt ⚡: Check both key name and value for secrets to provide defense-in-depth.
-                if (is_sensitive_key(key) or is_sensitive_value(value)) and not is_placeholder(value):
+                if (
+                    is_sensitive_key(key) or is_sensitive_value(value)
+                ) and not is_placeholder(value):
                     # If a secret is found, raise an error and exit immediately.
                     error_message = (
                         f"🛡️ Sentinel Security Error: Secret key '{key}' found in .env file.\n"

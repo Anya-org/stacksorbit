@@ -1,6 +1,7 @@
 import pytest
 from stacksorbit_secrets import redact_recursive, is_sensitive_value
 
+
 def test_is_sensitive_value_private_key():
     """Verify that private keys are detected as sensitive values."""
     # 64 hex chars
@@ -23,6 +24,7 @@ def test_is_sensitive_value_private_key():
     # Non-hex
     assert is_sensitive_value("g" * 64) is False
 
+
 def test_is_sensitive_value_mnemonic():
     """Verify that mnemonics are detected as sensitive values."""
     # 12 words
@@ -41,6 +43,7 @@ def test_is_sensitive_value_mnemonic():
     mnemonic_mixed = "Word " * 11 + "Word"
     assert is_sensitive_value(mnemonic_mixed) is False
 
+
 def test_redact_recursive_by_value():
     """Verify that sensitive values are redacted even with non-sensitive keys."""
     config = {
@@ -48,9 +51,7 @@ def test_redact_recursive_by_value():
         "random_name": "a" * 64,  # Looks like a private key
         "prefixed_secret": "0x" + "b" * 64,  # 0x-prefixed private key
         "another_random": "word " * 11 + "word",  # Looks like a mnemonic
-        "nested": {
-            "hidden_secret": "c" * 64
-        }
+        "nested": {"hidden_secret": "c" * 64},
     }
 
     redacted = redact_recursive(config)
@@ -61,15 +62,16 @@ def test_redact_recursive_by_value():
     assert redacted["another_random"] == "<redacted>"
     assert redacted["nested"]["hidden_secret"] == "<redacted>"
 
+
 def test_redact_recursive_preserves_placeholders():
     """Verify that placeholders are NOT redacted even if they look like they could be sensitive (though placeholders usually don't)."""
-    config = {
-        "my_key": "your_private_key_here"
-    }
+    config = {"my_key": "your_private_key_here"}
     redacted = redact_recursive(config)
     # Even if we mark 'my_key' as sensitive in the call, is_placeholder should preserve it
     assert redacted["my_key"] == "your_private_key_here"
 
     # Test with parent_key marked sensitive
-    redacted_sensitive = redact_recursive("your_private_key_here", parent_key="DEPLOYER_PRIVKEY")
+    redacted_sensitive = redact_recursive(
+        "your_private_key_here", parent_key="DEPLOYER_PRIVKEY"
+    )
     assert redacted_sensitive == "your_private_key_here"

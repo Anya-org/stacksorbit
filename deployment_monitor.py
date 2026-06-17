@@ -152,7 +152,9 @@ class DeploymentMonitor:
             # Bolt ⚡: Use indent=None to reduce I/O overhead and file size.
             # ⚡ Bolt: Use redact=False because the cache is already incrementally redacted.
             # This eliminates a multi-millisecond O(N) bottleneck on every disk write.
-            save_secure_config(str(self.cache_path), data, json_format=True, redact=False, indent=None)
+            save_secure_config(
+                str(self.cache_path), data, json_format=True, redact=False, indent=None
+            )
         except Exception as e:
             self.logger.error(f"Could not save cache file: {e}")
 
@@ -186,7 +188,7 @@ class DeploymentMonitor:
             log_file = (
                 log_dir / f"deployment_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
             )
-            file_handler = logging.FileHandler(log_file, encoding='utf-8')
+            file_handler = logging.FileHandler(log_file, encoding="utf-8")
             # 🛡️ Sentinel: Ensure log files have secure permissions (0600).
             set_secure_permissions(str(log_file))
             file_handler.setLevel(log_level)
@@ -373,7 +375,8 @@ class DeploymentMonitor:
 
     def get_account_info(self, address: str, **kwargs) -> Optional[Dict]:
         """Get comprehensive account information with normalized address."""
-        if not address: return None
+        if not address:
+            return None
         # Bolt ⚡: Normalize address before hitting the cache to maximize hits.
         return self._get_account_info_cached(address.strip().upper(), **kwargs)
 
@@ -385,12 +388,12 @@ class DeploymentMonitor:
             response = self.session.get(f"{self.api_url}/v2/transactions/{tx_id}")
             if response.status_code == 200:
                 return response.json()
-            
+
             # Fallback to extended v1 if v2 404s (indexer might be lagging)
             response = self.session.get(f"{self.api_url}/extended/v1/tx/{tx_id}")
             if response.status_code == 200:
                 return response.json()
-                
+
             return None
         except Exception as e:
             self.logger.debug(f"Error getting transaction info for {tx_id}: {e}")
@@ -398,7 +401,8 @@ class DeploymentMonitor:
 
     def get_transaction_info(self, tx_id: str, **kwargs) -> Optional[Dict]:
         """Get detailed transaction information with normalized TX ID."""
-        if not tx_id: return None
+        if not tx_id:
+            return None
         # Bolt ⚡: Normalize TX ID (lowercase + 0x prefix) before hitting the cache.
         # This ensures '0xabc' and 'ABC' share the same cache entry.
         tx = tx_id.strip().lower()
@@ -476,11 +480,14 @@ class DeploymentMonitor:
 
     def get_deployed_contracts(self, address: str, **kwargs) -> List[Dict]:
         """Get list of deployed contracts with normalized address."""
-        if not address: return []
+        if not address:
+            return []
         return self._get_deployed_contracts_cached(address.strip().upper(), **kwargs)
 
     @cache_api_call
-    def _get_recent_transactions_cached(self, address: str, limit: int = 50, **kwargs) -> List[Dict]:
+    def _get_recent_transactions_cached(
+        self, address: str, limit: int = 50, **kwargs
+    ) -> List[Dict]:
         """Bolt ⚡: Internal cached worker for recent transactions."""
         try:
             response = self.session.get(
@@ -494,13 +501,20 @@ class DeploymentMonitor:
             self.logger.error(f"Error getting recent transactions: {e}")
             return []
 
-    def get_recent_transactions(self, address: str, limit: int = 50, **kwargs) -> List[Dict]:
+    def get_recent_transactions(
+        self, address: str, limit: int = 50, **kwargs
+    ) -> List[Dict]:
         """Get recent transactions with normalized address."""
-        if not address: return []
-        return self._get_recent_transactions_cached(address.strip().upper(), limit=limit, **kwargs)
+        if not address:
+            return []
+        return self._get_recent_transactions_cached(
+            address.strip().upper(), limit=limit, **kwargs
+        )
 
     @cache_api_call
-    def _get_contract_details_cached(self, contract_id: str, **kwargs) -> Optional[Dict]:
+    def _get_contract_details_cached(
+        self, contract_id: str, **kwargs
+    ) -> Optional[Dict]:
         """Bolt ⚡: Internal cached worker for contract details."""
         try:
             # The contract_id is in the format 'address.name'
@@ -516,7 +530,8 @@ class DeploymentMonitor:
 
     def get_contract_details(self, contract_id: str, **kwargs) -> Optional[Dict]:
         """Get contract details with normalized contract ID."""
-        if not contract_id or "." not in contract_id: return None
+        if not contract_id or "." not in contract_id:
+            return None
         # Bolt ⚡: Normalize contract ID (ADDRESS.name) before hitting the cache.
         addr, name = contract_id.strip().split(".", 1)
         normalized_id = f"{addr.upper()}.{name}"

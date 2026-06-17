@@ -147,7 +147,9 @@ class GenericStacksAutoDetector:
         )
         self.contract_cache = {}
         self.deployment_cache = {}
-        self.project_files_cache = {}  # Bolt ⚡: Cache for project files (indexed by directory)
+        self.project_files_cache = (
+            {}
+        )  # Bolt ⚡: Cache for project files (indexed by directory)
         # Bolt ⚡: Categorized file buckets to avoid redundant O(N) traversals.
         self._clar_files = {}
         self._manifest_files = {}
@@ -173,39 +175,47 @@ class GenericStacksAutoDetector:
         }
         # Bolt ⚡: Pre-compile common manifest and artifact patterns for fast O(1) matching.
         # This replaces multiple fnmatch.fnmatch calls in a loop.
-        self._manifest_re = self._compile_glob_regex([
-            "deployment/*.json",
-            "deployment/**/*.json",
-            "manifest.json",
-            "**/manifest.json",
-            "deployments.json",
-            "**/deployments.json",
-            ".stacksorbit/*.json",
-            ".stacksorbit/**/*.json",
-        ])
-        self._artifact_re = self._compile_glob_regex([
-            "deployment/*.json",
-            "deployment/**/*.json",
-            "manifest.json",
-            "**/manifest.json",
-            "deployments.json",
-            "**/deployments.json",
-            ".stacksorbit/*.json",
-            ".stacksorbit/**/*.json",
-            "*.deployment",
-            "**/*.deployment",
-        ])
-        self._history_re = self._compile_glob_regex([
-            "deployment/history.json",
-            ".stacksorbit/deployment_history.json",
-            "**/deployment_history.json",
-        ])
-        self._manifest_legacy_re = self._compile_glob_regex([
-            "deployment/manifest.json",
-            ".stacksorbit/manifest.json",
-            "**/testnet-manifest.json",
-            "**/mainnet-manifest.json",
-        ])
+        self._manifest_re = self._compile_glob_regex(
+            [
+                "deployment/*.json",
+                "deployment/**/*.json",
+                "manifest.json",
+                "**/manifest.json",
+                "deployments.json",
+                "**/deployments.json",
+                ".stacksorbit/*.json",
+                ".stacksorbit/**/*.json",
+            ]
+        )
+        self._artifact_re = self._compile_glob_regex(
+            [
+                "deployment/*.json",
+                "deployment/**/*.json",
+                "manifest.json",
+                "**/manifest.json",
+                "deployments.json",
+                "**/deployments.json",
+                ".stacksorbit/*.json",
+                ".stacksorbit/**/*.json",
+                "*.deployment",
+                "**/*.deployment",
+            ]
+        )
+        self._history_re = self._compile_glob_regex(
+            [
+                "deployment/history.json",
+                ".stacksorbit/deployment_history.json",
+                "**/deployment_history.json",
+            ]
+        )
+        self._manifest_legacy_re = self._compile_glob_regex(
+            [
+                "deployment/manifest.json",
+                ".stacksorbit/manifest.json",
+                "**/testnet-manifest.json",
+                "**/mainnet-manifest.json",
+            ]
+        )
 
         # Bolt ⚡: Pre-compile prioritization regex and map for O(N) lookup.
         # This replaces iterative linear substring searches in sorting loops.
@@ -502,12 +512,16 @@ class GenericStacksAutoDetector:
                 with os.scandir(curr_dir_str) as it:
                     for entry in it:
                         # Bolt ⚡: Optimize relative path generation with f-strings.
-                        rel_path = f"{rel_prefix}/{entry.name}" if rel_prefix else entry.name
+                        rel_path = (
+                            f"{rel_prefix}/{entry.name}" if rel_prefix else entry.name
+                        )
 
                         # Bolt ⚡: Explicitly don't follow symlinks to match os.walk behavior.
                         if entry.is_dir(follow_symlinks=False):
                             # Skip ignored directories and hidden ones
-                            if entry.name in self.IGNORE_DIRS or entry.name.startswith("."):
+                            if entry.name in self.IGNORE_DIRS or entry.name.startswith(
+                                "."
+                            ):
                                 continue
                             stack.append((entry.path, rel_path))
                         elif entry.is_file(follow_symlinks=False):
@@ -531,13 +545,21 @@ class GenericStacksAutoDetector:
                                     self._clar_files[cache_key].append(normalized_path)
                                 elif normalized_path.endswith((".json", ".deployment")):
                                     if self._manifest_re.match(normalized_path):
-                                        self._manifest_files[cache_key].append(normalized_path)
+                                        self._manifest_files[cache_key].append(
+                                            normalized_path
+                                        )
                                     if self._artifact_re.match(normalized_path):
-                                        self._artifact_files[cache_key].append(normalized_path)
+                                        self._artifact_files[cache_key].append(
+                                            normalized_path
+                                        )
                                     if self._history_re.match(normalized_path):
-                                        self._history_files[cache_key].append(normalized_path)
+                                        self._history_files[cache_key].append(
+                                            normalized_path
+                                        )
                                     if self._manifest_legacy_re.match(normalized_path):
-                                        self._manifest_legacy_files[cache_key].append(normalized_path)
+                                        self._manifest_legacy_files[cache_key].append(
+                                            normalized_path
+                                        )
 
                             except (OSError, IOError):
                                 continue
@@ -847,14 +869,18 @@ class GenericStacksAutoDetector:
                             contract_path = match[1]
 
                             # 🛡️ Sentinel: Path traversal protection.
-                            if not is_safe_path(str(clarinet_path.parent), contract_path):
+                            if not is_safe_path(
+                                str(clarinet_path.parent), contract_path
+                            ):
                                 continue
 
                             full_path = clarinet_path.parent / contract_path
                             if full_path.exists():
                                 # Bolt ⚡: Retrieve metadata from O(1) cache to avoid redundant stat() system calls.
                                 cache_key = str(clarinet_path.parent)
-                                cached_files = self.project_files_cache.get(cache_key, {})
+                                cached_files = self.project_files_cache.get(
+                                    cache_key, {}
+                                )
                                 file_info = cached_files.get(contract_path)
 
                                 if file_info:
@@ -925,9 +951,7 @@ class GenericStacksAutoDetector:
                     "hash": self._calculate_file_hash(
                         full_path, mtime=file_info["mtime"], size=file_info["size"]
                     ),
-                    "category": self._determine_contract_category(
-                        contract_name
-                    ),
+                    "category": self._determine_contract_category(contract_name),
                 }
             )
         return contracts
@@ -990,7 +1014,10 @@ class GenericStacksAutoDetector:
                 try:
                     # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(manifest_file)
-                    if file_key in self.json_cache and self.json_cache[file_key]["mtime"] == mtime:
+                    if (
+                        file_key in self.json_cache
+                        and self.json_cache[file_key]["mtime"] == mtime
+                    ):
                         data = self.json_cache[file_key]["data"]
                     else:
                         with open(manifest_file, "r") as f:
@@ -1252,7 +1279,10 @@ class GenericStacksAutoDetector:
                 try:
                     # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(artifact_file)
-                    if file_key in self.json_cache and self.json_cache[file_key]["mtime"] == mtime:
+                    if (
+                        file_key in self.json_cache
+                        and self.json_cache[file_key]["mtime"] == mtime
+                    ):
                         data = self.json_cache[file_key]["data"]
                     else:
                         with open(artifact_file, "r") as f:
@@ -1396,14 +1426,19 @@ class GenericStacksAutoDetector:
         for rel_path in history_files:
             file_info = all_files_dict.get(rel_path)
             if file_info:
-                matched_history.append((self.project_root / rel_path, file_info["mtime"]))
+                matched_history.append(
+                    (self.project_root / rel_path, file_info["mtime"])
+                )
 
         for history_file, mtime in matched_history:
             if history_file.is_file():
                 try:
                     # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(history_file)
-                    if file_key in self.json_cache and self.json_cache[file_key]["mtime"] == mtime:
+                    if (
+                        file_key in self.json_cache
+                        and self.json_cache[file_key]["mtime"] == mtime
+                    ):
                         data = self.json_cache[file_key]["data"]
                     else:
                         with open(history_file, "r") as f:
@@ -1419,14 +1454,19 @@ class GenericStacksAutoDetector:
         for rel_path in manifest_legacy_files:
             file_info = all_files_dict.get(rel_path)
             if file_info:
-                matched_manifests.append((self.project_root / rel_path, file_info["mtime"]))
+                matched_manifests.append(
+                    (self.project_root / rel_path, file_info["mtime"])
+                )
 
         for manifest_file, mtime in matched_manifests:
             if manifest_file.is_file():
                 try:
                     # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(manifest_file)
-                    if file_key in self.json_cache and self.json_cache[file_key]["mtime"] == mtime:
+                    if (
+                        file_key in self.json_cache
+                        and self.json_cache[file_key]["mtime"] == mtime
+                    ):
                         data = self.json_cache[file_key]["data"]
                     else:
                         with open(manifest_file, "r") as f:

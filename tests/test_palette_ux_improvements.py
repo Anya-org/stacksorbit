@@ -4,6 +4,7 @@ from textual.widgets import Button, DataTable, Label, Input, TabbedContent
 from unittest.mock import MagicMock
 import asyncio
 
+
 @pytest.mark.asyncio
 async def test_palette_ux_improvements():
     """Verify the new UX improvements: empty states, filter count color, and shortcuts."""
@@ -11,7 +12,10 @@ async def test_palette_ux_improvements():
     # Mock monitor to avoid API calls during app startup
     app.monitor = MagicMock()
     app.monitor.api_url = "https://api.testnet.hiro.so"
-    app.monitor.check_api_status.return_value = {"status": "online", "block_height": 100}
+    app.monitor.check_api_status.return_value = {
+        "status": "online",
+        "block_height": 100,
+    }
     app.monitor.get_account_info.return_value = {"balance": "0", "nonce": 0}
     app.monitor.get_deployed_contracts.return_value = []
     app.monitor.get_recent_transactions.return_value = []
@@ -68,7 +72,9 @@ async def test_palette_ux_improvements():
 
         # 3. Verify Filter Count Colorization
         app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
-        app._all_transactions = [{"tx_id": "0x123", "tx_type": "contract_call", "tx_status": "success"}]
+        app._all_transactions = [
+            {"tx_id": "0x123", "tx_type": "contract_call", "tx_status": "success"}
+        ]
         app._update_transactions_table()
         await pilot.pause()
 
@@ -96,6 +102,7 @@ async def test_palette_ux_improvements():
         # Test 'u' shortcut
         await pilot.press("u")
         app.action_deploy.assert_called_once()
+
 
 if __name__ == "__main__":
     pass

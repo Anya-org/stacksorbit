@@ -1,10 +1,10 @@
-
 import pytest
 import os
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from wallet_connect import WalletConnectHandler, save_wallet_address
+
 
 def test_wallet_connect_headers():
     """Test that WalletConnectHandler sends the correct security headers."""
@@ -36,6 +36,7 @@ def test_wallet_connect_headers():
     assert headers.get("Pragma") == "no-cache"
     assert headers.get("X-XSS-Protection") == "0"
 
+
 def test_wallet_connect_post_invalid_token_type():
     """Test that do_POST handles non-string tokens without crashing."""
     handler = MagicMock(spec=WalletConnectHandler)
@@ -43,7 +44,12 @@ def test_wallet_connect_post_invalid_token_type():
     WalletConnectHandler.session_token = "test_token"
 
     # Mock post data with a list as the token
-    invalid_data = json.dumps({"address": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM", "token": ["not", "a", "string"]})
+    invalid_data = json.dumps(
+        {
+            "address": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+            "token": ["not", "a", "string"],
+        }
+    )
     handler.headers = {"Content-Length": str(len(invalid_data))}
     handler.rfile = MagicMock()
     handler.rfile.read.return_value = invalid_data.encode()
@@ -55,6 +61,7 @@ def test_wallet_connect_post_invalid_token_type():
 
     # Verify that it sent a 403 error due to token type check failure
     handler.send_error.assert_called_once_with(403, "Invalid session token")
+
 
 def test_wallet_connect_post_malformed_json_list():
     """Test that do_POST handles malformed JSON (list instead of dict) without crashing."""
@@ -74,15 +81,21 @@ def test_wallet_connect_post_malformed_json_list():
     WalletConnectHandler.do_POST(handler)
 
     # Verify that it sent a 400 error for non-dictionary JSON
-    handler.send_error.assert_called_once_with(400, "Bad Request: JSON body must be a dictionary")
+    handler.send_error.assert_called_once_with(
+        400, "Bad Request: JSON body must be a dictionary"
+    )
+
 
 def test_save_wallet_address_filters_secrets(tmp_path):
     """Test that save_wallet_address filters out sensitive keys."""
     env_file = tmp_path / ".env"
-    env_file.write_text("SYSTEM_ADDRESS=old_address\nDEPLOYER_PRIVKEY=secret_key\nOTHER_VAR=value\n")
+    env_file.write_text(
+        "SYSTEM_ADDRESS=old_address\nDEPLOYER_PRIVKEY=secret_key\nOTHER_VAR=value\n"
+    )
 
-    with patch("wallet_connect.Path", return_value=env_file), \
-         patch("wallet_connect.save_secure_config") as mock_save:
+    with patch("wallet_connect.Path", return_value=env_file), patch(
+        "wallet_connect.save_secure_config"
+    ) as mock_save:
         save_wallet_address("new_address", "testnet")
 
     # In our refactored version, save_wallet_address uses save_secure_config

@@ -48,6 +48,7 @@ except ImportError as e:
 from infrastructure_wiring import InfrastructureWiring
 from deployment_monitor import DeploymentMonitor
 
+
 @functools.lru_cache(maxsize=128)
 def _parse_iso_to_dt(iso_time: str) -> datetime:
     """Bolt ⚡: Cached ISO parsing to avoid redundant expensive fromisoformat calls."""
@@ -138,7 +139,11 @@ from stacksorbit_secrets import (
 class StacksOrbitGUI(App):
     """A Textual dashboard for StacksOrbit."""
 
-    CSS_PATH = ["styles/dashboard.tcss", "styles/stacksorbit_gui.tcss", "styles/stacksorbit_gui_sovereign.tcss"]
+    CSS_PATH = [
+        "styles/dashboard.tcss",
+        "styles/stacksorbit_gui.tcss",
+        "styles/stacksorbit_gui_sovereign.tcss",
+    ]
 
     BINDINGS = [
         Binding("d", "toggle_dark", "Toggle dark mode"),
@@ -279,7 +284,9 @@ class StacksOrbitGUI(App):
 
                             # 🛡️ Sentinel: Enforce security policy - no secrets in .env
                             # Bolt ⚡: Check both key name and value for secrets to provide defense-in-depth.
-                            if (is_sensitive_key(k) or is_sensitive_value(v)) and not is_placeholder(v):
+                            if (
+                                is_sensitive_key(k) or is_sensitive_value(v)
+                            ) and not is_placeholder(v):
                                 raise ValueError(
                                     f"🛡️ Sentinel Security Error: Secret key '{k}' found in .env file.\n"
                                     "   Storing secrets in plaintext files is a critical security risk.\n"
@@ -402,7 +409,10 @@ class StacksOrbitGUI(App):
 
             with TabPane("📜 [F3] Transactions", id="transactions"):
                 with Horizontal(id="tx-filter-bar"):
-                    yield Input(placeholder="🔍 Filter transactions (ID, Type, Status)...", id="tx-filter-input")
+                    yield Input(
+                        placeholder="🔍 Filter transactions (ID, Type, Status)...",
+                        id="tx-filter-input",
+                    )
                     yield Button("✕", id="clear-tx-filter-btn", variant="error")
                     yield Label("(0/0 matches)", id="tx-filter-count")
                 yield LoadingIndicator()
@@ -468,11 +478,14 @@ class StacksOrbitGUI(App):
                     )
                     with Horizontal(classes="input-group"):
                         yield Switch(
-                            id="theme-switch",
-                            value=self.theme_name == "sovereign"
+                            id="theme-switch", value=self.theme_name == "sovereign"
                         )
                         yield Label(
-                            "🌍 Sovereign" if self.theme_name == "sovereign" else "🌙 Standard",
+                            (
+                                "🌍 Sovereign"
+                                if self.theme_name == "sovereign"
+                                else "🌙 Standard"
+                            ),
                             id="theme-status-label",
                             classes="switch-label",
                         )
@@ -534,9 +547,13 @@ class StacksOrbitGUI(App):
         self.w_transactions_table = self.query_one("#transactions-table", DataTable)
         self.w_display_address = self.query_one("#display-address", Static)
         self.w_faucet_btn = self.query_one("#faucet-btn", Button)
-        self.w_view_dashboard_explorer_btn = self.query_one("#view-dashboard-explorer-btn", Button)
+        self.w_view_dashboard_explorer_btn = self.query_one(
+            "#view-dashboard-explorer-btn", Button
+        )
         self.w_settings_faucet_btn = self.query_one("#settings-faucet-btn", Button)
-        self.w_view_address_explorer_btn = self.query_one("#view-address-explorer-btn", Button)
+        self.w_view_address_explorer_btn = self.query_one(
+            "#view-address-explorer-btn", Button
+        )
         self.w_copy_address_btn = self.query_one("#copy-address-btn", Button)
         self.w_address_input = self.query_one("#address-input", Input)
         self.w_privkey_input = self.query_one("#privkey-input", Input)
@@ -546,7 +563,9 @@ class StacksOrbitGUI(App):
         self.w_copy_source_btn = self.query_one("#copy-source-btn", Button)
         self.w_view_explorer_btn = self.query_one("#view-explorer-btn", Button)
         self.w_copy_tx_btn = self.query_one("#copy-selected-tx-btn", Button)
-        self.w_view_tx_explorer_btn = self.query_one("#view-selected-tx-explorer-btn", Button)
+        self.w_view_tx_explorer_btn = self.query_one(
+            "#view-selected-tx-explorer-btn", Button
+        )
         self.w_tx_status_label = self.query_one("#tx-status-label", Label)
         self.w_tx_filter_input = self.query_one("#tx-filter-input", Input)
         self.w_clear_tx_filter_btn = self.query_one("#clear-tx-filter-btn", Button)
@@ -560,8 +579,12 @@ class StacksOrbitGUI(App):
         self.w_tabbed_content = self.query_one(TabbedContent)
 
         # PALETTE: Set accessibility labels for icon-heavy buttons to improve screen reader support
-        self.query_one("#copy-dashboard-address-btn", Button).accessibility_label = "Copy dashboard address"
-        self.w_view_dashboard_explorer_btn.accessibility_label = "View dashboard address on explorer"
+        self.query_one("#copy-dashboard-address-btn", Button).accessibility_label = (
+            "Copy dashboard address"
+        )
+        self.w_view_dashboard_explorer_btn.accessibility_label = (
+            "View dashboard address on explorer"
+        )
         self.w_faucet_btn.accessibility_label = "Open Stacks testnet faucet"
         self.w_copy_contract_btn.accessibility_label = "Copy contract ID"
         self.w_copy_source_btn.accessibility_label = "Copy contract source code"
@@ -570,9 +593,13 @@ class StacksOrbitGUI(App):
         self.w_view_tx_explorer_btn.accessibility_label = "View transaction on explorer"
         self.w_copy_log_btn.accessibility_label = "Copy deployment logs"
         self.w_copy_address_btn.accessibility_label = "Copy settings address"
-        self.w_view_address_explorer_btn.accessibility_label = "View settings address on explorer"
+        self.w_view_address_explorer_btn.accessibility_label = (
+            "View settings address on explorer"
+        )
         self.w_settings_faucet_btn.accessibility_label = "Open settings testnet faucet"
-        self.query_one("#clear-tx-filter-btn", Button).accessibility_label = "Clear transaction filter"
+        self.query_one("#clear-tx-filter-btn", Button).accessibility_label = (
+            "Clear transaction filter"
+        )
 
         # PALETTE: Make dashboard metric cards focusable for keyboard accessibility
         for card_id in [
@@ -592,7 +619,9 @@ class StacksOrbitGUI(App):
         # PALETTE: Make primary address display focusable
         self.w_display_address.can_focus = True
 
-        self.w_contract_details_header_label = self.query_one("#contract-details-header-label", Label)
+        self.w_contract_details_header_label = self.query_one(
+            "#contract-details-header-label", Label
+        )
         self.w_contract_details_md = self.query_one("#contract-details", Markdown)
         self.w_details_loader = self.query(".details-pane LoadingIndicator").first()
 
@@ -600,7 +629,9 @@ class StacksOrbitGUI(App):
         # Use defensive queries to avoid crashes if widgets are unmounted during initialization.
         self.w_loading_indicators = list(self.query(LoadingIndicator))
         self.w_overview_indicators = list(self.query("#overview LoadingIndicator"))
-        self.w_refresh_btn = self.query("#refresh-btn").first() if self.query("#refresh-btn") else None
+        self.w_refresh_btn = (
+            self.query("#refresh-btn").first() if self.query("#refresh-btn") else None
+        )
 
         # PALETTE: Handle 'Not configured' state visually
         if self.address == "Not configured":
@@ -610,18 +641,14 @@ class StacksOrbitGUI(App):
             indicator.display = False
 
         # Add tooltips to widgets
-        self.w_contracts_table.tooltip = (
-            "List of contracts deployed by this address. Click a row to view source code."
-        )
+        self.w_contracts_table.tooltip = "List of contracts deployed by this address. Click a row to view source code."
         self.w_transactions_table.tooltip = (
             "Recent transactions for this address. Click a row to copy full TX ID."
         )
         self.w_tx_filter_input.tooltip = (
             "Filter transactions by ID, Type, or Status [/]"
         )
-        self.w_deployment_log.tooltip = (
-            "Deployment process logs and output"
-        )
+        self.w_deployment_log.tooltip = "Deployment process logs and output"
 
         # Buttons and interactive elements tooltips
         self.query_one("#refresh-btn", Button).tooltip = (
@@ -635,49 +662,31 @@ class StacksOrbitGUI(App):
         )
         self.w_copy_log_btn.tooltip = "Copy deployment log to clipboard [c]"
         self.query_one("#clear-log-btn", Button).tooltip = "Clear the deployment log"
-        self.w_show_privkey.tooltip = (
-            "Toggle private key visibility"
-        )
+        self.w_show_privkey.tooltip = "Toggle private key visibility"
         self.query_one("#copy-address-btn", Button).tooltip = (
             "Copy address to clipboard [c]"
         )
-        self.w_view_address_explorer_btn.tooltip = (
-            "View address on Hiro Explorer [e]"
-        )
+        self.w_view_address_explorer_btn.tooltip = "View address on Hiro Explorer [e]"
         self.query_one("#connect-wallet-btn", Button).tooltip = (
             "Connect your wallet via browser"
         )
         self.query_one("#system-address-label", Label).tooltip = (
             "Your active Stacks address for deployments"
         )
-        self.w_display_address.tooltip = (
-            "Click to copy your Stacks address [c]"
-        )
+        self.w_display_address.tooltip = "Click to copy your Stacks address [c]"
         self.query_one("#copy-dashboard-address-btn", Button).tooltip = (
             "Copy your Stacks address to clipboard [c]"
         )
         self.w_view_dashboard_explorer_btn.tooltip = (
             "View your address on Hiro Explorer [e]"
         )
-        self.w_faucet_btn.tooltip = (
-            "Get free STX from the Hiro Testnet Faucet"
-        )
-        self.w_settings_faucet_btn.tooltip = (
-            "Get free STX from the Hiro Testnet Faucet"
-        )
-        self.w_copy_contract_btn.tooltip = (
-            "Copy selected contract ID [c]"
-        )
+        self.w_faucet_btn.tooltip = "Get free STX from the Hiro Testnet Faucet"
+        self.w_settings_faucet_btn.tooltip = "Get free STX from the Hiro Testnet Faucet"
+        self.w_copy_contract_btn.tooltip = "Copy selected contract ID [c]"
         self.w_copy_source_btn.tooltip = "Copy contract source code"
-        self.w_view_explorer_btn.tooltip = (
-            "View contract on Hiro Explorer [e]"
-        )
-        self.w_contract_details_header_label.tooltip = (
-            "Click to copy contract ID [c]"
-        )
-        self.w_tx_status_label.tooltip = (
-            "Click to copy transaction ID [c]"
-        )
+        self.w_view_explorer_btn.tooltip = "View contract on Hiro Explorer [e]"
+        self.w_contract_details_header_label.tooltip = "Click to copy contract ID [c]"
+        self.w_tx_status_label.tooltip = "Click to copy transaction ID [c]"
 
         self.w_copy_contract_btn.disabled = True
         self.w_copy_source_btn.disabled = True
@@ -695,13 +704,9 @@ class StacksOrbitGUI(App):
         self.w_copy_tx_btn.disabled = True
         self.w_view_tx_explorer_btn.disabled = True
         self.w_copy_tx_btn.tooltip = "Copy full transaction ID [c]"
-        self.w_view_tx_explorer_btn.tooltip = (
-            "View transaction on Hiro Explorer [e]"
-        )
+        self.w_view_tx_explorer_btn.tooltip = "View transaction on Hiro Explorer [e]"
 
-        self.w_save_config_btn.tooltip = (
-            "Save settings to .env file [s]"
-        )
+        self.w_save_config_btn.tooltip = "Save settings to .env file [s]"
 
         # Add tooltips to tabs for better discoverability
         self.query_one("#overview").tooltip = "Dashboard overview [F1]"
@@ -734,16 +739,32 @@ class StacksOrbitGUI(App):
         )
 
         # Dashboard navigation tooltips
-        self.query_one("#metric-contracts").tooltip = "Click or [Enter] to view deployed contracts [F2]"
-        self.query_one("#metric-balance").tooltip = "Click or [Enter] to view transaction history [F3]"
-        self.query_one("#metric-nonce").tooltip = "Click or [Enter] to view transaction history [F3]"
-        self.query_one("#metric-height").tooltip = "Click or [Enter] to view transaction history [F3]"
-        self.query_one("#metric-runway").tooltip = "Click or [Enter] to refresh metrics [r]"
-        self.query_one("#metric-exit-velocity").tooltip = "Click or [Enter] to refresh metrics [r]"
-        self.query_one("#privkey-label", Label).tooltip = "Click to focus private key input"
+        self.query_one("#metric-contracts").tooltip = (
+            "Click or [Enter] to view deployed contracts [F2]"
+        )
+        self.query_one("#metric-balance").tooltip = (
+            "Click or [Enter] to view transaction history [F3]"
+        )
+        self.query_one("#metric-nonce").tooltip = (
+            "Click or [Enter] to view transaction history [F3]"
+        )
+        self.query_one("#metric-height").tooltip = (
+            "Click or [Enter] to view transaction history [F3]"
+        )
+        self.query_one("#metric-runway").tooltip = (
+            "Click or [Enter] to refresh metrics [r]"
+        )
+        self.query_one("#metric-exit-velocity").tooltip = (
+            "Click or [Enter] to refresh metrics [r]"
+        )
+        self.query_one("#privkey-label", Label).tooltip = (
+            "Click to focus private key input"
+        )
         self.query_one("#address-label", Label).tooltip = "Click to focus address input"
         self.query_one("#show-privkey-label").tooltip = "Toggle private key visibility"
-        self.query_one("#theme-label").tooltip = "Toggle between standard and sovereign themes"
+        self.query_one("#theme-label").tooltip = (
+            "Toggle between standard and sovereign themes"
+        )
         self.w_theme_switch.tooltip = "Toggle between standard and sovereign themes"
 
         # PALETTE: Initialize Faucet button visibility
@@ -771,11 +792,21 @@ class StacksOrbitGUI(App):
             if not self._all_transactions:
                 if self.address != "Not configured":
                     transactions_table.add_row(
-                        "", "No transactions found", "Press [r] to refresh", "", "", key="empty-refresh"
+                        "",
+                        "No transactions found",
+                        "Press [r] to refresh",
+                        "",
+                        "",
+                        key="empty-refresh",
                     )
                 else:
                     transactions_table.add_row(
-                        "⚠️", "Config missing", "Press [F5] to configure", "", "", key="empty-settings"
+                        "⚠️",
+                        "Config missing",
+                        "Press [F5] to configure",
+                        "",
+                        "",
+                        key="empty-settings",
                     )
                 self.w_tx_filter_count.update("(0/0 matches)")
                 return
@@ -786,8 +817,10 @@ class StacksOrbitGUI(App):
                 # Bolt ⚡: Use high-performance list comprehension for transaction filtering.
                 # Combined with lazy search-key calculation to minimize main-thread overhead.
                 filtered_txs = [
-                    tx for tx in self._all_transactions
-                    if filter_text in (tx.get("_search_key") or self._prepare_tx_search_key(tx))
+                    tx
+                    for tx in self._all_transactions
+                    if filter_text
+                    in (tx.get("_search_key") or self._prepare_tx_search_key(tx))
                 ]
 
             if filtered_txs:
@@ -821,7 +854,9 @@ class StacksOrbitGUI(App):
                         tx.get("tx_id", "")[:10] + "...",
                         display_type,
                         display_status,
-                        self._format_relative_time(tx.get("burn_block_time_iso"), now_bucket),
+                        self._format_relative_time(
+                            tx.get("burn_block_time_iso"), now_bucket
+                        ),
                         block_display,
                         key=tx.get("tx_id"),
                     )
@@ -880,15 +915,21 @@ class StacksOrbitGUI(App):
 
         try:
             # ⚡ Bolt: Run synchronous API calls concurrently in threads
-            infra_runway_task = asyncio.to_thread(self.infra.get_runway_metrics, bypass_cache=bypass_cache)
-            infra_exit_velocity_task = asyncio.to_thread(self.infra.get_exit_velocity, bypass_cache=bypass_cache)
+            infra_runway_task = asyncio.to_thread(
+                self.infra.get_runway_metrics, bypass_cache=bypass_cache
+            )
+            infra_exit_velocity_task = asyncio.to_thread(
+                self.infra.get_exit_velocity, bypass_cache=bypass_cache
+            )
             api_status_task = asyncio.to_thread(
                 self.monitor.check_api_status, bypass_cache=bypass_cache
             )
 
             if self.address != "Not configured":
                 account_info_task = asyncio.to_thread(
-                    self.monitor.get_account_info, self.address, bypass_cache=bypass_cache
+                    self.monitor.get_account_info,
+                    self.address,
+                    bypass_cache=bypass_cache,
                 )
                 contracts_task = asyncio.to_thread(
                     self.monitor.get_deployed_contracts,
@@ -910,9 +951,21 @@ class StacksOrbitGUI(App):
                     transactions_task,
                     return_exceptions=True,
                 )
-                infra_runway, infra_exit_velocity, api_status, account_info, deployed_contracts, transactions = results
+                (
+                    infra_runway,
+                    infra_exit_velocity,
+                    api_status,
+                    account_info,
+                    deployed_contracts,
+                    transactions,
+                ) = results
             else:
-                results = await asyncio.gather(infra_runway_task, infra_exit_velocity_task, api_status_task, return_exceptions=True)
+                results = await asyncio.gather(
+                    infra_runway_task,
+                    infra_exit_velocity_task,
+                    api_status_task,
+                    return_exceptions=True,
+                )
                 infra_runway, infra_exit_velocity, api_status = results
                 account_info, deployed_contracts, transactions = None, [], []
 
@@ -925,69 +978,69 @@ class StacksOrbitGUI(App):
             # Supabase Infra Metrics
             if not isinstance(infra_runway, Exception) and infra_runway:
                 runway = f"{infra_runway.get('runway_months', '?')} mo"
-                if self._last_metrics.get('runway') != runway:
+                if self._last_metrics.get("runway") != runway:
                     self.w_runway.update(runway)
-                    metrics['runway'] = runway
+                    metrics["runway"] = runway
 
             if not isinstance(infra_exit_velocity, Exception) and infra_exit_velocity:
                 ev = f"{infra_exit_velocity.get('current_estimated_valuation_zar', '?')} ZAR"
-                if self._last_metrics.get('exit_velocity') != ev:
+                if self._last_metrics.get("exit_velocity") != ev:
                     self.w_exit_velocity.update(ev)
-                    metrics['exit_velocity'] = ev
+                    metrics["exit_velocity"] = ev
 
-            status = api_status.get('status', 'unknown').upper()
-            dot = '[green]●[/]' if status == 'ONLINE' else '[red]●[/]'
-            status_display = f'{dot} {status}'
-            if self._last_metrics.get('status') != status_display:
+            status = api_status.get("status", "unknown").upper()
+            dot = "[green]●[/]" if status == "ONLINE" else "[red]●[/]"
+            status_display = f"{dot} {status}"
+            if self._last_metrics.get("status") != status_display:
                 self.w_network_status.update(status_display)
-                metrics['status'] = status_display
+                metrics["status"] = status_display
 
-            self.current_block_height = api_status.get('block_height', 0)
+            self.current_block_height = api_status.get("block_height", 0)
             height = str(self.current_block_height)
-            if self._last_metrics.get('height') != height:
+            if self._last_metrics.get("height") != height:
                 self.w_block_height.update(height)
-                metrics['height'] = height
+                metrics["height"] = height
 
             if isinstance(account_info, Exception):
                 raise account_info
 
-            balance_stx_display = '0 STX'
-            nonce_display = '0'
+            balance_stx_display = "0 STX"
+            nonce_display = "0"
 
             if account_info:
-                balance_raw = account_info.get('balance', 0)
+                balance_raw = account_info.get("balance", 0)
                 balance_stx = (
                     int(balance_raw, 16)
-                    if isinstance(balance_raw, str) and balance_raw.startswith('0x')
+                    if isinstance(balance_raw, str) and balance_raw.startswith("0x")
                     else int(balance_raw)
                 ) / 1_000_000
-                balance_stx_display = f'{balance_stx:,.6f} STX'
+                balance_stx_display = f"{balance_stx:,.6f} STX"
 
                 if balance_stx >= 1.0:
-                    balance_stx_display = f'[green]{balance_stx_display}[/]'
+                    balance_stx_display = f"[green]{balance_stx_display}[/]"
                 elif balance_stx > 0:
-                    balance_stx_display = f'[yellow]{balance_stx_display}[/]'
+                    balance_stx_display = f"[yellow]{balance_stx_display}[/]"
                 else:
-                    balance_stx_display = f'[red]{balance_stx_display}[/]'
+                    balance_stx_display = f"[red]{balance_stx_display}[/]"
 
-                nonce_display = str(account_info.get('nonce', 0))
+                nonce_display = str(account_info.get("nonce", 0))
 
-            if self._last_metrics.get('balance') != balance_stx_display:
+            if self._last_metrics.get("balance") != balance_stx_display:
                 self.w_balance.update(balance_stx_display)
-                metrics['balance'] = balance_stx_display
+                metrics["balance"] = balance_stx_display
 
-            if self._last_metrics.get('nonce') != nonce_display:
+            if self._last_metrics.get("nonce") != nonce_display:
                 self.w_nonce.update(nonce_display)
-                metrics['nonce'] = nonce_display
+                metrics["nonce"] = nonce_display
 
             self._last_metrics = metrics
             if isinstance(deployed_contracts, Exception):
                 raise deployed_contracts
 
             count_display = str(len(deployed_contracts))
-            if self._last_metrics.get('contract-count') != count_display:
+            if self._last_metrics.get("contract-count") != count_display:
                 self.w_contract_count.update(count_display)
-                self._last_metrics['contract-count'] = count_display
+                self._last_metrics["contract-count"] = count_display
 
             # ⚡ Bolt: Only clear and repopulate contracts table if data changed
             if deployed_contracts != self._last_contracts:
@@ -998,20 +1051,32 @@ class StacksOrbitGUI(App):
                     if deployed_contracts:
                         for contract in deployed_contracts:
                             cid = contract.get("contract_id", "...")
-                            address, name = cid.split(".") if "." in cid else ("...", cid)
+                            address, name = (
+                                cid.split(".") if "." in cid else ("...", cid)
+                            )
                             # PALETTE: Use categorized icons and semantic colors for visual variety
                             category = self._categorize_contract(name)
-                            cat_info = self.CONTRACT_CATEGORY_MAP.get(category, self.CONTRACT_CATEGORY_MAP["other"])
+                            cat_info = self.CONTRACT_CATEGORY_MAP.get(
+                                category, self.CONTRACT_CATEGORY_MAP["other"]
+                            )
                             icon = cat_info["icon"]
                             color = cat_info["color"]
-                            contracts_table.add_row(icon, f"[{color}]{name}[/]", address, key=cid)
+                            contracts_table.add_row(
+                                icon, f"[{color}]{name}[/]", address, key=cid
+                            )
                     elif self.address != "Not configured":
                         contracts_table.add_row(
-                            "", "No contracts found", "Press [F4] to deploy", key="empty-deploy"
+                            "",
+                            "No contracts found",
+                            "Press [F4] to deploy",
+                            key="empty-deploy",
                         )
                     else:
                         contracts_table.add_row(
-                            "⚠️", "Config missing", "Press [F5] to set up", key="empty-settings"
+                            "⚠️",
+                            "Config missing",
+                            "Press [F5] to set up",
+                            key="empty-settings",
                         )
                 self._last_contracts = deployed_contracts
 
@@ -1025,7 +1090,10 @@ class StacksOrbitGUI(App):
 
             # ⚡ Bolt: Only clear and repopulate transactions table if data changed or filter applied.
             # PALETTE: Also refresh if block height changed to update confirmation counts.
-            if transactions != self._all_transactions or self.current_block_height != self._last_height:
+            if (
+                transactions != self._all_transactions
+                or self.current_block_height != self._last_height
+            ):
                 self._all_transactions = transactions
                 self._update_transactions_table()
 
@@ -1048,7 +1116,9 @@ class StacksOrbitGUI(App):
             # Update detail header with contract name and category
             name = contract_id.split(".")[1] if "." in contract_id else contract_id
             category_key = self._categorize_contract(name)
-            category = self.CONTRACT_CATEGORY_MAP.get(category_key, self.CONTRACT_CATEGORY_MAP["other"])
+            category = self.CONTRACT_CATEGORY_MAP.get(
+                category_key, self.CONTRACT_CATEGORY_MAP["other"]
+            )
             category_display = f"{category['icon']} {category['label']}"
 
             self.w_contract_details_header_label.update(
@@ -1091,7 +1161,9 @@ class StacksOrbitGUI(App):
         self.w_view_tx_explorer_btn.disabled = False
 
         # BOLT ⚡: Find transaction object for enriched details
-        tx_obj = next((tx for tx in self._all_transactions if tx.get("tx_id") == tx_id), {})
+        tx_obj = next(
+            (tx for tx in self._all_transactions if tx.get("tx_id") == tx_id), {}
+        )
 
         nonce = tx_obj.get("nonce", "-")
         fee = tx_obj.get("fee_rate", tx_obj.get("fee", "-"))
@@ -1193,7 +1265,11 @@ class StacksOrbitGUI(App):
         """Handle dashboard metric card interaction via keyboard."""
         if event.key in ("enter", "space") and self.focused:
             focused_id = self.focused.id
-            if focused_id in ("metric-network", "metric-runway", "metric-exit-velocity"):
+            if focused_id in (
+                "metric-network",
+                "metric-runway",
+                "metric-exit-velocity",
+            ):
                 self.action_refresh()
             elif focused_id == "metric-contracts":
                 self.on_contracts_metric_click()
@@ -1268,8 +1344,11 @@ class StacksOrbitGUI(App):
             # For settings, we use a mock object to signal we want the address from the input
             class MockEvent:
                 class MockButton:
-                    def __init__(self): self.id = "view-address-explorer-btn"
-                def __init__(self): self.button = self.MockButton()
+                    def __init__(self):
+                        self.id = "view-address-explorer-btn"
+
+                def __init__(self):
+                    self.button = self.MockButton()
 
             await self.on_view_address_explorer_pressed(MockEvent())
 
@@ -1348,7 +1427,9 @@ class StacksOrbitGUI(App):
             # Bolt ⚡: Use cached refresh button and indicators for O(1) feedback.
             if self.w_refresh_btn:
                 self.w_refresh_btn.disabled = False
-                self.w_refresh_btn.label = getattr(self, "_original_btn_label", "🔄 Refresh")
+                self.w_refresh_btn.label = getattr(
+                    self, "_original_btn_label", "🔄 Refresh"
+                )
 
             for indicator in self.w_overview_indicators:
                 indicator.display = False
@@ -1367,7 +1448,7 @@ class StacksOrbitGUI(App):
 
         precheck_btn = self.query_one("#precheck-btn", Button)
         deploy_btn = self.query_one("#start-deploy-btn", Button)
-        original_label = button.label
+        _original_label = button.label
 
         precheck_btn.disabled = True
         deploy_btn.disabled = True
@@ -1386,7 +1467,9 @@ class StacksOrbitGUI(App):
                     self.call_from_thread(log.write, line)
                 process.stdout.close()
                 return_code = process.wait()
-                status_msg = f"\n[bold]{'Success' if return_code == 0 else 'Failed'}[/bold]"
+                status_msg = (
+                    f"\n[bold]{'Success' if return_code == 0 else 'Failed'}[/bold]"
+                )
                 self._deployment_log_lines.append(status_msg)
                 self.call_from_thread(log.write, status_msg)
 
@@ -1395,9 +1478,13 @@ class StacksOrbitGUI(App):
                 notify_msg = f"{cmd_name.capitalize()} finished"
                 if return_code != 0:
                     notify_msg += f" (Code: {return_code})"
-                self.call_from_thread(self.notify, notify_msg, severity="information" if return_code == 0 else "error")
+                self.call_from_thread(
+                    self.notify,
+                    notify_msg,
+                    severity="information" if return_code == 0 else "error",
+                )
             finally:
-                self.call_from_thread(setattr, button, "label", original_label)
+                self.call_from_thread(setattr, button, "label", _original_label)
                 self.call_from_thread(setattr, precheck_btn, "disabled", False)
                 self.call_from_thread(setattr, deploy_btn, "disabled", False)
                 self.call_from_thread(setattr, loading_indicator, "display", False)
@@ -1563,7 +1650,9 @@ class StacksOrbitGUI(App):
     @on(Button.Pressed, "#connect-wallet-btn")
     def on_connect_wallet_pressed(self) -> None:
         """Launch the wallet connection wizard."""
-        self.notify("Launching Wallet Connect in your browser...", severity="information")
+        self.notify(
+            "Launching Wallet Connect in your browser...", severity="information"
+        )
         self.run_worker(self._run_wallet_connect())
 
     async def _run_wallet_connect(self) -> None:
@@ -1573,14 +1662,16 @@ class StacksOrbitGUI(App):
         import io
 
         btn = self.query_one("#connect-wallet-btn", Button)
-        original_label = btn.label
+        _original_label = btn.label
         btn.disabled = True
         btn.label = "🔗 Waiting..."
 
         try:
             # Run the server in a thread and suppress stdout to keep TUI clean
             with contextlib.redirect_stdout(io.StringIO()):
-                address = await asyncio.to_thread(start_wallet_connect_server, network=self.network)
+                address = await asyncio.to_thread(
+                    start_wallet_connect_server, network=self.network
+                )
 
             if address:
                 # Update inputs and internal state
@@ -1598,7 +1689,7 @@ class StacksOrbitGUI(App):
             self.notify(f"Wallet connection failed: {e}", severity="error")
         finally:
             btn.disabled = False
-            btn.label = original_label
+            btn.label = _original_label
 
     @on(Button.Pressed, "#copy-address-btn")
     async def on_copy_address_pressed(self) -> None:
@@ -1625,7 +1716,9 @@ class StacksOrbitGUI(App):
 
     @on(Button.Pressed, "#view-dashboard-explorer-btn")
     @on(Button.Pressed, "#view-address-explorer-btn")
-    async def on_view_address_explorer_pressed(self, event: Button.Pressed = None) -> None:
+    async def on_view_address_explorer_pressed(
+        self, event: Button.Pressed = None
+    ) -> None:
         """Open the Stacks address on the Hiro Explorer."""
         # For dashboard button, use self.address.
         # For settings button, use the current input value for better UX.
@@ -1691,7 +1784,11 @@ class StacksOrbitGUI(App):
         """Handle copy source button press with visual feedback."""
         if self.current_source_code:
             self.copy_to_clipboard(self.current_source_code)
-            name = self.selected_contract_id.split(".")[1] if "." in self.selected_contract_id else "contract"
+            name = (
+                self.selected_contract_id.split(".")[1]
+                if "." in self.selected_contract_id
+                else "contract"
+            )
             self.notify(f"Source code for '{name}' copied", severity="information")
 
             # Micro-UX: Visual feedback
@@ -1707,7 +1804,8 @@ class StacksOrbitGUI(App):
         if self.selected_contract_id:
             if self.network == "devnet":
                 self.notify(
-                    "Hiro Explorer is not available for local devnet.", severity="warning"
+                    "Hiro Explorer is not available for local devnet.",
+                    severity="warning",
                 )
                 return
 
@@ -1742,7 +1840,8 @@ class StacksOrbitGUI(App):
         if self.selected_tx_id:
             if self.network == "devnet":
                 self.notify(
-                    "Hiro Explorer is not available for local devnet.", severity="warning"
+                    "Hiro Explorer is not available for local devnet.",
+                    severity="warning",
                 )
                 return
 
@@ -1754,7 +1853,7 @@ class StacksOrbitGUI(App):
     async def on_save_config_pressed(self) -> None:
         """Handle save config button press with visual feedback."""
         save_btn = self.w_save_config_btn
-        original_label = save_btn.label
+        _original_label = save_btn.label
 
         # 🛡️ Sentinel: Collect values in the main thread for thread safety.
         # We also identify if the user is attempting to save a real secret.
@@ -1817,7 +1916,8 @@ class StacksOrbitGUI(App):
 
             try:
                 self.w_display_address.update(address_val)
-            except Exception: pass
+            except Exception:
+                pass
 
             if is_secret_provided:
                 # 🛡️ Sentinel: Inform the user that secrets are not saved to disk.

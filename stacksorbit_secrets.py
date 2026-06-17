@@ -1,3 +1,4 @@
+from typing import Optional, List, Dict, Any, Union
 # Copyright (c) 2025 Conxian-Labs
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for full license information.
@@ -135,17 +136,78 @@ HEX_RE = re.compile(r"^[0-9a-fA-F]+$")
 # These words represent clear security risks and must trigger redaction even when paired
 # with public identifiers (e.g., 'PUBLIC_JWT', 'ADDR_TOKEN').
 HIGH_CONFIDENCE_SENSITIVE_WORDS = [
-    "PRIV", "SECRET", "MNEMONIC", "PASS", "AUTH", "ACCESS", "PHRASE", "RECOVERY",
-    "SEED", "PWD", "XPRV", "MASTER", "VAULT", "ADMIN", "ROOT", "JWT",
-    "BEARER", "SALT", "CRED", "SESS", "TOKEN", "KUBECONFIG", "DOCKER",
-    "DATABASE", "DB_", "SENSITIVE", "ENCRYPT", "BIP3", "CERT", "PKCS",
-    "SSH", "PGP", "GPG", "PEM", "OAUTH", "COOKIE", "CSRF", "SESSID",
-    "SESSIONID", "DECRYPT", "APIKEY", "API_KEY", "CLOUDFLARE", "HEROKU",
-    "STRIPE", "INFURA", "ALCHEMY", "SENDGRID", "MAILGUN", "TWILIO",
-    "SUPABASE", "NEON", "POSTGRES", "MONGODB", "REDIS", "AWS", "AZURE",
-    "GCP", "DIGITALOCEAN", "MFA", "OTP", "TOTP", "SIGNATURE",
-    "DSN", "WEBHOOK", "GITHUB", "GITLAB", "BITBUCKET", "SENTRY",
-    "TELEGRAM", "DISCORD", "SLACK",
+    "PRIV",
+    "SECRET",
+    "MNEMONIC",
+    "PASS",
+    "AUTH",
+    "ACCESS",
+    "PHRASE",
+    "RECOVERY",
+    "SEED",
+    "PWD",
+    "XPRV",
+    "MASTER",
+    "VAULT",
+    "ADMIN",
+    "ROOT",
+    "JWT",
+    "BEARER",
+    "SALT",
+    "CRED",
+    "SESS",
+    "TOKEN",
+    "KUBECONFIG",
+    "DOCKER",
+    "DATABASE",
+    "DB_",
+    "SENSITIVE",
+    "ENCRYPT",
+    "BIP3",
+    "CERT",
+    "PKCS",
+    "SSH",
+    "PGP",
+    "GPG",
+    "PEM",
+    "OAUTH",
+    "COOKIE",
+    "CSRF",
+    "SESSID",
+    "SESSIONID",
+    "DECRYPT",
+    "APIKEY",
+    "API_KEY",
+    "CLOUDFLARE",
+    "HEROKU",
+    "STRIPE",
+    "INFURA",
+    "ALCHEMY",
+    "SENDGRID",
+    "MAILGUN",
+    "TWILIO",
+    "SUPABASE",
+    "NEON",
+    "POSTGRES",
+    "MONGODB",
+    "REDIS",
+    "AWS",
+    "AZURE",
+    "GCP",
+    "DIGITALOCEAN",
+    "MFA",
+    "OTP",
+    "TOTP",
+    "SIGNATURE",
+    "DSN",
+    "WEBHOOK",
+    "GITHUB",
+    "GITLAB",
+    "BITBUCKET",
+    "SENTRY",
+    "TELEGRAM",
+    "DISCORD",
+    "SLACK",
 ]
 HIGH_CONFIDENCE_SENSITIVE_RE = re.compile(
     "|".join(re.escape(s) for s in HIGH_CONFIDENCE_SENSITIVE_WORDS),
@@ -200,7 +262,11 @@ def _is_sensitive_value_cached(value: str) -> bool:
     # (e.g. for Chinese/Japanese characters).
     words = value.split()
     if len(words) in (12, 15, 18, 21, 24) and all(len(w) >= 1 for w in words):
-        if value.islower() or value.isupper() or not any(c.islower() or c.isupper() for c in value):
+        if (
+            value.islower()
+            or value.isupper()
+            or not any(c.islower() or c.isupper() for c in value)
+        ):
             return True
 
     return False
@@ -266,9 +332,13 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
             child_is_public = is_public
             if isinstance(key, str):
                 key_upper = key.upper()
-                child_is_sensitive = child_is_sensitive or _is_sensitive_normalized(key_upper)
+                child_is_sensitive = child_is_sensitive or _is_sensitive_normalized(
+                    key_upper
+                )
                 child_is_public = child_is_public or _is_public_normalized(key_upper)
-            redacted_dict[key] = redact_recursive(value, key, child_is_sensitive, child_is_public)
+            redacted_dict[key] = redact_recursive(
+                value, key, child_is_sensitive, child_is_public
+            )
         return redacted_dict
     elif isinstance(item, (list, tuple, set)):
         # Bolt ⚡: Hoist scalar type checks for non-sensitive collections to bypass redundant
@@ -280,8 +350,11 @@ def redact_recursive(item, parent_key="", is_sensitive=None, is_public=None):
             fast_types = (int, float, bool)
 
             redacted_items = [
-                sub_item if isinstance(sub_item, fast_types) or sub_item is None
-                else redact_recursive(sub_item, parent_key, is_sensitive, is_public)
+                (
+                    sub_item
+                    if isinstance(sub_item, fast_types) or sub_item is None
+                    else redact_recursive(sub_item, parent_key, is_sensitive, is_public)
+                )
                 for sub_item in item
             ]
         else:
@@ -400,13 +473,13 @@ def is_sensitive_key(key: str) -> bool:
 
 
 @functools.lru_cache(maxsize=1024)
-def _validate_stacks_address_cached(address: str, network: str = None) -> bool:
+def _validate_stacks_address_cached(address: str, network: Optional[str] = None) -> bool:
     """Bolt ⚡: Internal cached validation for pre-normalized addresses."""
     reg = NETWORK_ADDR_RE_MAP.get(network, GENERIC_ADDR_RE)
     return bool(reg.match(address))
 
 
-def validate_stacks_address(address: str, network: str = None) -> bool:
+def validate_stacks_address(address: str, network: Optional[str] = None) -> bool:
     """
     Validate Stacks address format by network and charset.
     Prefix rules: SP for mainnet, ST for testnet/devnet.
@@ -492,7 +565,13 @@ NETWORK_ADDR_RE_MAP = {
 }
 
 
-def save_secure_config(filepath: str, config: object, json_format: bool = False, redact: bool = True, indent: int = 2):
+def save_secure_config(
+    filepath: str,
+    config: object,
+    json_format: bool = False,
+    redact: bool = True,
+    indent: int = 2,
+):
     """
     🛡️ Sentinel: Atomically and securely save configuration to a file.
     Uses a temporary file and os.replace for atomicity, and ensures
@@ -530,7 +609,10 @@ def save_secure_config(filepath: str, config: object, json_format: bool = False,
                         # Explicitly skip any known secrets, potential sensitive keys, OR values that look like secrets.
                         # This prevents secrets from being saved to disk even if stored under generic key names.
                         # 🛡️ Sentinel: Regression Fix - allow sensitive keys if the value is a safe placeholder.
-                        if (not is_sensitive_key(str(key)) and not is_sensitive_value(str(value))) or is_placeholder(str(value)):
+                        if (
+                            not is_sensitive_key(str(key))
+                            and not is_sensitive_value(str(value))
+                        ) or is_placeholder(str(value)):
                             # 🛡️ Sentinel: Sanitize key and value to prevent injection and format breakage.
                             # We remove newlines and equals signs from keys to prevent configuration injection.
                             safe_key = (

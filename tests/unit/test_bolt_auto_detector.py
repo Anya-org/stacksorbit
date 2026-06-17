@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 from scripts.enhanced_auto_detector import GenericStacksAutoDetector
 
+
 def test_sorting_priority_logic():
     detector = GenericStacksAutoDetector()
 
@@ -26,6 +27,7 @@ def test_sorting_priority_logic():
     # Expected order: trait (sip-009), utils, core, test
     assert names == ["sip-009-nft-trait", "my-utils", "core-contract", "test-mock"]
 
+
 def test_multiple_keyword_matches():
     detector = GenericStacksAutoDetector()
 
@@ -41,8 +43,12 @@ def test_multiple_keyword_matches():
 
     # lib is at index ~12, math at index ~13
     # both should be prioritized similarly, but let's check
-    p_math_lib = detector._sort_contracts_by_generic_dependencies([{"name": "math-lib"}])[0]
-    p_math = detector._sort_contracts_by_generic_dependencies([{"name": "just-math"}])[0]
+    p_math_lib = detector._sort_contracts_by_generic_dependencies(
+        [{"name": "math-lib"}]
+    )[0]
+    p_math = detector._sort_contracts_by_generic_dependencies([{"name": "just-math"}])[
+        0
+    ]
 
     # Actually _sort_contracts_by_generic_dependencies returns the list sorted.
     # We want to check if the priority assigned is correct.
@@ -55,6 +61,7 @@ def test_multiple_keyword_matches():
     idx_math = detector._priority_map["math"]
     idx_lib = detector._priority_map["lib"]
     assert idx_lib < idx_math
+
 
 def test_project_files_cache_is_dict():
     detector = GenericStacksAutoDetector()
@@ -80,16 +87,14 @@ def test_project_files_cache_is_dict():
         assert "test.clar" in detector.project_files_cache[cache_key]
         assert detector.project_files_cache[cache_key]["test.clar"]["mtime"] == 12345
 
+
 def test_stat_avoidance_in_clarinet_toml():
     detector = GenericStacksAutoDetector()
     directory = Path("test_project")
     cache_key = str(directory)
 
     detector.project_files_cache[cache_key] = {
-        "contracts/my-contract.clar": {
-            "mtime": 9999,
-            "size": 500
-        }
+        "contracts/my-contract.clar": {"mtime": 9999, "size": 500}
     }
 
     # Mock Clarinet.toml content
@@ -100,11 +105,12 @@ def test_stat_avoidance_in_clarinet_toml():
 
     with patch("pathlib.Path.exists", return_value=True):
         with patch("builtins.open", MagicMock()):
-            with patch("tomllib.load", return_value={
-                "contracts": {
-                    "my-contract": {"path": "contracts/my-contract.clar"}
-                }
-            }):
+            with patch(
+                "tomllib.load",
+                return_value={
+                    "contracts": {"my-contract": {"path": "contracts/my-contract.clar"}}
+                },
+            ):
                 # Mock stat to ensure it's NOT called for the contract
                 with patch("pathlib.Path.stat") as mock_stat:
                     contracts = detector._parse_generic_clarinet_toml(directory)
@@ -118,5 +124,9 @@ def test_stat_avoidance_in_clarinet_toml():
                     # But in our implementation, we retrieve metadata for 'contract_path'
 
                     # Filter calls to check if any call was for the contract file
-                    contract_stat_calls = [c for c in mock_stat.call_args_list if "my-contract.clar" in str(c)]
+                    contract_stat_calls = [
+                        c
+                        for c in mock_stat.call_args_list
+                        if "my-contract.clar" in str(c)
+                    ]
                     assert len(contract_stat_calls) == 0

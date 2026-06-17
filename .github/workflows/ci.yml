@@ -52,14 +52,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .[dev,test]
+          pip install safety
 
       - name: Install Node deps
         run: pnpm install --frozen-lockfile
 
-      - name: Lint (JS + Python)
+      - name: Run Audit
+        run: pnpm run audit
+
+      - name: Lint (JS + Python + TS)
         run: pnpm run lint
 
       - name: Run unit tests
+        run: pnpm run test:unit
+
+      - name: Run Vitest tests
         run: pnpm run test:vitest
 
       - name: GUI smoke test

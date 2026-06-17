@@ -3,6 +3,7 @@ import functools
 from stacksorbit_secrets import is_sensitive_key, _is_sensitive_normalized
 from deployment_monitor import DeploymentMonitor
 
+
 def benchmark_secrets():
     print("--- Benchmarking Secrets Cache ---")
     # Using more iterations to get measurable numbers
@@ -17,6 +18,7 @@ def benchmark_secrets():
     # After normalization optimization, this should be faster as it skips the outer cache layer
     # and hits the normalized cache directly.
 
+
 def benchmark_monitor():
     print("\n--- Benchmarking Monitor Cache ---")
     monitor = DeploymentMonitor(network="testnet")
@@ -29,14 +31,22 @@ def benchmark_monitor():
 
     # Mocking session.get to avoid network calls during benchmark
     calls = 0
+
     def mock_get(*args, **kwargs):
         nonlocal calls
         calls += 1
+
         class MockResponse:
-            def json(self): return {"tx_status": "success"}
-            def raise_for_status(self): pass
+            def json(self):
+                return {"tx_status": "success"}
+
+            def raise_for_status(self):
+                pass
+
             @property
-            def status_code(self): return 200
+            def status_code(self):
+                return 200
+
         return MockResponse()
 
     monitor.session.get = mock_get
@@ -44,9 +54,12 @@ def benchmark_monitor():
     monitor.get_transaction_info(tx_id)
     monitor.get_transaction_info(tx_id_0x)
 
-    print(f"Number of API calls for same TX ID (with/without 0x): {calls} (Expected: 2 before optimization)")
+    print(
+        f"Number of API calls for same TX ID (with/without 0x): {calls} (Expected: 2 before optimization)"
+    )
 
     # Currently, they generate different keys, so both miss and hit the 'API'
+
 
 if __name__ == "__main__":
     benchmark_secrets()
