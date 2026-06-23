@@ -22,7 +22,7 @@ class TestConxianFullIntegration(unittest.TestCase):
     def setUpClass(cls):
         # path to Conxian workspace
         cls.conxian_path = Path("c:/Users/bmokoka/anyachainlabs/Conxian")
-        cls.stacksorbit_path = Path("c:/Users/bmokoka/anyachainlabs/stacksorbit")
+        cls.conxius_orbit_path = Path("c:/Users/bmokoka/anyachainlabs/conxius_orbit")
 
         if not cls.conxian_path.exists():
             raise unittest.SkipTest("Conxian workspace not found at expected path")

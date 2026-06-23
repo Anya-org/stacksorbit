@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-StacksOrbit Wallet Connect - QR Code Authentication
+ConxiusOrbit Wallet Connect - QR Code Authentication
 Generates a QR code for wallet connection and retrieves the address for deployment
 """
 
@@ -23,7 +23,7 @@ import time
 import secrets
 import urllib.parse
 from pathlib import Path
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     validate_stacks_address,
     set_secure_permissions,
     is_sensitive_key,
@@ -37,7 +37,7 @@ WALLET_CONNECT_HTML = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StacksOrbit - Connect Wallet</title>
+    <title>ConxiusOrbit - Connect Wallet</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -138,7 +138,7 @@ WALLET_CONNECT_HTML = """
 <body>
     <div class="container">
         <div class="logo">🚀</div>
-        <h1>StacksOrbit</h1>
+        <h1>ConxiusOrbit</h1>
         <p class="subtitle">Connect your Stacks wallet for testnet deployment</p>
 
         <div id="connect-section">
@@ -237,7 +237,7 @@ WALLET_CONNECT_HTML = """
                     <button class="copy-btn" onclick="copyAddress()" title="Copy Address">📋</button>
                 </div>
                 <p style="margin-top: 15px; color: #22c55e;">
-                    Address saved. You can close this window and return to StacksOrbit CLI.
+                    Address saved. You can close this window and return to ConxiusOrbit CLI.
                 </p>
             `;
             document.getElementById('connected-addr').textContent = address;
@@ -457,7 +457,7 @@ def start_wallet_connect_server(port=8765, network="testnet"):
 
     print(f"""
 ╔══════════════════════════════════════════════════════════════╗
-║           🚀 StacksOrbit Wallet Connect                      ║
+║           🚀 ConxiusOrbit Wallet Connect                      ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  Opening browser for wallet connection...                    ║
 ║                                                              ║
@@ -539,6 +539,6 @@ if __name__ == "__main__":
 ║                                                              ║
 ║  Next steps:                                                 ║
 ║  1. Set DEPLOYER_PRIVKEY as environment variable             ║
-║  2. Run: python stacksorbit_cli.py deploy --network testnet  ║
+║  2. Run: python conxius_orbit_cli.py deploy --network testnet  ║
 ╚══════════════════════════════════════════════════════════════╝
 """)

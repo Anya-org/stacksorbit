@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-Enhanced StacksOrbit Auto-Detection System CLI
+Enhanced ConxiusOrbit Auto-Detection System CLI
 Generic integration that works with any Stacks contracts
 """
 
@@ -19,12 +19,17 @@ from typing import Dict, List, Optional
 from scripts.enhanced_auto_detector import GenericStacksAutoDetector
 
 
-class StacksOrbitCLIIntegration:
-    """Generic CLI integration for StacksOrbit auto-detection"""
+class ConxiusOrbitCLIIntegration:
+    """Generic CLI integration for ConxiusOrbit auto-detection"""
 
-    def __init__(self):
+    def __init__(self, verbose: bool = True):
         # Use generic mode by default, Conxian mode only if explicitly requested
-        use_conxian = os.getenv("STACKSORBIT_CONXIAN_MODE", "false").lower() == "true"
+        use_conxian = os.getenv("CONXIUS_ORBIT_CONXIAN_MODE", "false").lower() == "true"
+        self.auto_detector = GenericStacksAutoDetector(
+            use_conxian_mode=use_conxian, verbose=verbose
+        )
+        # Use generic mode by default, Conxian mode only if explicitly requested
+        use_conxian = os.getenv("CONXIUS_ORBIT_CONXIAN_MODE", "false").lower() == "true"
         self.auto_detector = GenericStacksAutoDetector(use_conxian_mode=use_conxian)
         self.current_analysis = None
 
@@ -46,7 +51,7 @@ class StacksOrbitCLIIntegration:
         detection = analysis["detection"]
         deployment_plan = analysis["deployment_plan"]
 
-        print("🔍 StacksOrbit Auto-Detection Results")
+        print("🔍 ConxiusOrbit Auto-Detection Results")
         print("=" * 50)
         print(f"📂 Directory: {detection['directory']}")
         print(f"📦 Contracts found: {detection['contracts_found']}")
@@ -83,13 +88,13 @@ class StacksOrbitCLIIntegration:
     def generate_deployment_command(self) -> str:
         """Generate appropriate deployment command"""
         if not self.current_analysis:
-            return "python ultimate_stacksorbit.py deploy --dry-run"
+            return "python ultimate_conxius_orbit.py deploy --dry-run"
 
         analysis = self.current_analysis
         deployment_plan = analysis["deployment_plan"]
 
         # Base command
-        command = "python ultimate_stacksorbit.py deploy"
+        command = "python ultimate_conxius_orbit.py deploy"
 
         # Add options based on analysis
         if deployment_plan["deployment_mode"] == "upgrade":
@@ -169,7 +174,7 @@ class StacksOrbitCLIIntegration:
 def main():
     """Main CLI function for enhanced auto-detection"""
     parser = argparse.ArgumentParser(
-        description="Enhanced StacksOrbit Auto-Detection System"
+        description="Enhanced ConxiusOrbit Auto-Detection System"
     )
     parser.add_argument(
         "command",
@@ -183,7 +188,7 @@ def main():
     args = parser.parse_args()
 
     # Initialize integration
-    integration = StacksOrbitCLIIntegration()
+    integration = ConxiusOrbitCLIIntegration()
 
     try:
         if args.command == "detect":
@@ -232,7 +237,7 @@ def main():
                 )
                 return 0
             else:
-                print("❌ Not ready for deployment. Run 'stacksorbit detect' first.")
+                print("❌ Not ready for deployment. Run 'conxius_orbit detect' first.")
                 return 1
 
         else:

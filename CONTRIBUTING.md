@@ -1,6 +1,6 @@
-# Contributing to StacksOrbit
+# Contributing to ConxiusOrbit
 
-StacksOrbit aligns to Conxian's parent governance baseline in [`Conxian/.github`](https://github.com/Conxian/.github) for issue templates, PR checklist standards, and shared workflow controls.
+ConxiusOrbit aligns to Conxian's parent governance baseline in [`Conxian/.github`](https://github.com/Conxian/.github) for issue templates, PR checklist standards, and shared workflow controls.
 
 ## Start here
 

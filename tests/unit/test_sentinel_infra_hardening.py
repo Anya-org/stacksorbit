@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from infrastructure_wiring import InfrastructureWiring, logger as infra_logger
-from stacksorbit_secrets import is_sensitive_key, redact_recursive
+from conxius_orbit_secrets import is_sensitive_key, redact_recursive
 
 
 class TestSentinelInfraHardening(unittest.TestCase):

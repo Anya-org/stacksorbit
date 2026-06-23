@@ -1,5 +1,5 @@
 import pytest
-from stacksorbit_secrets import redact_recursive
+from conxius_orbit_secrets import redact_recursive
 
 
 def test_redact_bytes():
@@ -71,7 +71,7 @@ def test_nested_mixed_containers():
 
 def test_sensitive_key_redaction_expansion():
     """🛡️ Sentinel: Verify that newly added high-confidence keywords are redacted even with public prefixes."""
-    from stacksorbit_secrets import is_sensitive_key
+    from conxius_orbit_secrets import is_sensitive_key
 
     # Newly hardened keys (should now be True)
     assert is_sensitive_key("PUBLIC_RECOVERY_PHRASE") is True
@@ -102,7 +102,7 @@ def test_sensitive_key_redaction_expansion():
 
 def test_case_insensitivity():
     """🛡️ Sentinel: Verify that detection is case-insensitive."""
-    from stacksorbit_secrets import is_sensitive_key
+    from conxius_orbit_secrets import is_sensitive_key
 
     assert is_sensitive_key("public_recovery_phrase") is True
     assert is_sensitive_key("Addr_Seed_Phrase") is True
@@ -111,7 +111,7 @@ def test_case_insensitivity():
 
 def test_new_redaction_keywords():
     """🛡️ Sentinel: Verify that new high-confidence keywords are redacted."""
-    from stacksorbit_secrets import is_sensitive_key, redact_recursive
+    from conxius_orbit_secrets import is_sensitive_key, redact_recursive
 
     # Verify new high-confidence keywords
     assert is_sensitive_key("PUBLIC_OAUTH") is True
@@ -137,7 +137,7 @@ def test_new_redaction_keywords():
 
 def test_new_placeholders_preserved():
     """🛡️ Sentinel: Verify that new placeholders are preserved."""
-    from stacksorbit_secrets import redact_recursive, is_placeholder
+    from conxius_orbit_secrets import redact_recursive, is_placeholder
 
     assert is_placeholder("your_oauth_token_here") is True
     assert is_placeholder("your_cookie_here") is True

@@ -1,5 +1,5 @@
 import pytest
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Button, DataTable, Label, Input, TabbedContent
 from unittest.mock import MagicMock
 import asyncio
@@ -8,7 +8,7 @@ import asyncio
 @pytest.mark.asyncio
 async def test_palette_ux_improvements():
     """Verify the new UX improvements: empty states, filter count color, and shortcuts."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     # Mock monitor to avoid API calls during app startup
     app.monitor = MagicMock()
     app.monitor.api_url = "https://api.testnet.hiro.so"

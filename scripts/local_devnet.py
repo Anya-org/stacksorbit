@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-Local Development Network for StacksOrbit
+Local Development Network for ConxiusOrbit
 Provides a simple interface for managing a local Stacks development network
 """
 
@@ -13,7 +13,7 @@ import sys
 import subprocess
 import time
 from pathlib import Path
-from stacksorbit_secrets import set_secure_permissions
+from conxius_orbit_secrets import set_secure_permissions
 
 try:
     import psutil

@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Callable
 import argparse
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     is_sensitive_key,
     is_placeholder,
     save_secure_config,

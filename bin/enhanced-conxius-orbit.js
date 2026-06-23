@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Enhanced StacksOrbit CLI for Conxian Deployment
+ * Enhanced ConxiusOrbit CLI for Conxian Deployment
  * Full-featured deployment tool with Hiro API integration
  */
 
@@ -11,7 +11,7 @@ function main() {
   const args = process.argv.slice(2);
   const command = args[0] || "help";
 
-  console.log("🚀 StacksOrbit - Enhanced Conxian Deployment Tool\n");
+  console.log("🚀 ConxiusOrbit - Enhanced Conxian Deployment Tool\n");
 
   // Handle Node.js CLI commands
   if (command === "deploy") {
@@ -28,11 +28,11 @@ function main() {
     runPythonScript("conxian_testnet_deploy.py", ["check", ...args.slice(1)]);
   } else if (command === "detect") {
     console.log("🔍 Running enhanced auto-detection...\n");
-    runPythonScript("stacksorbit_auto_detect.py", args.slice(1));
+    runPythonScript("conxius_orbit_auto_detect.py", args.slice(1));
   } else if (command === "gui") {
-    console.log("🖥️  Launching StacksOrbit GUI...\n");
+    console.log("🖥️  Launching ConxiusOrbit GUI...\n");
     const scriptDir = path.join(__dirname, "..");
-    const pythonScript = path.join(scriptDir, "stacksorbit.py");
+    const pythonScript = path.join(scriptDir, "conxius_orbit.py");
 
     const python = spawn("python", [pythonScript], {
       stdio: "inherit",
@@ -75,10 +75,10 @@ function runPythonScript(scriptName, args = []) {
 
 function showHelp() {
   console.log(`
-🚀 StacksOrbit - Enhanced CLI for Conxian Deployment
+🚀 ConxiusOrbit - Enhanced CLI for Conxian Deployment
 
 Usage:
-  stacksorbit <command> [options]
+  conxius_orbit <command> [options]
 
 Commands:
   deploy          Deploy Conxian contracts to testnet
@@ -100,18 +100,18 @@ Enhanced Features:
   ✅ Network health monitoring
 
 Quick Start:
-  1. Detect:      stacksorbit detect
-  2. Initialize: stacksorbit check
-  3. Deploy:     stacksorbit deploy --dry-run
-  4. Monitor:    stacksorbit monitor --follow
-  5. Verify:     stacksorbit verify
+  1. Detect:      conxius_orbit detect
+  2. Initialize: conxius_orbit check
+  3. Deploy:     conxius_orbit deploy --dry-run
+  4. Monitor:    conxius_orbit monitor --follow
+  5. Verify:     conxius_orbit verify
 
 For detailed help, run the Python scripts directly:
   python enhanced_conxian_deployment.py --help
   python deployment_monitor.py --help
   python deployment_verifier.py --help
 
-For more information, visit: https://github.com/Conxian/stacksorbit
+For more information, visit: https://github.com/Conxian/conxius_orbit
 `);
 }
 

@@ -1,4 +1,4 @@
-# StacksOrbit Requirements
+# ConxiusOrbit Requirements
 # Python 3.8+ required
 
 # Core dependencies for enhanced CLI functionality

@@ -4,16 +4,16 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-StacksOrbit - Main Entry Point
+ConxiusOrbit - Main Entry Point
 Bridges the package to the CLI implementation
 """
 
 import sys
-from stacksorbit_cli import main as cli_main
+from conxius_orbit_cli import main as cli_main
 
 
 def main():
-    """Main entry point for the stacksorbit package"""
+    """Main entry point for the conxius_orbit package"""
     return cli_main()
 
 

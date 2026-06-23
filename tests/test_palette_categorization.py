@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import DataTable
 from textual.widgets.data_table import RowKey
 
@@ -8,7 +8,7 @@ from textual.widgets.data_table import RowKey
 @pytest.mark.asyncio
 async def test_contract_categorization():
     """Test that contracts are correctly categorized based on their name."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
 
     # DEX (should match first)
     assert app._categorize_contract("token-swap") == "dex"
@@ -43,7 +43,7 @@ async def test_contract_categorization():
 @pytest.mark.asyncio
 async def test_contract_details_header_with_category():
     """Verify that the Contract Details header includes categorization info."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         contracts_table = app.query_one("#contracts-table")
         header_label = app.query_one("#contract-details-header-label")

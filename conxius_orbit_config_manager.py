@@ -7,7 +7,7 @@ import sys
 import argparse
 import toml
 from dotenv import dotenv_values
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     SECRET_KEYS,
     is_sensitive_key,
     is_placeholder,
@@ -69,7 +69,7 @@ class ConfigManager:
             for k, v in os.environ.items()
             if k in file_vars
             or k in SECRET_KEYS
-            or k.startswith(("STACKS_", "STACKSORBIT_"))
+            or k.startswith(("STACKS_", "CONXIUS_ORBIT_"))
         }
         self.config.update(env_overrides)
 
@@ -81,7 +81,7 @@ class ConfigManager:
             ".git",
             "dist",
             "build",
-            ".stacksorbit",
+            ".conxius_orbit",
             "logs",
             "target",
             "__pycache__",
