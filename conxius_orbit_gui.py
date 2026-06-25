@@ -15,7 +15,7 @@ import webbrowser
 import re
 from datetime import datetime, timezone
 import functools
-from typing import Any, Callable, Dict, List, TypeVar
+from typing import Dict, List
 
 try:
     from textual.app import App, ComposeResult
@@ -48,8 +48,6 @@ except ImportError as e:
 from infrastructure_wiring import InfrastructureWiring
 from deployment_monitor import DeploymentMonitor
 
-_T = TypeVar("_T")
-
 
 @functools.lru_cache(maxsize=128)
 def _parse_iso_to_dt(iso_time: str) -> datetime:
@@ -78,19 +76,6 @@ def _format_relative_time_cached(iso_time: str, now_bucket: int) -> str:
         return "Just now"
     except Exception:
         return "N/A"
-
-
-async def _to_thread_compat(
-    func: Callable[..., _T], /, *args: Any, **kwargs: Any
-) -> _T:
-    """Run a blocking function in a thread for Python 3.8+ compatibility."""
-    to_thread = getattr(asyncio, "to_thread", None)
-    if to_thread is not None:
-        return await to_thread(func, *args, **kwargs)
-
-    loop = asyncio.get_running_loop()
-    bound_call = functools.partial(func, *args, **kwargs)
-    return await loop.run_in_executor(None, bound_call)
 
 
 # Bolt BOLT: Pre-compiled regexes for high-performance contract categorization.
@@ -213,9 +198,6 @@ class ConxiusOrbitGUI(App):
 
     def watch_theme_name(self, old_theme: str, new_theme: str) -> None:
         """Watch for theme changes and update the application CSS class."""
-        if not self._screen_stack:
-            return
-
         self.remove_class(f"{old_theme}-theme")
         self.add_class(f"{new_theme}-theme")
 
@@ -933,28 +915,28 @@ class ConxiusOrbitGUI(App):
 
         try:
             # BOLT Bolt: Run synchronous API calls concurrently in threads
-            infra_runway_task = _to_thread_compat(
+            infra_runway_task = asyncio.to_thread(
                 self.infra.get_runway_metrics, bypass_cache=bypass_cache
             )
-            infra_exit_velocity_task = _to_thread_compat(
+            infra_exit_velocity_task = asyncio.to_thread(
                 self.infra.get_exit_velocity, bypass_cache=bypass_cache
             )
-            api_status_task = _to_thread_compat(
+            api_status_task = asyncio.to_thread(
                 self.monitor.check_api_status, bypass_cache=bypass_cache
             )
 
             if self.address != "Not configured":
-                account_info_task = _to_thread_compat(
+                account_info_task = asyncio.to_thread(
                     self.monitor.get_account_info,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                contracts_task = _to_thread_compat(
+                contracts_task = asyncio.to_thread(
                     self.monitor.get_deployed_contracts,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                transactions_task = _to_thread_compat(
+                transactions_task = asyncio.to_thread(
                     self.monitor.get_recent_transactions,
                     self.address,
                     bypass_cache=bypass_cache,
@@ -1325,18 +1307,11 @@ class ConxiusOrbitGUI(App):
         # Pilot BOLT: Use call_after_refresh to ensure tab-change focus doesn't override us.
         self.call_after_refresh(self.w_tx_filter_input.focus)
 
-    def _clear_tx_filter_state(self) -> None:
-        """Synchronously clear the transaction filter and dependent UI state."""
-        self.tx_filter = ""
-        self.w_tx_filter_input.value = ""
-        self.w_clear_tx_filter_btn.display = False
-        self._update_transactions_table()
-        self.w_tx_filter_input.focus()
-
     def action_clear_tx_filter(self) -> None:
         """Action to clear the transaction filter."""
         if self.w_tabbed_content.active == "transactions":
-            self._clear_tx_filter_state()
+            self.w_tx_filter_input.value = ""
+            self.w_tx_filter_input.focus()
 
     def action_switch_tab(self, tab_id: str) -> None:
         """Switch to a specific tab."""
@@ -1400,7 +1375,7 @@ class ConxiusOrbitGUI(App):
         loader.display = True
         self.current_source_code = None
         try:
-            details = await _to_thread_compat(
+            details = await asyncio.to_thread(
                 self.monitor.get_contract_details, contract_id
             )
             if details:
@@ -1625,7 +1600,8 @@ class ConxiusOrbitGUI(App):
     @on(Button.Pressed, "#clear-tx-filter-btn")
     def on_clear_tx_filter_pressed(self) -> None:
         """Handle the clear filter button press."""
-        self._clear_tx_filter_state()
+        self.w_tx_filter_input.value = ""
+        self.w_tx_filter_input.focus()
 
     @on(Input.Changed, "#tx-filter-input")
     def on_tx_filter_changed(self, event: Input.Changed) -> None:
@@ -1693,7 +1669,7 @@ class ConxiusOrbitGUI(App):
         try:
             # Run the server in a thread and suppress stdout to keep TUI clean
             with contextlib.redirect_stdout(io.StringIO()):
-                address = await _to_thread_compat(
+                address = await asyncio.to_thread(
                     start_wallet_connect_server, network=self.network
                 )
 
@@ -1928,7 +1904,7 @@ class ConxiusOrbitGUI(App):
 
         try:
             # SENTINEL Sentinel: Only save non-sensitive settings to the file.
-            await _to_thread_compat(_save_config_io, address_val, self.theme_name)
+            await asyncio.to_thread(_save_config_io, address_val, self.theme_name)
             self.address = address_val
             self.unsaved_changes = False
 

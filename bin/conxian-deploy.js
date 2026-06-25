@@ -248,9 +248,7 @@ async function verifyDeployment(args) {
     console.log("");
 
     // Verify contracts
-    const deployedContracts = await monitor.getDeployedContracts(
-      config.SYSTEM_ADDRESS,
-    );
+    await monitor.getDeployedContracts(config.SYSTEM_ADDRESS);
     console.log("");
 
     // Check deployment manifest
@@ -399,7 +397,7 @@ Examples:
   conxius_orbit monitor --follow
   conxius_orbit verify
 
-For more information, visit: https://github.com/Conxian/conxius-orbit
+For more information, visit: https://github.com/Conxian/conxius_orbit
 `);
 }
 

@@ -1,3 +1,7 @@
+"""
+Module for Conxius Orbit components
+"""
+
 from typing import Dict, Any, Optional, List, Union
 import os
 import requests

@@ -1,3 +1,7 @@
+"""
+Module for Conxius Orbit components
+"""
+
 import os
 import requests
 
@@ -9,7 +13,7 @@ def search_contract(name):
         else f"https://api.testnet.hiro.so/extended/v1/search?id={name}"
     )
     print(f"Searching for {name} on testnet...")
-    res = requests.get(url)
+    res = requests.get(url, timeout=10)
     if res.status_code == 200:
         data = res.json()
         if data.get("found"):

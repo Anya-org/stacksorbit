@@ -1,48 +1,5 @@
 [MASTER]
-ignore=tests,build,dist
+ignore=node_modules,.git,dist,build,.conxius_orbit,logs,target,__pycache__
 
 [MESSAGES CONTROL]
-disable=
-    C0114, # missing-module-docstring
-    C0115, # missing-class-docstring
-    C0116, # missing-function-docstring
-    R0903, # too-few-public-methods
-    R0913, # too-many-arguments
-    R0914, # too-many-locals
-    R0915, # too-many-statements
-    W0201, # attribute-defined-outside-init
-    W0718, # broad-exception-caught
-    C0413, # wrong-import-position
-    C0415, # import-outside-toplevel
-    W0611, # unused-import
-    R0902, # too-many-instance-attributes
-    R0911, # too-many-return-statements
-    R0912, # too-many-branches
-    C0302, # too-many-lines
-    C0301, # line-too-long
-    W0612, # unused-variable
-    W1510, # subprocess-run-check
-    W1514, # unspecified-encoding
-    R1732, # consider-using-with
-    W0404, # reimported
-    W0621, # redefined-outer-name
-    W0622, # redefined-builtin
-    W0702, # bare-except
-    W0719, # broad-exception-raised
-    R1705, # no-else-return
-    R1722, # consider-using-sys-exit
-    C0103, # invalid-name
-    W0212, # protected-access
-    C0411, # wrong-import-order
-    W1309, # f-string-without-interpolation
-    W1203, # logging-fstring-interpolation
-    W0613, # unused-argument
-    R1710, # inconsistent-return-statements
-    W0107, # unnecessary-pass
-    R0904  # too-many-public-methods
-
-[FORMAT]
-max-line-length=120
-
-[DESIGN]
-max-parents=15
+disable=duplicate-code,too-many-nested-blocks,too-many-positional-arguments,ungrouped-imports,global-statement,missing-module-docstring,missing-function-docstring,missing-class-docstring,line-too-long,too-many-lines,too-many-instance-attributes,too-many-arguments,f-string-without-interpolation,broad-exception-caught,no-else-return,too-many-branches,too-many-return-statements,attribute-defined-outside-init,import-outside-toplevel,consider-using-sys-exit,wrong-import-order,unused-import,unspecified-encoding,consider-using-with,too-many-locals,unused-variable,redefined-outer-name,invalid-name,bare-except,subprocess-run-check,too-few-public-methods,too-many-statements,broad-exception-raised,reimported,unused-argument,protected-access,wrong-import-position,too-many-public-methods,logging-fstring-interpolation,inconsistent-return-statements,redefined-builtin,unnecessary-comprehension

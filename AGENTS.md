@@ -60,7 +60,7 @@ Currently, Conxius Orbit is run directly from the source code.
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/Conxian/conxius-orbit.git
+    git clone https://github.com/Conxian/conxius_orbit.git
     cd conxius_orbit
     ```
 
@@ -330,18 +330,18 @@ For more detailed error information, you can check the log files, which are save
 
 ### 6.3. Getting Help
 
-If you're still having trouble, please open an issue on the [GitHub repository](https://github.com/Conxian/conxius-orbit/issues).
+If you're still having trouble, please open an issue on the [GitHub repository](https://github.com/Conxian/conxius_orbit/issues).
 
 ## 7. Contributing
 
 ### 7.1. Reporting Bugs
 
-1. Check if the bug has already been reported in [Issues](https://github.com/Conxian/conxius-orbit/issues)
+1. Check if the bug has already been reported in [Issues](https://github.com/Conxian/conxius_orbit/issues)
 2. If not, create a new issue with a clear title, description, and steps to reproduce.
 
 ### 7.2. Suggesting Features
 
-1. Check [Discussions](https://github.com/Conxian/conxius-orbit/discussions) for existing suggestions.
+1. Check [Discussions](https://github.com/Conxian/conxius_orbit/discussions) for existing suggestions.
 2. Create a new discussion with a clear use case and proposed solution.
 
 ### 7.3. Pull Requests

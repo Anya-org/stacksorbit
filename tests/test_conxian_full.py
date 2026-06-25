@@ -34,10 +34,7 @@ class TestConxianFullIntegration(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
 
-        # Snapshot and then set a mock secret in environment to bypass Sentinel .env check
-        self._had_deployer_privkey = "DEPLOYER_PRIVKEY" in os.environ
-        self._previous_deployer_privkey = os.environ.get("DEPLOYER_PRIVKEY")
-
+        # Set mock secret in environment to bypass Sentinel .env check
         os.environ["DEPLOYER_PRIVKEY"] = (
             "mock_private_key_string_for_testing_purposes_only_1234567890abcde"
         )
@@ -52,10 +49,8 @@ class TestConxianFullIntegration(unittest.TestCase):
         self.config = self.config_manager.load_config()
 
     def tearDown(self):
-        if self._had_deployer_privkey:
-            os.environ["DEPLOYER_PRIVKEY"] = self._previous_deployer_privkey or ""
-        else:
-            os.environ.pop("DEPLOYER_PRIVKEY", None)
+        if "DEPLOYER_PRIVKEY" in os.environ:
+            del os.environ["DEPLOYER_PRIVKEY"]
         shutil.rmtree(self.temp_dir)
 
     def test_01_verify_clarinet_toml(self):

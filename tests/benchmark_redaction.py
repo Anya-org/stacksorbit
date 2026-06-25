@@ -1,7 +1,7 @@
 import time
 import sys
 from pathlib import Path
-from conxius_orbit_secrets import redact_recursive
+from conxius_orbit_secrets import redact_recursive, is_sensitive_value
 
 
 def generate_large_data(n=1000):

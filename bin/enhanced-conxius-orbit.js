@@ -111,7 +111,7 @@ For detailed help, run the Python scripts directly:
   python deployment_monitor.py --help
   python deployment_verifier.py --help
 
-For more information, visit: https://github.com/Conxian/conxius-orbit
+For more information, visit: https://github.com/Conxian/conxius_orbit
 `);
 }
 

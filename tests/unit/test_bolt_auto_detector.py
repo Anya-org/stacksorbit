@@ -1,11 +1,8 @@
 import pytest
 import re
-import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from scripts.enhanced_auto_detector import GenericStacksAutoDetector
-
-TOML_LOAD_PATCH_TARGET = "tomllib.load" if sys.version_info >= (3, 11) else "toml.load"
 
 
 def test_sorting_priority_logic():
@@ -109,7 +106,7 @@ def test_stat_avoidance_in_clarinet_toml():
     with patch("pathlib.Path.exists", return_value=True):
         with patch("builtins.open", MagicMock()):
             with patch(
-                TOML_LOAD_PATCH_TARGET,
+                "tomllib.load",
                 return_value={
                     "contracts": {"my-contract": {"path": "contracts/my-contract.clar"}}
                 },

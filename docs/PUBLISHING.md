@@ -2,7 +2,7 @@
 
 **Version**: 1.0.0  
 **Status**: Ready to publish  
-**Repository**: https://github.com/Conxian/conxius-orbit
+**Repository**: https://github.com/Conxian/conxius_orbit
 
 **Note**: This guide was drafted for the initial v1.0.0 publish; update tag/version references for newer releases.
 
@@ -45,7 +45,7 @@
    - Copy the token (starts with `npm_...`)
 
 3. **Add to GitHub Secrets**:
-   - Go to: https://github.com/Conxian/conxius-orbit/settings/secrets/actions
+   - Go to: https://github.com/Conxian/conxius_orbit/settings/secrets/actions
    - Click "New repository secret"
    - Name: `NPM_TOKEN`
    - Value: Paste your npm token
@@ -66,7 +66,7 @@
    - Copy the token (starts with `pypi-...`)
 
 3. **Add to GitHub Secrets**:
-   - Go to: https://github.com/Conxian/conxius-orbit/settings/secrets/actions
+   - Go to: https://github.com/Conxian/conxius_orbit/settings/secrets/actions
    - Click "New repository secret"
    - Name: `PYPI_API_TOKEN`
    - Value: Paste your PyPI token
@@ -90,7 +90,7 @@
 ```
 
 **Check workflow status**:
-- Go to: https://github.com/Conxian/conxius-orbit/actions
+- Go to: https://github.com/Conxian/conxius_orbit/actions
 - Look for "Publish Conxius Orbit" workflow
 - Verify it runs successfully after configuring tokens
 
@@ -151,7 +151,7 @@ After successful publishing:
 - [ ] Update README badges
 
 ### GitHub Release
-- [ ] Verify at: https://github.com/Conxian/conxius-orbit/releases
+- [ ] Verify at: https://github.com/Conxian/conxius_orbit/releases
 - [ ] Check release notes
 - [ ] Verify downloadable assets
 - [ ] Star the repository! ⭐
@@ -203,7 +203,7 @@ conxius_orbit
 
 ### Repository
 - **GitHub**: ✅ Published
-  - URL: https://github.com/Conxian/conxius-orbit
+  - URL: https://github.com/Conxian/conxius_orbit
   - Branch: main
   - Tag: v1.0.0
   - Commits: 2
@@ -267,7 +267,7 @@ git push origin v1.0.1
 ### GitHub Actions Fails
 
 **Check logs**:
-1. Go to https://github.com/Conxian/conxius-orbit/actions
+1. Go to https://github.com/Conxian/conxius_orbit/actions
 2. Click on failed workflow run
 3. Review error messages
 4. Fix issues and re-run
@@ -284,7 +284,7 @@ git push origin v1.0.1
 - **npm Documentation**: https://docs.npmjs.com/
 - **PyPI Documentation**: https://packaging.python.org/
 - **GitHub Actions**: https://docs.github.com/en/actions
-- **Conxius Orbit README**: https://github.com/Conxian/conxius-orbit#readme
+- **Conxius Orbit README**: https://github.com/Conxian/conxius_orbit#readme
 
 ---
 
@@ -305,9 +305,9 @@ Your package is successfully published when:
 ## 📞 Support
 
 If you encounter issues:
-- 📖 Check documentation: https://conxian.github.io/conxius-orbit/
-- 🐛 Open issue: https://github.com/Conxian/conxius-orbit/issues
-- 💬 Discussions: https://github.com/Conxian/conxius-orbit/discussions
+- 📖 Check documentation: https://conxian.github.io/conxius_orbit/
+- 🐛 Open issue: https://github.com/Conxian/conxius_orbit/issues
+- 💬 Discussions: https://github.com/Conxian/conxius_orbit/discussions
 
 ---
 
