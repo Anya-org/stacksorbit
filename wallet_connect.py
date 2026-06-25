@@ -532,9 +532,11 @@ if __name__ == "__main__":
 
     if address:
         if isinstance(address, str):
-            address_display = (
-                f"{address[:20]}...{address[-10:]}" if len(address) > 30 else address
-            )
+            address_str = address
+            if len(address_str) > 30:
+                address_display = f"{address_str[:20]}...{address_str[-10:]}"
+            else:
+                address_display = address_str
         else:
             print(f"\n⚠️ Unexpected wallet address type: {type(address).__name__}")
             address_display = str(address)

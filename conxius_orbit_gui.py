@@ -48,7 +48,6 @@ except ImportError as e:
 from infrastructure_wiring import InfrastructureWiring
 from deployment_monitor import DeploymentMonitor
 
-
 _T = TypeVar("_T")
 
 
