@@ -52,6 +52,8 @@ setup(
             "black>=23.0.0",
             "pylint>=2.17.0",
             "mypy>=1.0.0",
+            "types-requests",
+            "types-toml",
             "safety>=3.0.0",
         ],
         "test": [
