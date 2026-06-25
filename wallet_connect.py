@@ -531,11 +531,13 @@ if __name__ == "__main__":
     address = start_wallet_connect_server(port)
 
     if address:
+        display_address = str(address)
+        truncated_address = f"{display_address[:20]}...{display_address[-10:]}"
         print(f"""
 ╔══════════════════════════════════════════════════════════════╗
 ║  ✅ Wallet Connected Successfully!                           ║
 ╠══════════════════════════════════════════════════════════════╣
-║  Address: {address[:20]}...{address[-10:]}
+║  Address: {truncated_address}
 ║                                                              ║
 ║  Next steps:                                                 ║
 ║  1. Set DEPLOYER_PRIVKEY as environment variable             ║

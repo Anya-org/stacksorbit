@@ -17,6 +17,17 @@ from datetime import datetime, timezone
 import functools
 from typing import Dict, List
 
+
+async def _to_thread_compat(func, *args, **kwargs):
+    """Run blocking calls in a thread (Python 3.8+ compatible)."""
+    to_thread = getattr(asyncio, "to_thread", None)
+    if to_thread is not None:
+        return await to_thread(func, *args, **kwargs)
+
+    loop = asyncio.get_running_loop()
+    bound = functools.partial(func, *args, **kwargs)
+    return await loop.run_in_executor(None, bound)
+
 try:
     from textual.app import App, ComposeResult
     from textual.widgets import (
@@ -915,28 +926,28 @@ class ConxiusOrbitGUI(App):
 
         try:
             # BOLT Bolt: Run synchronous API calls concurrently in threads
-            infra_runway_task = asyncio.to_thread(
+            infra_runway_task = _to_thread_compat(
                 self.infra.get_runway_metrics, bypass_cache=bypass_cache
             )
-            infra_exit_velocity_task = asyncio.to_thread(
+            infra_exit_velocity_task = _to_thread_compat(
                 self.infra.get_exit_velocity, bypass_cache=bypass_cache
             )
-            api_status_task = asyncio.to_thread(
+            api_status_task = _to_thread_compat(
                 self.monitor.check_api_status, bypass_cache=bypass_cache
             )
 
             if self.address != "Not configured":
-                account_info_task = asyncio.to_thread(
+                account_info_task = _to_thread_compat(
                     self.monitor.get_account_info,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                contracts_task = asyncio.to_thread(
+                contracts_task = _to_thread_compat(
                     self.monitor.get_deployed_contracts,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                transactions_task = asyncio.to_thread(
+                transactions_task = _to_thread_compat(
                     self.monitor.get_recent_transactions,
                     self.address,
                     bypass_cache=bypass_cache,
@@ -1375,7 +1386,7 @@ class ConxiusOrbitGUI(App):
         loader.display = True
         self.current_source_code = None
         try:
-            details = await asyncio.to_thread(
+            details = await _to_thread_compat(
                 self.monitor.get_contract_details, contract_id
             )
             if details:
@@ -1669,7 +1680,7 @@ class ConxiusOrbitGUI(App):
         try:
             # Run the server in a thread and suppress stdout to keep TUI clean
             with contextlib.redirect_stdout(io.StringIO()):
-                address = await asyncio.to_thread(
+                address = await _to_thread_compat(
                     start_wallet_connect_server, network=self.network
                 )
 
@@ -1904,7 +1915,7 @@ class ConxiusOrbitGUI(App):
 
         try:
             # SENTINEL Sentinel: Only save non-sensitive settings to the file.
-            await asyncio.to_thread(_save_config_io, address_val, self.theme_name)
+            await _to_thread_compat(_save_config_io, address_val, self.theme_name)
             self.address = address_val
             self.unsaved_changes = False
 

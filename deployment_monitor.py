@@ -110,6 +110,9 @@ class DeploymentMonitor:
         self.contracts_deployed = set()
         self.failed_contracts = set()
 
+        # Setup logging before any cache operations that may emit warnings.
+        self.setup_logging()
+
         # Bolt BOLT: Use a persistent file-based cache.
         self.cache_path = Path("logs") / "api_cache.json"
         # Bolt BOLT: Pre-create logs directory to avoid redundant system calls in save_cache.
@@ -125,17 +128,21 @@ class DeploymentMonitor:
         self.max_poll_interval = 60  # Cap at 60 seconds
         self.current_poll_interval = self.min_poll_interval
 
-        # Setup logging
-        self.setup_logging()
-
     def _load_cache(self) -> Dict:
         """Load API cache from a file."""
+        logger = getattr(self, "logger", logging.getLogger("conxian_deployment"))
         if self.cache_path.exists():
             try:
                 with open(self.cache_path, "r") as f:
-                    return json.load(f)
-            except (json.JSONDecodeError, IOError) as e:
-                self.logger.warning(f"Could not load cache file: {e}")
+                    data = json.load(f)
+                    if isinstance(data, dict):
+                        return data
+                    logger.warning(
+                        "Could not load cache file: expected JSON object, got %s",
+                        type(data).__name__,
+                    )
+            except (json.JSONDecodeError, OSError, TypeError, ValueError) as e:
+                logger.warning(f"Could not load cache file: {e}")
         return {}
 
     def _save_cache(self, cache_data: Optional[Dict] = None):
