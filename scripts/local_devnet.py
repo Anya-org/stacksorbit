@@ -51,7 +51,7 @@ class LocalDevnet:
 
         with open(self.pid_file, "w") as f:
             f.write(str(process.pid))
-        # 🛡️ Sentinel: Ensure PID file has secure permissions (0600).
+        # SENTINEL Sentinel: Ensure PID file has secure permissions (0600).
         set_secure_permissions(str(self.pid_file))
 
         print("Local development network started.")

@@ -1,3 +1,7 @@
+"""
+Module for Conxius Orbit components
+"""
+
 import os
 
 

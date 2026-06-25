@@ -282,7 +282,7 @@ WALLET_CONNECT_HTML = """
         }
 
         async function fetchBalance(address) {
-            // 🛡️ Sentinel: Validate address before fetching to prevent malformed requests
+            // SENTINEL Sentinel: Validate address before fetching to prevent malformed requests
             if (!address || !/^[ST][0-9ABCDEFGHJKMNPQRSTVWXYZ]{26,45}$/i.test(address)) {
                 console.warn('Invalid address skipped for balance fetch:', address);
                 return;
@@ -325,7 +325,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
     network: str = "testnet"
 
     def do_GET(self):
-        # 🛡️ Sentinel: Validate session token for all GET requests to prevent unauthorized access.
+        # SENTINEL Sentinel: Validate session token for all GET requests to prevent unauthorized access.
         if "?" not in self.path:
             self.send_error(403, "Missing session token")
             return
@@ -334,7 +334,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
         query = urllib.parse.parse_qs(query_part)
         token = query.get("token", [None])[0]
 
-        # 🛡️ Sentinel: Use secrets.compare_digest to prevent timing attacks
+        # SENTINEL Sentinel: Use secrets.compare_digest to prevent timing attacks
         if (
             not token
             or not WalletConnectHandler.session_token
@@ -347,7 +347,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
         if path_part in ("/", "/index.html"):
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
-            # 🛡️ Sentinel: Security Headers
+            # SENTINEL Sentinel: Security Headers
             self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
             self.send_header("Pragma", "no-cache")
             self.send_header("X-Content-Type-Options", "nosniff")
@@ -377,7 +377,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
         if self.path == "/wallet-connected":
             try:
                 content_length = int(self.headers.get("Content-Length", 0))
-                # 🛡️ Sentinel: DoS Protection - limit request body size and prevent negative values
+                # SENTINEL Sentinel: DoS Protection - limit request body size and prevent negative values
                 if content_length < 0:
                     self.send_error(400, "Invalid Content-Length")
                     return
@@ -386,16 +386,16 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
                     return
 
                 post_data = self.rfile.read(content_length)
-                # 🛡️ Sentinel: Explicitly use UTF-8 decoding for incoming JSON data.
+                # SENTINEL Sentinel: Explicitly use UTF-8 decoding for incoming JSON data.
                 data = json.loads(post_data.decode("utf-8"))
 
-                # 🛡️ Sentinel: DoS and Crash Protection - ensure data is a dictionary.
+                # SENTINEL Sentinel: DoS and Crash Protection - ensure data is a dictionary.
                 if not isinstance(data, dict):
                     self.send_error(400, "Bad Request: JSON body must be a dictionary")
                     return
 
                 token = data.get("token")
-                # 🛡️ Sentinel: Validate session token to prevent unauthorized overrides.
+                # SENTINEL Sentinel: Validate session token to prevent unauthorized overrides.
                 # Use secrets.compare_digest to prevent timing attacks and ensure type safety.
                 if (
                     not isinstance(token, str)
@@ -424,7 +424,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
 
                 self.send_response(200)
                 self.send_header("Content-type", "application/json; charset=utf-8")
-                # 🛡️ Sentinel: Security Headers
+                # SENTINEL Sentinel: Security Headers
                 self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
                 self.send_header("Pragma", "no-cache")
                 self.send_header("X-Content-Type-Options", "nosniff")
@@ -438,7 +438,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
                 TypeError,
                 AttributeError,
             ) as e:
-                # 🛡️ Sentinel: Include AttributeError to prevent 500 errors on malformed payloads.
+                # SENTINEL Sentinel: Include AttributeError to prevent 500 errors on malformed payloads.
                 print(f"⚠️  Error processing wallet connection: {e}")
                 self.send_error(400, "Bad Request")
         else:
@@ -453,7 +453,7 @@ def start_wallet_connect_server(
 ) -> Optional[str]:
     """Start the wallet connect server and open browser"""
 
-    # 🛡️ Sentinel: Generate a random session token for security
+    # SENTINEL Sentinel: Generate a random session token for security
     token = secrets.token_urlsafe(16)
     WalletConnectHandler.connected_address = None
     WalletConnectHandler.session_token = token
@@ -475,7 +475,7 @@ def start_wallet_connect_server(
 """)
 
     socketserver.TCPServer.allow_reuse_address = True
-    # 🛡️ Sentinel: Bind only to localhost (127.0.0.1) for security.
+    # SENTINEL Sentinel: Bind only to localhost (127.0.0.1) for security.
     with socketserver.TCPServer(("127.0.0.1", port), WalletConnectHandler) as httpd:
         # Open browser
         webbrowser.open(url)
@@ -518,7 +518,7 @@ def save_wallet_address(address: str, network: str) -> None:
     if "NETWORK" not in config:
         config["NETWORK"] = network
 
-    # 🛡️ Sentinel: Use centralized atomic and secure config saver.
+    # SENTINEL Sentinel: Use centralized atomic and secure config saver.
     # This automatically filters secrets and ensures atomic, secure write.
     save_secure_config(str(env_path), config)
 

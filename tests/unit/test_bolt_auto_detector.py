@@ -1,5 +1,6 @@
 import pytest
 import re
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from scripts.enhanced_auto_detector import GenericStacksAutoDetector

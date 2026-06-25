@@ -20,6 +20,10 @@ async def test_dashboard_navigation_from_metrics():
         # Go back to overview
         await pilot.press("f1")
         assert app.query_one("TabbedContent").active == "overview"
+        # Textual 6.2.x (py3.8 env) can keep a stale screen scroll offset
+        # after tab switches, pushing overview metrics out of viewport.
+        app.screen.scroll_home(animate=False, immediate=True)
+        await pilot.pause()
 
         # Click on balance metric
         await pilot.click("#metric-balance")

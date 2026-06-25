@@ -1,3 +1,7 @@
+"""
+Module for Conxius Orbit components
+"""
+
 import os
 import requests
 
@@ -9,7 +13,7 @@ def check_address(address):
         else f"https://api.testnet.hiro.so/extended/v1/address/{address}/contracts"
     )
     print(f"Checking contracts for {address}...")
-    res = requests.get(url)
+    res = requests.get(url, timeout=10)
     if res.status_code == 200:
         data = res.json()
         print(f"Total contracts: {data.get('total')}")

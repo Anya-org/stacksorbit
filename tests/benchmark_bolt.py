@@ -28,7 +28,7 @@ def generate_benchmark_data(num_contracts=50, source_size_kb=100):
 
 
 def run_benchmark():
-    print("⚡ Bolt: Initializing Redaction Benchmark...")
+    print("BOLT Bolt: Initializing Redaction Benchmark...")
     # 50 contracts * 100KB = 5MB of source code to process
     data = generate_benchmark_data()
 

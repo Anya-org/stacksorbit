@@ -1,3 +1,7 @@
+"""
+Module for Conxius Orbit components
+"""
+
 from typing import Dict, Any, Optional, List, Union
 import os
 import requests
@@ -21,7 +25,7 @@ class InfrastructureWiring:
         self._cache: Dict[str, Any] = {}
         self._cache_ttl = 300  # 5 minutes
 
-        # 🛡️ Sentinel: Redact config before logging in debug mode
+        # SENTINEL Sentinel: Redact config before logging in debug mode
         redacted_config = redact_recursive(config)
         logger.debug(f"InfrastructureWiring initialized with config: {redacted_config}")
 
@@ -43,7 +47,7 @@ class InfrastructureWiring:
                 return {"status": "error", "message": "Missing Supabase configuration"}
 
             headers = {"apikey": key, "Authorization": f"Bearer {key}"}
-            # 🛡️ Sentinel: Explicit timeout to avoid hanging connections.
+            # SENTINEL Sentinel: Explicit timeout to avoid hanging connections.
             response = self.session.get(
                 f"{url}/rest/v1/infrastructure_metrics?select=*",
                 headers=headers,
@@ -130,7 +134,7 @@ class InfrastructureWiring:
             return response.status_code in (200, 201)
 
         except Exception as e:
-            # 🛡️ Sentinel: Redact error details to prevent information disclosure.
+            # SENTINEL Sentinel: Redact error details to prevent information disclosure.
             safe_error = redact_recursive({"error": str(e)})
             logger.error(f"Failed to log deployment: {safe_error['error']}")
             return False

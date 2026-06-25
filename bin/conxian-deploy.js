@@ -6,8 +6,6 @@
 
 const fs = require("fs");
 const path = require("path");
-const axios = require("axios");
-const { execSync } = require("child_process");
 const ConxianDeployer = require("../lib/conxian-deployer");
 const Monitor = require("../lib/monitor");
 const ConfigManager = require("../lib/config-manager");
@@ -250,9 +248,7 @@ async function verifyDeployment(args) {
     console.log("");
 
     // Verify contracts
-    const deployedContracts = await monitor.getDeployedContracts(
-      config.SYSTEM_ADDRESS,
-    );
+    await monitor.getDeployedContracts(config.SYSTEM_ADDRESS);
     console.log("");
 
     // Check deployment manifest

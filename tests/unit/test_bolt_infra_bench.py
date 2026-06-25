@@ -34,7 +34,7 @@ class MockSession:
 
 
 def run_benchmark():
-    print("⚡ Bolt: Initializing Infra Optimization Benchmark...")
+    print("BOLT Bolt: Initializing Infra Optimization Benchmark...")
     config = {"SUPABASE_URL": "https://mock.supabase.co", "SUPABASE_KEY": "mock-key"}
 
     infra = InfrastructureWiring(config)

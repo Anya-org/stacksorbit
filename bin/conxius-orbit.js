@@ -6,9 +6,7 @@
 
 const { Command } = require("commander");
 const path = require("path");
-const fs = require("fs");
 const { spawn } = require("child_process");
-const axios = require("axios");
 
 // Import deployment modules
 const Deployer = require("../lib/deployer");

@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from datetime import datetime
 from conxius_orbit_secrets import is_safe_path, save_secure_config
 
-# Bolt ⚡: Global cache for Clarinet version to avoid redundant subprocess calls.
+# Bolt BOLT: Global cache for Clarinet version to avoid redundant subprocess calls.
 _CLARINET_VERSION_CACHE: Optional[str] = None
 
 
@@ -51,7 +51,7 @@ def _load_toml_data(path: Path) -> Dict[str, Any]:
 class GenericStacksAutoDetector:
     """Generic Stacks contract auto-detector compatible with Clarinet SDK 3.8"""
 
-    # Bolt ⚡: Define ignored directories as a class attribute to avoid redundant set creation.
+    # Bolt BOLT: Define ignored directories as a class attribute to avoid redundant set creation.
     IGNORE_DIRS = {
         "node_modules",
         ".git",
@@ -66,7 +66,7 @@ class GenericStacksAutoDetector:
         "env",
     }
 
-    # Bolt ⚡: Define generic dependency order for Stacks contracts as a class constant.
+    # Bolt BOLT: Define generic dependency order for Stacks contracts as a class constant.
     PRIORITY_ORDER = [
         # 1. Traits and interfaces (must come first)
         "trait",
@@ -175,15 +175,15 @@ class GenericStacksAutoDetector:
         self.contract_cache = {}
         self.project_files_cache = (
             {}
-        )  # Bolt ⚡: Cache for project files (indexed by directory)
-        # Bolt ⚡: Categorized file buckets to avoid redundant O(N) traversals.
+        )  # Bolt BOLT: Cache for project files (indexed by directory)
+        # Bolt BOLT: Categorized file buckets to avoid redundant O(N) traversals.
         self._clar_files = {}
         self._manifest_files = {}
         self._artifact_files = {}
         self._history_files = {}
         self._manifest_legacy_files = {}
 
-        self.json_cache = {}  # Bolt ⚡: Cache for parsed JSON files
+        self.json_cache = {}  # Bolt BOLT: Cache for parsed JSON files
         self.state_file = (
             self.project_root / ".conxius_orbit" / "auto_detection_state.json"
         )
@@ -193,13 +193,13 @@ class GenericStacksAutoDetector:
         # Load contract categories (generic + optional Conxian)
         self.contract_categories = self._load_contract_categories()
 
-        # Bolt ⚡: Pre-compile category and priority regexes for high-performance matching.
+        # Bolt BOLT: Pre-compile category and priority regexes for high-performance matching.
         self._category_res = {
             cat: re.compile("|".join(patterns), re.IGNORECASE)
             for cat, patterns in self.contract_categories.items()
             if patterns
         }
-        # Bolt ⚡: Pre-compile common manifest and artifact patterns for fast O(1) matching.
+        # Bolt BOLT: Pre-compile common manifest and artifact patterns for fast O(1) matching.
         # This replaces multiple fnmatch.fnmatch calls in a loop.
         self._manifest_re = self._compile_glob_regex(
             [
@@ -243,7 +243,7 @@ class GenericStacksAutoDetector:
             ]
         )
 
-        # Bolt ⚡: Pre-compile prioritization regex and map for O(N) lookup.
+        # Bolt BOLT: Pre-compile prioritization regex and map for O(N) lookup.
         # This replaces iterative linear substring searches in sorting loops.
         self._priority_map = {p: i for i, p in enumerate(self.PRIORITY_ORDER)}
         # Use a non-capturing group for efficient findall results.
@@ -251,13 +251,13 @@ class GenericStacksAutoDetector:
             "|".join(re.escape(p) for p in self.PRIORITY_ORDER), re.IGNORECASE
         )
 
-        # Bolt ⚡: Initialize instance-level caches to avoid lru_cache memory leak trap.
+        # Bolt BOLT: Initialize instance-level caches to avoid lru_cache memory leak trap.
         self._priority_cache = {}
         self._category_cache = {}
 
     def _compile_glob_regex(self, patterns: List[str]) -> re.Pattern:
-        """Bolt ⚡: Compile a list of glob patterns into a single optimized regex."""
-        # Bolt ⚡: Use re.IGNORECASE to match fnmatch behavior on non-Linux systems.
+        """Bolt BOLT: Compile a list of glob patterns into a single optimized regex."""
+        # Bolt BOLT: Use re.IGNORECASE to match fnmatch behavior on non-Linux systems.
         regex_parts = [fnmatch.translate(p) for p in patterns]
         return re.compile("|".join(regex_parts), re.IGNORECASE)
 
@@ -509,7 +509,7 @@ class GenericStacksAutoDetector:
 
     def _scan_project_files(self, directory: Path):
         """
-        Bolt ⚡: Perform a single-pass filesystem scan and cache the results.
+        Bolt BOLT: Perform a single-pass filesystem scan and cache the results.
         This avoids redundant recursive traversals and glob calls.
 
         Impact: Reduces the number of recursive filesystem scans from 16 to 1.
@@ -517,16 +517,16 @@ class GenericStacksAutoDetector:
         latency by approximately 75-90% and significantly reduces I/O operations.
         """
         cache_key = str(directory)
-        # Bolt ⚡: Use a dict keyed by rel_path for O(1) metadata lookup.
+        # Bolt BOLT: Use a dict keyed by rel_path for O(1) metadata lookup.
         self.project_files_cache[cache_key] = {}
-        # Bolt ⚡: Reset buckets for the target directory.
+        # Bolt BOLT: Reset buckets for the target directory.
         self._clar_files[cache_key] = []
         self._manifest_files[cache_key] = []
         self._artifact_files[cache_key] = []
         self._history_files[cache_key] = []
         self._manifest_legacy_files[cache_key] = []
 
-        # Bolt ⚡: Use a highly optimized iterative scanner with os.scandir and stack.
+        # Bolt BOLT: Use a highly optimized iterative scanner with os.scandir and stack.
         # This replaces recursive calls, avoiding recursion depth limits and overhead.
         # By using DirEntry objects directly, we leverage cached stat information.
         # Path concatenation is optimized using f-strings (~78% faster than os.path.join).
@@ -538,12 +538,12 @@ class GenericStacksAutoDetector:
             try:
                 with os.scandir(curr_dir_str) as it:
                     for entry in it:
-                        # Bolt ⚡: Optimize relative path generation with f-strings.
+                        # Bolt BOLT: Optimize relative path generation with f-strings.
                         rel_path = (
                             f"{rel_prefix}/{entry.name}" if rel_prefix else entry.name
                         )
 
-                        # Bolt ⚡: Explicitly don't follow symlinks to match os.walk behavior.
+                        # Bolt BOLT: Explicitly don't follow symlinks to match os.walk behavior.
                         if entry.is_dir(follow_symlinks=False):
                             # Skip ignored directories and hidden ones
                             if entry.name in self.IGNORE_DIRS or entry.name.startswith(
@@ -556,17 +556,17 @@ class GenericStacksAutoDetector:
                                 # entry.stat() is often cached by the OS during scandir
                                 st = entry.stat()
 
-                                # Bolt ⚡: Normalized path is already using / from f-string above.
+                                # Bolt BOLT: Normalized path is already using / from f-string above.
                                 normalized_path = rel_path
 
-                                # Bolt ⚡: Retrieve metadata from DirEntry and populate cache.
+                                # Bolt BOLT: Retrieve metadata from DirEntry and populate cache.
                                 self.project_files_cache[cache_key][normalized_path] = {
                                     "rel_path": normalized_path,
                                     "mtime": st.st_mtime,
                                     "size": st.st_size,
                                 }
 
-                                # Bolt ⚡: Single-pass categorization.
+                                # Bolt BOLT: Single-pass categorization.
                                 # Use fast extension checks before expensive regex matches.
                                 if normalized_path.endswith(".clar"):
                                     self._clar_files[cache_key].append(normalized_path)
@@ -649,7 +649,7 @@ class GenericStacksAutoDetector:
             if self.verbose:
                 print(f"📂 Current directory: {current_dir}")
 
-        # Bolt ⚡: Run single-pass scan for the determined directory
+        # Bolt BOLT: Run single-pass scan for the determined directory
         self._scan_project_files(current_dir)
 
         # Check if directory changed
@@ -773,7 +773,7 @@ class GenericStacksAutoDetector:
                 )
 
         # Method 2: Efficient directory scanning (any .clar files, skipping heavy dirs)
-        # Bolt ⚡: Consolidate directory and project structure scanning into a single
+        # Bolt BOLT: Consolidate directory and project structure scanning into a single
         # efficient pass to avoid redundant I/O and recursive globbing.
         directory_contracts = self._efficient_directory_scan(directory)
         if directory_contracts:
@@ -833,14 +833,14 @@ class GenericStacksAutoDetector:
                     if isinstance(contract_config, dict) and "path" in contract_config:
                         contract_path = contract_config["path"]
 
-                        # 🛡️ Sentinel: Path traversal protection.
+                        # SENTINEL Sentinel: Path traversal protection.
                         if not is_safe_path(str(directory), contract_path):
                             continue
 
                         full_path = directory / contract_path
 
                         if full_path.exists():
-                            # Bolt ⚡: Retrieve metadata from O(1) cache to avoid redundant stat() system calls.
+                            # Bolt BOLT: Retrieve metadata from O(1) cache to avoid redundant stat() system calls.
                             cache_key = str(directory)
                             cached_files = self.project_files_cache.get(cache_key, {})
                             file_info = cached_files.get(contract_path)
@@ -906,7 +906,7 @@ class GenericStacksAutoDetector:
                             contract_name = match[0]
                             contract_path = match[1]
 
-                            # 🛡️ Sentinel: Path traversal protection.
+                            # SENTINEL Sentinel: Path traversal protection.
                             if not is_safe_path(
                                 str(clarinet_path.parent), contract_path
                             ):
@@ -914,7 +914,7 @@ class GenericStacksAutoDetector:
 
                             full_path = clarinet_path.parent / contract_path
                             if full_path.exists():
-                                # Bolt ⚡: Retrieve metadata from O(1) cache to avoid redundant stat() system calls.
+                                # Bolt BOLT: Retrieve metadata from O(1) cache to avoid redundant stat() system calls.
                                 cache_key = str(clarinet_path.parent)
                                 cached_files = self.project_files_cache.get(
                                     cache_key, {}
@@ -954,7 +954,7 @@ class GenericStacksAutoDetector:
 
     def _efficient_directory_scan(self, directory: Path) -> List[Dict]:
         """
-        Bolt ⚡: Use pre-categorized .clar files to avoid redundant $O(N)$ searches.
+        Bolt BOLT: Use pre-categorized .clar files to avoid redundant $O(N)$ searches.
         """
         contracts = []
         seen_paths = set()
@@ -967,7 +967,7 @@ class GenericStacksAutoDetector:
         clar_files = self._clar_files.get(cache_key, [])
         all_files_dict = self.project_files_cache.get(cache_key, {})
 
-        # Bolt ⚡: Iterate only over pre-filtered .clar files.
+        # Bolt BOLT: Iterate only over pre-filtered .clar files.
         for rel_path in clar_files:
             file_info = all_files_dict.get(rel_path)
             if not file_info:
@@ -997,7 +997,7 @@ class GenericStacksAutoDetector:
 
     def _determine_contract_category(self, contract_name: str) -> str:
         """
-        Bolt ⚡: Determine contract category generically using pre-compiled regexes.
+        Bolt BOLT: Determine contract category generically using pre-compiled regexes.
         Replacing an O(C*P) search with O(C) regex matches.
 
         Impact: Caching reduces CPU overhead during re-scans of identical contract sets.
@@ -1005,7 +1005,7 @@ class GenericStacksAutoDetector:
         if contract_name in self._category_cache:
             return self._category_cache[contract_name]
 
-        # Bolt ⚡: Check against generic categories using pre-compiled regexes
+        # Bolt BOLT: Check against generic categories using pre-compiled regexes
         result = "general"
         for category, regex in self._category_res.items():
             if regex.search(contract_name):
@@ -1029,7 +1029,7 @@ class GenericStacksAutoDetector:
 
     def _parse_deployment_manifests(self, directory: Path) -> List[Dict]:
         """
-        Bolt ⚡: Parse deployment manifests using pre-categorized buckets.
+        Bolt BOLT: Parse deployment manifests using pre-categorized buckets.
         """
         manifests = []
         cache_key = str(directory)
@@ -1041,7 +1041,7 @@ class GenericStacksAutoDetector:
         manifest_files = self._manifest_files.get(cache_key, [])
         all_files_dict = self.project_files_cache.get(cache_key, {})
 
-        # Bolt ⚡: Iterate only over pre-filtered manifest files.
+        # Bolt BOLT: Iterate only over pre-filtered manifest files.
         matched_files = []
         for rel_path in manifest_files:
             file_info = all_files_dict.get(rel_path)
@@ -1051,7 +1051,7 @@ class GenericStacksAutoDetector:
         for manifest_file, mtime in matched_files:
             if manifest_file.is_file():
                 try:
-                    # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
+                    # Bolt BOLT: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(manifest_file)
                     if (
                         file_key in self.json_cache
@@ -1085,7 +1085,7 @@ class GenericStacksAutoDetector:
         self, contracts: List[Dict]
     ) -> List[Dict]:
         """
-        Bolt ⚡: Sort contracts by generic dependency order using pre-compiled regex.
+        Bolt BOLT: Sort contracts by generic dependency order using pre-compiled regex.
         Replacing an O(N*P) linear search with O(N) regex group matching.
         """
         # Filter out None or invalid contracts
@@ -1098,7 +1098,7 @@ class GenericStacksAutoDetector:
         if not valid_contracts:
             return []
 
-        # Bolt ⚡: Use instance-level priority cache initialized in __init__.
+        # Bolt BOLT: Use instance-level priority cache initialized in __init__.
         def get_priority(contract):
             name = contract.get("name", "")
             if not name:
@@ -1107,7 +1107,7 @@ class GenericStacksAutoDetector:
             if name in self._priority_cache:
                 return self._priority_cache[name]
 
-            # Bolt ⚡: Maintain backward compatibility by prioritizing keywords based on
+            # Bolt BOLT: Maintain backward compatibility by prioritizing keywords based on
             # their order in PRIORITY_ORDER. Using regex findall + map lookup is O(N)
             # compared to O(P) linear searches.
             matches = self._priority_re.findall(name)
@@ -1220,7 +1220,7 @@ class GenericStacksAutoDetector:
 
     def _load_json_cached(self, file_path: Path) -> Optional[Dict]:
         """
-        Bolt ⚡: Load and parse JSON file with in-memory caching.
+        Bolt BOLT: Load and parse JSON file with in-memory caching.
         Prevents redundant parsing of the same manifest/artifact files.
         """
         cache_key = str(file_path)
@@ -1244,7 +1244,7 @@ class GenericStacksAutoDetector:
         size: Optional[int] = None,
     ) -> str:
         """
-        Bolt ⚡: Calculate file hash with mtime caching.
+        Bolt BOLT: Calculate file hash with mtime caching.
         Only re-hashes if the file has changed since the last scan.
         """
         try:
@@ -1262,7 +1262,7 @@ class GenericStacksAutoDetector:
                 if cached.get("mtime") == mtime and cached.get("size") == size:
                     return cached.get("hash", "unknown")
 
-            # Bolt ⚡: Hash not in cache or file changed, calculate it.
+            # Bolt BOLT: Hash not in cache or file changed, calculate it.
             # Using a larger chunk size (64KB) for better I/O performance on modern systems.
             hasher = hashlib.md5()
             with open(file_path, "rb") as f:
@@ -1277,7 +1277,7 @@ class GenericStacksAutoDetector:
                 "mtime": mtime,
                 "size": size,
             }
-            # Bolt ⚡: Optimization - Removed redundant per-file _save_state() call.
+            # Bolt BOLT: Optimization - Removed redundant per-file _save_state() call.
             # Persistence is handled by top-level methods (detect_and_analyze, handle_directory_change)
             # at the end of the scan. This reduces disk I/O from O(N) to O(1) writes per scan,
             # improving performance by ~100x for 100 contracts.
@@ -1287,7 +1287,7 @@ class GenericStacksAutoDetector:
 
     def _find_deployment_artifacts(self, directory: Path) -> List[Dict]:
         """
-        Bolt ⚡: Find deployment artifacts using pre-categorized buckets.
+        Bolt BOLT: Find deployment artifacts using pre-categorized buckets.
         """
         artifacts = []
         cache_key = str(directory)
@@ -1299,7 +1299,7 @@ class GenericStacksAutoDetector:
         artifact_files = self._artifact_files.get(cache_key, [])
         all_files_dict = self.project_files_cache.get(cache_key, {})
 
-        # Bolt ⚡: Iterate only over pre-filtered artifact files.
+        # Bolt BOLT: Iterate only over pre-filtered artifact files.
         matched_files = []
         for rel_path in artifact_files:
             file_info = all_files_dict.get(rel_path)
@@ -1309,7 +1309,7 @@ class GenericStacksAutoDetector:
         for artifact_file, mtime in matched_files:
             if artifact_file.is_file():
                 try:
-                    # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
+                    # Bolt BOLT: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(artifact_file)
                     if (
                         file_key in self.json_cache
@@ -1326,7 +1326,7 @@ class GenericStacksAutoDetector:
                             "type": "deployment_artifact",
                             "path": str(artifact_file),
                             "data": data,
-                            "modified": mtime,  # Bolt ⚡: Use already retrieved mtime from cache
+                            "modified": mtime,  # Bolt BOLT: Use already retrieved mtime from cache
                         }
                     )
                 except Exception as e:
@@ -1442,7 +1442,7 @@ class GenericStacksAutoDetector:
 
     def _check_local_deployment_status(self) -> Dict:
         """
-        Bolt ⚡: Check local deployment status using pre-categorized buckets.
+        Bolt BOLT: Check local deployment status using pre-categorized buckets.
         """
         deployment_history = []
         cache_key = str(self.project_root)
@@ -1455,7 +1455,7 @@ class GenericStacksAutoDetector:
         manifest_legacy_files = self._manifest_legacy_files.get(cache_key, [])
         all_files_dict = self.project_files_cache.get(cache_key, {})
 
-        # Bolt ⚡: Check for history files using pre-filtered bucket.
+        # Bolt BOLT: Check for history files using pre-filtered bucket.
         matched_history = []
         for rel_path in history_files:
             file_info = all_files_dict.get(rel_path)
@@ -1467,7 +1467,7 @@ class GenericStacksAutoDetector:
         for history_file, mtime in matched_history:
             if history_file.is_file():
                 try:
-                    # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
+                    # Bolt BOLT: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(history_file)
                     if (
                         file_key in self.json_cache
@@ -1483,7 +1483,7 @@ class GenericStacksAutoDetector:
                     if self.verbose:
                         print(f"⚠️  Error reading {history_file}: {e}")
 
-        # Bolt ⚡: Check manifest files using pre-filtered bucket.
+        # Bolt BOLT: Check manifest files using pre-filtered bucket.
         manifests = []
         matched_manifests = []
         for rel_path in manifest_legacy_files:
@@ -1496,7 +1496,7 @@ class GenericStacksAutoDetector:
         for manifest_file, mtime in matched_manifests:
             if manifest_file.is_file():
                 try:
-                    # Bolt ⚡: Use JSON cache with mtime validation to avoid redundant parsing
+                    # Bolt BOLT: Use JSON cache with mtime validation to avoid redundant parsing
                     file_key = str(manifest_file)
                     if (
                         file_key in self.json_cache
@@ -1662,7 +1662,7 @@ class GenericStacksAutoDetector:
         """Save auto-detection state"""
         self.state["last_updated"] = time.time()
 
-        # 🛡️ Sentinel: Use secure persistence with automatic redaction for restricted permissions.
+        # SENTINEL Sentinel: Use secure persistence with automatic redaction for restricted permissions.
         save_secure_config(str(self.state_file), self.state, json_format=True)
 
     def handle_directory_change(self, new_directory: Path) -> Dict:
@@ -1679,7 +1679,7 @@ class GenericStacksAutoDetector:
         self.deployment_cache.clear()
         self.json_cache.clear()
 
-        # Bolt ⚡: Re-scan files for new directory
+        # Bolt BOLT: Re-scan files for new directory
         self._scan_project_files(new_directory)
 
         # Re-run detection in new directory

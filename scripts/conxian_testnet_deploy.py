@@ -143,7 +143,7 @@ class ConxianTestnetDeployer:
         manifest_path = Path("deployment") / "testnet_complete_manifest.json"
         manifest_path.parent.mkdir(exist_ok=True)
 
-        # 🛡️ Sentinel: Use secure persistence with automatic redaction for restricted permissions.
+        # SENTINEL Sentinel: Use secure persistence with automatic redaction for restricted permissions.
         save_secure_config(str(manifest_path), manifest, json_format=True)
 
         print(f"💾 Complete deployment manifest saved to {manifest_path}")
@@ -300,7 +300,7 @@ class ConxianTestnetDeployer:
 
         # Environment
         print("\n🔧 Environment:")
-        # 🛡️ Sentinel: Standardize redaction for diagnostics, ensuring nested secrets are also protected.
+        # SENTINEL Sentinel: Standardize redaction for diagnostics, ensuring nested secrets are also protected.
         redacted_config = redact_recursive(config)
         for key, value in redacted_config.items():
             print(f"   {key}: {value}")
@@ -518,7 +518,7 @@ Examples:
         print("\n🛑 Operation cancelled by user")
         sys.exit(1)
     except Exception as e:
-        # 🛡️ Sentinel: Prevent sensitive information disclosure.
+        # SENTINEL Sentinel: Prevent sensitive information disclosure.
         if args.verbose:
             print(f"\n❌ Error: {e}")
             import traceback

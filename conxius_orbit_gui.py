@@ -17,6 +17,17 @@ from datetime import datetime, timezone
 import functools
 from typing import Any, Callable, Dict, List, TypeVar
 
+
+async def _to_thread_compat(func, *args, **kwargs):
+    """Run blocking calls in a thread (Python 3.8+ compatible)."""
+    to_thread = getattr(asyncio, "to_thread", None)
+    if to_thread is not None:
+        return await to_thread(func, *args, **kwargs)
+
+    loop = asyncio.get_running_loop()
+    bound = functools.partial(func, *args, **kwargs)
+    return await loop.run_in_executor(None, bound)
+
 try:
     from textual.app import App, ComposeResult
     from textual.widgets import (
@@ -51,7 +62,7 @@ from deployment_monitor import DeploymentMonitor
 
 @functools.lru_cache(maxsize=128)
 def _parse_iso_to_dt(iso_time: str) -> datetime:
-    """Bolt ⚡: Cached ISO parsing to avoid redundant expensive fromisoformat calls."""
+    """Bolt BOLT: Cached ISO parsing to avoid redundant expensive fromisoformat calls."""
     # Handle 'Z' for older Python versions and parse ISO string
     ts = iso_time.replace("Z", "+00:00")
     return datetime.fromisoformat(ts)
@@ -59,7 +70,7 @@ def _parse_iso_to_dt(iso_time: str) -> datetime:
 
 @functools.lru_cache(maxsize=1024)
 def _format_relative_time_cached(iso_time: str, now_bucket: int) -> str:
-    """Bolt ⚡: Cached relative time formatting to minimize O(N) timedelta math in loops."""
+    """Bolt BOLT: Cached relative time formatting to minimize O(N) timedelta math in loops."""
     try:
         dt = _parse_iso_to_dt(iso_time)
         now = datetime.fromtimestamp(now_bucket, tz=timezone.utc)
@@ -114,7 +125,7 @@ def _normalize_and_categorize_contract(name: str) -> str:
 
 @functools.lru_cache(maxsize=_CONTRACT_CATEGORIZATION_CACHE_MAXSIZE)
 def _categorize_contract_casefolded_cached(name_casefold: str) -> str:
-    """Bolt ⚡: High-performance contract categorization using cached regex matching."""
+    """Bolt BOLT: High-performance contract categorization using cached regex matching."""
     for regex, category in _CONTRACT_CAT_PATTERNS:
         if regex.search(name_casefold):
             return category
@@ -175,7 +186,7 @@ class ConxiusOrbitGUI(App):
         Binding("p", "precheck", "Pre-check", show=False),
     ]
 
-    # Bolt ⚡: High-performance lookups for transaction display strings.
+    # Bolt BOLT: High-performance lookups for transaction display strings.
     # Defining these as class constants avoids redundant dictionary creation in hot loops.
     TX_STATUS_MAP = {
         "success": "[green]✅ success[/]",
@@ -196,7 +207,7 @@ class ConxiusOrbitGUI(App):
         "dex": {"icon": "🏦", "label": "DEX", "color": "cyan"},
         "oracle": {"icon": "🔮", "label": "Oracle", "color": "blue"},
         "governance": {"icon": "⚖️", "label": "Gov", "color": "green"},
-        "security": {"icon": "🛡️", "label": "Security", "color": "red"},
+        "security": {"icon": "SENTINEL", "label": "Security", "color": "red"},
         "monitoring": {"icon": "📊", "label": "Monitor", "color": "white"},
         "other": {"icon": "📄", "label": "Contract", "color": "dim"},
     }
@@ -280,7 +291,7 @@ class ConxiusOrbitGUI(App):
         self.selected_contract_id = None
         self.selected_tx_id = None
         self.current_source_code = None
-        # Bolt ⚡: State tracking to avoid redundant UI re-renders
+        # Bolt BOLT: State tracking to avoid redundant UI re-renders
         self.current_block_height = 0
         self._last_height = 0
         self._last_contracts = None
@@ -288,7 +299,9 @@ class ConxiusOrbitGUI(App):
         self._last_transactions = None
         self._last_metrics = {}
         self._deployment_log_lines = []
-        self.theme_name = self.config.get("UI_THEME", "standard")
+        self.set_reactive(
+            type(self).theme_name, self.config.get("UI_THEME", "standard")
+        )
         self.infra = InfrastructureWiring(self.config)
 
     def _load_config(self) -> Dict:
@@ -303,19 +316,19 @@ class ConxiusOrbitGUI(App):
                             key, value = line.split("=", 1)
                             k, v = key.strip(), value.strip().strip('"').strip("'")
 
-                            # 🛡️ Sentinel: Enforce security policy - no secrets in .env
-                            # Bolt ⚡: Check both key name and value for secrets to provide defense-in-depth.
+                            # SENTINEL Sentinel: Enforce security policy - no secrets in .env
+                            # Bolt BOLT: Check both key name and value for secrets to provide defense-in-depth.
                             if (
                                 is_sensitive_key(k) or is_sensitive_value(v)
                             ) and not is_placeholder(v):
                                 raise ValueError(
-                                    f"🛡️ Sentinel Security Error: Secret key '{k}' found in .env file.\n"
+                                    f"SENTINEL Sentinel Security Error: Secret key '{k}' found in .env file.\n"
                                     "   Storing secrets in plaintext files is a critical security risk.\n"
                                     "   Please move this secret to an environment variable."
                                 )
                             config[k] = v
 
-            # 🛡️ Sentinel: Secure and broadened environment variable loading.
+            # SENTINEL Sentinel: Secure and broadened environment variable loading.
             # Load any environment variable that is in the .env file OR matches our
             # specific app secrets (SECRET_KEYS) OR has a safe app-specific prefix.
             for key, value in os.environ.items():
@@ -331,7 +344,7 @@ class ConxiusOrbitGUI(App):
             print(f"\n{e}\n")
             raise
         except Exception:
-            # 🛡️ Sentinel: Prevent sensitive information disclosure.
+            # SENTINEL Sentinel: Prevent sensitive information disclosure.
             print("Error loading configuration.")
         return config
 
@@ -554,7 +567,7 @@ class ConxiusOrbitGUI(App):
         self.title = "ConxiusOrbit"
         self.sub_title = f"Deployment Dashboard [{self.network.upper()}]"
 
-        # Bolt ⚡: Cache frequently accessed widgets to avoid redundant DOM queries via query_one.
+        # Bolt BOLT: Cache frequently accessed widgets to avoid redundant DOM queries via query_one.
         # This significantly improves performance during high-frequency update loops and UI events.
         self.w_network_status = self.query_one("#network-status", Static)
         self.w_runway = self.query_one("#runway", Static)
@@ -646,7 +659,7 @@ class ConxiusOrbitGUI(App):
         self.w_contract_details_md = self.query_one("#contract-details", Markdown)
         self.w_details_loader = self.query(".details-pane LoadingIndicator").first()
 
-        # Bolt ⚡: Cache all LoadingIndicator widgets and the Refresh button to avoid redundant DOM queries.
+        # Bolt BOLT: Cache all LoadingIndicator widgets and the Refresh button to avoid redundant DOM queries.
         # Use defensive queries to avoid crashes if widgets are unmounted during initialization.
         self.w_loading_indicators = list(self.query(LoadingIndicator))
         self.w_overview_indicators = list(self.query("#overview LoadingIndicator"))
@@ -805,7 +818,7 @@ class ConxiusOrbitGUI(App):
         transactions_table = self.w_transactions_table
         filter_text = self.tx_filter.lower().strip()
 
-        # Bolt ⚡: Use batch_update to minimize UI re-renders and layout shifts.
+        # Bolt BOLT: Use batch_update to minimize UI re-renders and layout shifts.
         with self.batch_update():
             transactions_table.clear()
 
@@ -835,7 +848,7 @@ class ConxiusOrbitGUI(App):
             if not filter_text:
                 filtered_txs = self._all_transactions
             else:
-                # Bolt ⚡: Use high-performance list comprehension for transaction filtering.
+                # Bolt BOLT: Use high-performance list comprehension for transaction filtering.
                 # Combined with lazy search-key calculation to minimize main-thread overhead.
                 filtered_txs = [
                     tx
@@ -845,7 +858,7 @@ class ConxiusOrbitGUI(App):
                 ]
 
             if filtered_txs:
-                # Bolt ⚡: Normalize 'now' to 10s intervals to maximize cache hits across refreshes.
+                # Bolt BOLT: Normalize 'now' to 10s intervals to maximize cache hits across refreshes.
                 # This avoids redundant calculations for transactions whose relative time hasn't changed.
                 # Hoisting this out of the loop saves O(N) timestamp conversions.
                 now_utc = datetime.now(timezone.utc)
@@ -853,7 +866,7 @@ class ConxiusOrbitGUI(App):
 
                 for tx in filtered_txs:
                     status = tx.get("tx_status", "")
-                    # Bolt ⚡: Use O(1) class-level lookup for display strings.
+                    # Bolt BOLT: Use O(1) class-level lookup for display strings.
                     display_status = self.TX_STATUS_MAP.get(status, status)
                     if "pending" in status:
                         display_status = "[yellow]⏳ pending[/]"
@@ -912,8 +925,8 @@ class ConxiusOrbitGUI(App):
         return _normalize_and_categorize_contract(name)
 
     def _prepare_tx_search_key(self, tx: Dict) -> str:
-        """Bolt ⚡: Pre-calculate searchable key for a transaction."""
-        # Bolt ⚡: Skip re-calculation only when a valid cached search key exists.
+        """Bolt BOLT: Pre-calculate searchable key for a transaction."""
+        # Bolt BOLT: Skip re-calculation only when a valid cached search key exists.
         search_key = tx.get("_search_key")
         if isinstance(search_key, str) and search_key:
             return search_key
@@ -1063,10 +1076,10 @@ class ConxiusOrbitGUI(App):
                 self.w_contract_count.update(count_display)
                 self._last_metrics["contract-count"] = count_display
 
-            # ⚡ Bolt: Only clear and repopulate contracts table if data changed
+            # BOLT Bolt: Only clear and repopulate contracts table if data changed
             if deployed_contracts != self._last_contracts:
                 contracts_table = self.w_contracts_table
-                # Bolt ⚡: Wrap in batch_update to minimize re-renders.
+                # Bolt BOLT: Wrap in batch_update to minimize re-renders.
                 with self.batch_update():
                     contracts_table.clear()
                     if deployed_contracts:
@@ -1109,7 +1122,7 @@ class ConxiusOrbitGUI(App):
             now_label = datetime.now().strftime("%H:%M:%S")
             self.w_last_updated.update(f" [dim]Last updated: {now_label}[/]")
 
-            # ⚡ Bolt: Only clear and repopulate transactions table if data changed or filter applied.
+            # BOLT Bolt: Only clear and repopulate transactions table if data changed or filter applied.
             # PALETTE: Also refresh if block height changed to update confirmation counts.
             if (
                 transactions != self._all_transactions
@@ -1124,7 +1137,7 @@ class ConxiusOrbitGUI(App):
             self.w_network_status.update("[red]Error[/]")
             self.notify(f"API error: {e}", severity="error")
         finally:
-            # Bolt ⚡: Use cached indicators to avoid O(N) DOM queries.
+            # Bolt BOLT: Use cached indicators to avoid O(N) DOM queries.
             for indicator in self.w_loading_indicators:
                 indicator.display = False
 
@@ -1181,7 +1194,7 @@ class ConxiusOrbitGUI(App):
         self.w_copy_tx_btn.disabled = False
         self.w_view_tx_explorer_btn.disabled = False
 
-        # BOLT ⚡: Find transaction object for enriched details
+        # BOLT BOLT: Find transaction object for enriched details
         tx_obj = next(
             (tx for tx in self._all_transactions if tx.get("tx_id") == tx_id), {}
         )
@@ -1325,7 +1338,7 @@ class ConxiusOrbitGUI(App):
     def action_focus_tx_filter(self) -> None:
         """Focus the transaction filter input."""
         self.w_tabbed_content.active = "transactions"
-        # Pilot ⚡: Use call_after_refresh to ensure tab-change focus doesn't override us.
+        # Pilot BOLT: Use call_after_refresh to ensure tab-change focus doesn't override us.
         self.call_after_refresh(self.w_tx_filter_input.focus)
 
     def action_clear_tx_filter(self) -> None:
@@ -1423,7 +1436,7 @@ class ConxiusOrbitGUI(App):
         if self._manual_refresh_in_progress:
             return
 
-        # Bolt ⚡: Use cached refresh button and indicators for O(1) feedback.
+        # Bolt BOLT: Use cached refresh button and indicators for O(1) feedback.
         refresh_btn = self.w_refresh_btn
         if refresh_btn:
             self._original_btn_label = refresh_btn.label
@@ -1439,13 +1452,13 @@ class ConxiusOrbitGUI(App):
         """Perform the data refresh and update the UI."""
         self._manual_refresh_in_progress = True
         try:
-            # Bolt ⚡: Manual refresh always bypasses the cache for immediate responsiveness.
+            # Bolt BOLT: Manual refresh always bypasses the cache for immediate responsiveness.
             await self.update_data(bypass_cache=True)
             self.notify("Data refreshed")
         except Exception as e:
             self.notify(f"Refresh failed: {e}", severity="error")
         finally:
-            # Bolt ⚡: Use cached refresh button and indicators for O(1) feedback.
+            # Bolt BOLT: Use cached refresh button and indicators for O(1) feedback.
             if self.w_refresh_btn:
                 self.w_refresh_btn.disabled = False
                 self.w_refresh_btn.label = getattr(
@@ -1876,27 +1889,27 @@ class ConxiusOrbitGUI(App):
         save_btn = self.w_save_config_btn
         _original_label = save_btn.label
 
-        # 🛡️ Sentinel: Collect values in the main thread for thread safety.
+        # SENTINEL Sentinel: Collect values in the main thread for thread safety.
         # We also identify if the user is attempting to save a real secret.
         privkey_val = self.w_privkey_input.value
         address_val = self.w_address_input.value
 
-        # 🛡️ Sentinel: Validate the Stacks address before saving
+        # SENTINEL Sentinel: Validate the Stacks address before saving
         if address_val and not validate_stacks_address(address_val, self.network):
             self.notify(
-                f"🛡️ Security: Invalid Stacks address for {self.network.upper()}.",
+                f"SENTINEL Security: Invalid Stacks address for {self.network.upper()}.",
                 severity="error",
             )
             return
 
-        # 🛡️ Sentinel: Validate the private key if provided
+        # SENTINEL Sentinel: Validate the private key if provided
         if (
             privkey_val
             and privkey_val != "your_private_key_here"
             and not validate_private_key(privkey_val)
         ):
             self.notify(
-                "🛡️ Security: Invalid private key format (must be 64/66 hex chars).",
+                "SENTINEL Security: Invalid private key format (must be 64/66 hex chars).",
                 severity="error",
             )
             return
@@ -1919,7 +1932,7 @@ class ConxiusOrbitGUI(App):
             config["SYSTEM_ADDRESS"] = p_address
             config["UI_THEME"] = p_theme
 
-            # 🛡️ Sentinel: Use centralized atomic and secure config saver.
+            # SENTINEL Sentinel: Use centralized atomic and secure config saver.
             # This automatically filters secrets and ensures atomic, secure write.
             save_secure_config(str(self.config_path), config)
 
@@ -1941,9 +1954,9 @@ class ConxiusOrbitGUI(App):
                 pass
 
             if is_secret_provided:
-                # 🛡️ Sentinel: Inform the user that secrets are not saved to disk.
+                # SENTINEL Sentinel: Inform the user that secrets are not saved to disk.
                 self.notify(
-                    "🛡️ Security: Configuration saved (excluding private keys). "
+                    "SENTINEL Security: Configuration saved (excluding private keys). "
                     "Use environment variables for secrets.",
                     severity="warning",
                     timeout=10,

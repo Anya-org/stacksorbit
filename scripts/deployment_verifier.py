@@ -82,7 +82,7 @@ class DeploymentVerifier:
 
         all_passed = True
 
-        # Bolt ⚡: Parallelize verification checks to reduce total latency.
+        # Bolt BOLT: Parallelize verification checks to reduce total latency.
         # This is especially effective when network calls are involved.
         with ThreadPoolExecutor(max_workers=len(checks)) as executor:
             future_to_check = {
@@ -105,7 +105,7 @@ class DeploymentVerifier:
                         self._safe_print(f"✅ {check_name} passed")
 
                 except Exception as e:
-                    # 🛡️ Sentinel: Prevent sensitive information disclosure.
+                    # SENTINEL Sentinel: Prevent sensitive information disclosure.
                     if self.verbose:
                         self._safe_print(f"❌ {check_name} error: {e}")
                     else:
@@ -185,7 +185,7 @@ class DeploymentVerifier:
             deployed_names = [
                 c.get("contract_id", "").split(".")[-1] for c in deployed_contracts
             ]
-            # Bolt ⚡: Optimization - Use set for O(1) lookup to avoid O(N^2) complexity.
+            # Bolt BOLT: Optimization - Use set for O(1) lookup to avoid O(N^2) complexity.
             deployed_names_set = set(deployed_names)
 
             verified = []
@@ -224,10 +224,10 @@ class DeploymentVerifier:
     ) -> Dict:
         """Verify recent transaction history"""
         try:
-            # Bolt ⚡: Use cached monitor method instead of direct requests.get
+            # Bolt BOLT: Use cached monitor method instead of direct requests.get
             transactions = self.monitor.get_recent_transactions(address, limit=50)
 
-            # Bolt ⚡: Move datetime.now outside the loop for consistency and efficiency
+            # Bolt BOLT: Move datetime.now outside the loop for consistency and efficiency
             now = datetime.now(timezone.utc)
             cutoff = now - timedelta(hours=24)
 
@@ -325,13 +325,13 @@ class DeploymentVerifier:
         tested = []
         working = []
 
-        # Bolt ⚡: Create a lookup map to avoid O(N*M) search and improve performance
+        # Bolt BOLT: Create a lookup map to avoid O(N*M) search and improve performance
         deployed_names_map = {
             c.get("contract_id", "").split(".")[-1]: c.get("contract_id")
             for c in deployed_contracts
         }
 
-        # Bolt ⚡: Parallelize contract interface verification to reduce latency.
+        # Bolt BOLT: Parallelize contract interface verification to reduce latency.
         # This is particularly useful when checking multiple contracts.
         contract_tasks = []
         for contract_name in test_contracts:
@@ -419,7 +419,7 @@ class DeploymentVerifier:
         results_path = Path("logs") / "verification_results.json"
         results_path.parent.mkdir(exist_ok=True)
 
-        # 🛡️ Sentinel: Use secure persistence with standardized automatic redaction and 0600 permissions.
+        # SENTINEL Sentinel: Use secure persistence with standardized automatic redaction and 0600 permissions.
         # Passing the dictionary directly with json_format=True is more robust and consistent.
         save_secure_config(
             str(results_path), self.verification_results, json_format=True
@@ -484,7 +484,7 @@ def load_expected_contracts() -> List[str]:
             contracts = [match for match in contract_matches]
 
         except Exception as e:
-            # 🛡️ Sentinel: Prevent sensitive information disclosure.
+            # SENTINEL Sentinel: Prevent sensitive information disclosure.
             # In library functions, we might not have a verbose flag easily,
             # but we can try to be quiet and provide a generic warning.
             print("Warning: Could not parse Clarinet.toml (use --verbose for details)")
@@ -509,7 +509,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        # 🛡️ Sentinel: Secure configuration loading.
+        # SENTINEL Sentinel: Secure configuration loading.
         config = {}
         if Path(args.config).exists():
             from dotenv import dotenv_values
@@ -520,7 +520,7 @@ def main():
             for key, value in file_config.items():
                 if is_sensitive_key(key) and not is_placeholder(value):
                     error_message = (
-                        f"🛡️ Sentinel Security Error: Secret key '{key}' found in .env file.\n"
+                        f"SENTINEL Sentinel Security Error: Secret key '{key}' found in .env file.\n"
                         "   Storing secrets in plaintext files is a critical security risk and is not permitted.\n"
                         "   For your protection, please move this secret to an environment variable and remove it from the .env file.\n"
                         f"   Example: export {key}='your_secret_value_here'"
@@ -528,7 +528,7 @@ def main():
                     raise ValueError(error_message)
                 config[key] = value
 
-        # 🛡️ Sentinel: Secure and broadened environment variable loading.
+        # SENTINEL Sentinel: Secure and broadened environment variable loading.
         # Load any environment variable that is in the .env file OR matches our
         # specific app secrets (SECRET_KEYS) OR has a safe app-specific prefix.
         for key, value in os.environ.items():
@@ -573,7 +573,7 @@ def main():
         print("\n🛑 Verification cancelled by user")
         return 1
     except Exception as e:
-        # 🛡️ Sentinel: Prevent sensitive information disclosure.
+        # SENTINEL Sentinel: Prevent sensitive information disclosure.
         if args.verbose:
             print(f"❌ Verification failed: {e}")
             import traceback

@@ -57,7 +57,7 @@ class TestSentinelRedaction(unittest.TestCase):
         self.assertEqual(redacted["nested"]["USER_PWD"], "<redacted>")
 
     def test_nested_sensitive_parent(self):
-        # 🛡️ Sentinel: Regression test for nested secret exposure.
+        # SENTINEL Sentinel: Regression test for nested secret exposure.
         # Even if inner keys are generic, they should be redacted if the parent is sensitive.
         data = {"DEPLOYER_PRIVKEY": {"a": "actual_secret", "b": "some_info"}}
         redacted = redact_recursive(data)
@@ -65,7 +65,7 @@ class TestSentinelRedaction(unittest.TestCase):
         self.assertEqual(redacted["DEPLOYER_PRIVKEY"]["b"], "<redacted>")
 
     def test_new_sensitive_keywords(self):
-        # 🛡️ Sentinel: Test new sensitive keywords added in this session.
+        # SENTINEL Sentinel: Test new sensitive keywords added in this session.
         data = {
             "AUTH_BEARER_TOKEN": "secret123",
             "RECOVERY_PHRASE": "word1 word2...",
@@ -83,7 +83,7 @@ class TestSentinelRedaction(unittest.TestCase):
             )
 
     def test_new_placeholders(self):
-        # 🛡️ Sentinel: Test new placeholders added in this session.
+        # SENTINEL Sentinel: Test new placeholders added in this session.
         data = {
             "SYSTEM_MNEMONIC": "your_mnemonic_here",
             "SEED_PHRASE": "your_seed_phrase_here",
