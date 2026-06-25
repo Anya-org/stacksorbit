@@ -8,7 +8,7 @@ from conxius_orbit_secrets import is_sensitive_key, redact_recursive
 
 
 def test_api_key_redaction_expansion():
-    """🛡️ Sentinel: Verify that APIKEY and API_KEY are now redacted even with public prefixes."""
+    """SENTINEL Sentinel: Verify that APIKEY and API_KEY are now redacted even with public prefixes."""
     assert is_sensitive_key("PUBLIC_API_KEY") is True
     assert is_sensitive_key("ADDR_APIKEY") is True
 
@@ -19,7 +19,7 @@ def test_api_key_redaction_expansion():
 
 
 def test_deploy_single_contract_env_hardening():
-    """🛡️ Sentinel: Verify that DEPLOYER_PRIVKEY is passed via env and removed from CLI args."""
+    """SENTINEL Sentinel: Verify that DEPLOYER_PRIVKEY is passed via env and removed from CLI args."""
     config = {
         "DEPLOYER_PRIVKEY": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
         "NETWORK": "testnet",

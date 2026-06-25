@@ -21,7 +21,7 @@ class TestSentinelPathSafety(unittest.TestCase):
         shutil.rmtree(self.outside_dir)
 
     def test_should_reject_symlink_to_outside_file(self):
-        # 🛡️ Sentinel: Regression test for Path Traversal via symlinks.
+        # SENTINEL Sentinel: Regression test for Path Traversal via symlinks.
         # Ensure that symlinks pointing to files outside the base directory are rejected.
         link_path = os.path.join(self.test_dir, "link_to_secret")
 

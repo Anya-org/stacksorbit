@@ -37,16 +37,16 @@ class ConfigManager:
             # Use dotenv_values to get the contents of the .env file as a dict without modifying the environment.
             file_vars = dotenv_values(dotenv_path=env_path)
 
-            # 🛡️ Sentinel: Enforce security policy - no secrets in .env
+            # SENTINEL Sentinel: Enforce security policy - no secrets in .env
             # We iterate over all keys in the file and use is_sensitive_key and is_sensitive_value to identify secrets.
             for key, value in file_vars.items():
-                # Bolt ⚡: Check both key name and value for secrets to provide defense-in-depth.
+                # Bolt BOLT: Check both key name and value for secrets to provide defense-in-depth.
                 if (
                     is_sensitive_key(key) or is_sensitive_value(value)
                 ) and not is_placeholder(value):
                     # If a secret is found, raise an error and exit immediately.
                     error_message = (
-                        f"🛡️ Sentinel Security Error: Secret key '{key}' found in .env file.\n"
+                        f"SENTINEL Sentinel Security Error: Secret key '{key}' found in .env file.\n"
                         "   Storing secrets in plaintext files is a critical security risk and is not permitted.\n"
                         "   For your protection, please move this secret to an environment variable and remove it from the .env file.\n"
                         f"   Example: export {key}='your_secret_value_here'"
@@ -61,7 +61,7 @@ class ConfigManager:
         # 3. Build the config, starting with file variables.
         self.config.update(file_vars)
 
-        # 🛡️ Sentinel: Secure and broadened environment variable loading.
+        # SENTINEL Sentinel: Secure and broadened environment variable loading.
         # Load any environment variable that is in the .env file OR matches our
         # specific app secrets (SECRET_KEYS) OR has a safe app-specific prefix.
         env_overrides = {
@@ -74,7 +74,7 @@ class ConfigManager:
         self.config.update(env_overrides)
 
         # Load .toml files (e.g., Clarinet.toml)
-        # Bolt ⚡: Optimize configuration scanning by skipping heavy directories.
+        # Bolt BOLT: Optimize configuration scanning by skipping heavy directories.
         # This significantly reduces I/O and CPU usage during startup.
         ignore_dirs = {
             "node_modules",
@@ -88,7 +88,7 @@ class ConfigManager:
         }
 
         for root, dirs, files in os.walk(self.base_path):
-            # Bolt ⚡: Skip ignored and hidden directories in-place.
+            # Bolt BOLT: Skip ignored and hidden directories in-place.
             dirs[:] = [
                 d for d in dirs if d not in ignore_dirs and not d.startswith(".")
             ]

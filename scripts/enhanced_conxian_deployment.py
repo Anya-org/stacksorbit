@@ -33,7 +33,7 @@ from conxius_orbit_secrets import (
 )
 from deployment_monitor import DeploymentMonitor
 
-# 🛡️ Sentinel: Sensitive substrings to identify potential secrets
+# SENTINEL Sentinel: Sensitive substrings to identify potential secrets
 
 # Force UTF-8 encoding for stdout on Windows
 if sys.platform == "win32":
@@ -73,14 +73,14 @@ class EnhancedConfigManager:
         # Load variables from the .env file first.
         file_config = dotenv_values(dotenv_path=self.config_path)
 
-        # 🛡️ Sentinel: Enforce security policy - no secrets in .env
+        # SENTINEL Sentinel: Enforce security policy - no secrets in .env
         for key, value in file_config.items():
-            # Bolt ⚡: Check both key name and value for secrets to provide defense-in-depth.
+            # Bolt BOLT: Check both key name and value for secrets to provide defense-in-depth.
             if (
                 is_sensitive_key(key) or is_sensitive_value(value)
             ) and not is_placeholder(value):
                 error_message = (
-                    f"🛡️ Sentinel Security Error: Secret key '{key}' found in .env file.\n"
+                    f"SENTINEL Sentinel Security Error: Secret key '{key}' found in .env file.\n"
                     "   Storing secrets in plaintext files is a critical security risk and is not permitted.\n"
                     "   For your protection, please move this secret to an environment variable and remove it from the .env file.\n"
                     f"   Example: export {key}='your_secret_value_here'"
@@ -93,7 +93,7 @@ class EnhancedConfigManager:
         # to be overridden by environment variables.
         combined_config = {}
         combined_config.update(file_config)
-        # 🛡️ Sentinel: Secure and broadened environment variable loading.
+        # SENTINEL Sentinel: Secure and broadened environment variable loading.
         # Load any environment variable that is in the .env file OR matches our
         # specific app secrets (SECRET_KEYS) OR has a safe app-specific prefix.
         # This allows users to provide secrets via environment variables while
@@ -172,13 +172,13 @@ CONFIRMATION_TIMEOUT=300
 """
 
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        # 🛡️ Sentinel: Use centralized atomic and secure config saver.
+        # SENTINEL Sentinel: Use centralized atomic and secure config saver.
         # This eliminates the race condition between creation and chmod.
         save_secure_config(str(self.config_path), default_config)
 
     def save_config(self, config: Dict):
         """Save configuration to file"""
-        # 🛡️ Sentinel: Use centralized atomic and secure config saver.
+        # SENTINEL Sentinel: Use centralized atomic and secure config saver.
         save_secure_config(str(self.config_path), config)
 
     def validate_config(self) -> Tuple[bool, List[str]]:
@@ -240,14 +240,14 @@ class EnhancedConxianDeployer:
         self.clarinet_check_timeout = clarinet_check_timeout
         self.pre_check_results: Dict[str, bool] = {}
 
-        # Bolt ⚡: Debug project root resolution
+        # Bolt BOLT: Debug project root resolution
         project_root = self.config.get("PROJECT_ROOT")
         if project_root:
             print(f"[DEBUG] Deployer initialized with PROJECT_ROOT: {project_root}")
         else:
             print("[DEBUG] Deployer initialized without PROJECT_ROOT (using default)")
 
-        # Bolt ⚡: Use a shared monitor instance to leverage caching
+        # Bolt BOLT: Use a shared monitor instance to leverage caching
         # If no monitor is provided, create a new one.
         self.monitor = monitor or DeploymentMonitor(
             config.get("NETWORK", "testnet"), config
@@ -344,7 +344,7 @@ class EnhancedConxianDeployer:
                     all_passed = False
             except Exception as e:
                 self.pre_check_results[check_name] = False
-                # 🛡️ Sentinel: Prevent sensitive information disclosure.
+                # SENTINEL Sentinel: Prevent sensitive information disclosure.
                 if self.verbose:
                     print(f"[ERROR] {check_name} check failed: {e}")
                 else:
@@ -433,7 +433,7 @@ class EnhancedConxianDeployer:
             print("[ERROR] Clarinet not found (is it installed and on PATH?)")
             return False
         except Exception as e:
-            # 🛡️ Sentinel: Prevent sensitive information disclosure.
+            # SENTINEL Sentinel: Prevent sensitive information disclosure.
             if self.verbose:
                 print(f"[ERROR] Could not run compilation check: {e}")
             else:
@@ -493,7 +493,7 @@ class EnhancedConxianDeployer:
             print("[ERROR] pnpm not found (is Node.js installed and on PATH?)")
             return False
         except Exception as e:
-            # 🛡️ Sentinel: Prevent sensitive information disclosure.
+            # SENTINEL Sentinel: Prevent sensitive information disclosure.
             if self.verbose:
                 print(f"[ERROR] Could not run pnpm tests: {e}")
             else:
@@ -606,7 +606,7 @@ class EnhancedConxianDeployer:
                 return True  # Don't fail the check, just report
 
         except Exception as e:
-            # 🛡️ Sentinel: Prevent sensitive information disclosure.
+            # SENTINEL Sentinel: Prevent sensitive information disclosure.
             if self.verbose:
                 print(f"[WARNING] Could not check system alignment: {e}")
             return True
@@ -639,7 +639,7 @@ class EnhancedConxianDeployer:
                         )
 
         except Exception as e:
-            # 🛡️ Sentinel: Prevent sensitive information disclosure.
+            # SENTINEL Sentinel: Prevent sensitive information disclosure.
             if self.verbose:
                 print(f"Warning: Could not read deployment history: {e}")
 
@@ -717,7 +717,7 @@ class EnhancedConxianDeployer:
                     )
 
             except Exception as e:
-                # 🛡️ Sentinel: Prevent sensitive information disclosure.
+                # SENTINEL Sentinel: Prevent sensitive information disclosure.
                 if self.verbose:
                     print(f"[ERROR] {contract['name']} failed: {e}")
                 else:
@@ -858,7 +858,7 @@ class EnhancedConxianDeployer:
                     # Handle path
                     if key == "path":
                         path_val = value.strip("\"'")
-                        # 🛡️ Sentinel: Path traversal protection.
+                        # SENTINEL Sentinel: Path traversal protection.
                         if is_safe_path(str(clarinet_path.parent), path_val):
                             current_data["path"] = path_val
                         else:
@@ -885,7 +885,7 @@ class EnhancedConxianDeployer:
                 contracts.append(current_data)
 
         except Exception as e:
-            # 🛡️ Sentinel: Prevent sensitive information disclosure.
+            # SENTINEL Sentinel: Prevent sensitive information disclosure.
             if self.verbose:
                 print(f"[WARNING] Could not parse Clarinet.toml fully: {e}")
             # Fallback will handle this if list is empty, or return partial results
@@ -1000,7 +1000,7 @@ class EnhancedConxianDeployer:
                 self.config.get("NETWORK", "testnet"),
             ]
 
-            # 🛡️ Sentinel: Pass the private key via environment variables to prevent process list leaks.
+            # SENTINEL Sentinel: Pass the private key via environment variables to prevent process list leaks.
             env = os.environ.copy()
             env["DEPLOYER_PRIVKEY"] = self.config.get("DEPLOYER_PRIVKEY", "")
 
@@ -1027,7 +1027,7 @@ class EnhancedConxianDeployer:
             err_detail = e.stderr.strip() if e.stderr else "no stderr"
             out_detail = e.stdout.strip() if e.stdout else "no stdout"
 
-            # 🛡️ Intelligence: Detect if contract already exists
+            # SENTINEL Intelligence: Detect if contract already exists
             if (
                 "ContractAlreadyExists" in out_detail
                 or "ContractAlreadyExists" in err_detail
@@ -1089,7 +1089,7 @@ class EnhancedConxianDeployer:
 
         history.append(deployment_data)
 
-        # 🛡️ Sentinel: Use secure persistence with automatic redaction for restricted permissions.
+        # SENTINEL Sentinel: Use secure persistence with automatic redaction for restricted permissions.
         save_secure_config(str(history_path), history, json_format=True)
 
         print(f"[INFO] Deployment results saved to {history_path}")
@@ -1181,7 +1181,7 @@ def main():
         print("\n[STOP] Deployment cancelled by user")
         return 1
     except Exception as e:
-        # 🛡️ Sentinel: Prevent sensitive information disclosure.
+        # SENTINEL Sentinel: Prevent sensitive information disclosure.
         # A generic error message is shown to the user.
         # The detailed exception is only logged in verbose mode.
         print(f"\n[ERROR] An unexpected error occurred during deployment.")

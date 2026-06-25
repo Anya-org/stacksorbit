@@ -121,7 +121,7 @@ async def test_transaction_selection_enables_buttons():
         assert explorer_btn.disabled is True
         assert "Select a transaction" in str(status_label.render())
 
-        # Simulate transaction data for the Bolt ⚡ optimization logic
+        # Simulate transaction data for the Bolt BOLT optimization logic
         app._last_transactions = [{"tx_id": "0x1234567890abcdef"}]
 
         # Add a row to the table

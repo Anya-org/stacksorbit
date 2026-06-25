@@ -539,12 +539,12 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 *   **Changes:**
     *   **License Standardization:** Added MIT license headers to all major Python and TypeScript/JavaScript source files to ensure legal compliance and professional standards.
     *   **Documentation Alignment:** Updated `ISSUES.md` to reflect the resolved state of documentation issues (ambiguity, redundancy, and missing elements).
-    *   **Performance Verification:** Confirmed implementation of Bolt ⚡ optimizations, including pre-compiled regex in `conxius_orbit_auto_detect.py` and hoisted bucketing in `conxius_orbit_gui.py`.
-    *   **Security Reinforcement:** Verified Sentinel 🛡️ protections in `conxius_orbit_secrets.py`, including input normalization before LRU caching and value-based secret detection.
+    *   **Performance Verification:** Confirmed implementation of Bolt BOLT optimizations, including pre-compiled regex in `conxius_orbit_auto_detect.py` and hoisted bucketing in `conxius_orbit_gui.py`.
+    *   **Security Reinforcement:** Verified Sentinel SENTINEL protections in `conxius_orbit_secrets.py`, including input normalization before LRU caching and value-based secret detection.
     *   **Registry Sync:** Verified that the Multi-Network Alignment registry in `PRD.md` correctly reflects the Chainhook predicates and contract principals across Devnet, Testnet, and Mainnet.
 *   **Status:** Complete.
 
-### Session 37: Zero-Copy Redaction & High-Throughput Detection (Bolt ⚡)
+### Session 37: Zero-Copy Redaction & High-Throughput Detection (Bolt BOLT)
 
 *   **Objective:** Implement a high-impact performance optimization to the secret detection engine to eliminate redundant memory allocations and CPU overhead during project redaction.
 *   **Changes:**

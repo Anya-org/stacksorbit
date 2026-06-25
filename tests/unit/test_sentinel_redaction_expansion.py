@@ -70,7 +70,7 @@ def test_nested_mixed_containers():
 
 
 def test_sensitive_key_redaction_expansion():
-    """🛡️ Sentinel: Verify that newly added high-confidence keywords are redacted even with public prefixes."""
+    """SENTINEL Sentinel: Verify that newly added high-confidence keywords are redacted even with public prefixes."""
     from conxius_orbit_secrets import is_sensitive_key
 
     # Newly hardened keys (should now be True)
@@ -101,7 +101,7 @@ def test_sensitive_key_redaction_expansion():
 
 
 def test_case_insensitivity():
-    """🛡️ Sentinel: Verify that detection is case-insensitive."""
+    """SENTINEL Sentinel: Verify that detection is case-insensitive."""
     from conxius_orbit_secrets import is_sensitive_key
 
     assert is_sensitive_key("public_recovery_phrase") is True
@@ -110,7 +110,7 @@ def test_case_insensitivity():
 
 
 def test_new_redaction_keywords():
-    """🛡️ Sentinel: Verify that new high-confidence keywords are redacted."""
+    """SENTINEL Sentinel: Verify that new high-confidence keywords are redacted."""
     from conxius_orbit_secrets import is_sensitive_key, redact_recursive
 
     # Verify new high-confidence keywords
@@ -136,7 +136,7 @@ def test_new_redaction_keywords():
 
 
 def test_new_placeholders_preserved():
-    """🛡️ Sentinel: Verify that new placeholders are preserved."""
+    """SENTINEL Sentinel: Verify that new placeholders are preserved."""
     from conxius_orbit_secrets import redact_recursive, is_placeholder
 
     assert is_placeholder("your_oauth_token_here") is True

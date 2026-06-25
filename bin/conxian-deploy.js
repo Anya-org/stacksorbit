@@ -248,7 +248,7 @@ async function verifyDeployment(args) {
     console.log("");
 
     // Verify contracts
-    await monitor.getDeployedContracts(
+    const deployedContracts = await monitor.getDeployedContracts(
       config.SYSTEM_ADDRESS,
     );
     console.log("");
@@ -312,7 +312,7 @@ async function initializeConfig(args) {
   }
 }
 
-async function launchGUI() {
+async function launchGUI(args) {
   console.log("🖥️  Launching Conxius Orbit GUI...\n");
 
   const { spawn } = require("child_process");

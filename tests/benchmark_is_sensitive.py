@@ -4,7 +4,7 @@ from conxius_orbit_secrets import is_sensitive_value
 
 
 def benchmark_is_sensitive():
-    print("⚡ Bolt: Benchmarking is_sensitive_value directly...")
+    print("BOLT Bolt: Benchmarking is_sensitive_value directly...")
 
     # 10MB string WITHOUT whitespace to trigger zero-copy fast-fail
     large_string = "A" * (10 * 1024 * 1024)

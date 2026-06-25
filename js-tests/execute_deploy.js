@@ -42,7 +42,7 @@ if (require.main === module) {
   
   const [contractName, contractPath, networkName] = args;
   
-  // 🛡️ Sentinel: Read private key from environment variables to prevent process list leaks.
+  // SENTINEL Sentinel: Read private key from environment variables to prevent process list leaks.
   const privateKey = process.env.DEPLOYER_PRIVKEY;
   if (!privateKey) {
     console.error(JSON.stringify({

@@ -43,7 +43,7 @@ def cache_api_call(func):
 
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
-        # Bolt ⚡: Support explicit cache bypass for real-time responsiveness.
+        # Bolt BOLT: Support explicit cache bypass for real-time responsiveness.
         # This is critical for polling loops and manual refreshes.
         bypass_cache = kwargs.pop("bypass_cache", False)
 
@@ -71,23 +71,23 @@ def cache_api_call(func):
         # Store the new result in the cache
         cache_copy = None
         with self.cache_lock:
-            # Bolt ⚡: Optimization - Only save if the data has actually changed
+            # Bolt BOLT: Optimization - Only save if the data has actually changed
             # to avoid redundant disk writes for frequent identical updates (e.g. polling).
             old_data = self.cache.get(cache_key, {}).get("data")
             now = time.time()
             self.cache[cache_key] = {"timestamp": now, "data": result}
 
-            # Bolt ⚡: Incrementally redact only the new entry to avoid O(N) overhead.
+            # Bolt BOLT: Incrementally redact only the new entry to avoid O(N) overhead.
             redacted_result = redact_recursive(result, parent_key=cache_key)
             self.redacted_cache[cache_key] = {"timestamp": now, "data": redacted_result}
 
             if result != old_data:
-                # Bolt ⚡: Create a shallow copy of the REDACTED cache for background persistence.
+                # Bolt BOLT: Create a shallow copy of the REDACTED cache for background persistence.
                 # This ensures save_secure_config doesn't need to redact the whole thing again.
                 cache_copy = self.redacted_cache.copy()
 
         if cache_copy is not None:
-            # Bolt ⚡: Pass the snapshot to save_cache for lock-free background persistence.
+            # Bolt BOLT: Pass the snapshot to save_cache for lock-free background persistence.
             self._save_cache(cache_copy)
         return result
 
@@ -110,17 +110,17 @@ class DeploymentMonitor:
         self.contracts_deployed = set()
         self.failed_contracts = set()
 
-        # Bolt ⚡: Use a persistent file-based cache.
+        # Bolt BOLT: Use a persistent file-based cache.
         self.cache_path = Path("logs") / "api_cache.json"
-        # Bolt ⚡: Pre-create logs directory to avoid redundant system calls in save_cache.
+        # Bolt BOLT: Pre-create logs directory to avoid redundant system calls in save_cache.
         self.cache_path.parent.mkdir(exist_ok=True)
         self.cache_lock = threading.Lock()
         self.cache_expiry = 300  # Cache for 5 minutes
         self.cache = self._load_cache()
-        # Bolt ⚡: Initialize the redacted cache with already redacted data from disk.
+        # Bolt BOLT: Initialize the redacted cache with already redacted data from disk.
         self.redacted_cache = self.cache.copy()
 
-        # Bolt ⚡: Add adaptive polling intervals to reduce API calls during inactivity.
+        # Bolt BOLT: Add adaptive polling intervals to reduce API calls during inactivity.
         self.min_poll_interval = 5  # Start with a 5-second interval
         self.max_poll_interval = 60  # Cap at 60 seconds
         self.current_poll_interval = self.min_poll_interval
@@ -145,12 +145,12 @@ class DeploymentMonitor:
             data = cache_data
             if data is None:
                 with self.cache_lock:
-                    # Bolt ⚡: Use the redacted cache snapshot to avoid O(N) overhead.
+                    # Bolt BOLT: Use the redacted cache snapshot to avoid O(N) overhead.
                     data = self.redacted_cache.copy()
 
-            # 🛡️ Sentinel: Use secure persistence with 0600 permissions.
-            # Bolt ⚡: Use indent=None to reduce I/O overhead and file size.
-            # ⚡ Bolt: Use redact=False because the cache is already incrementally redacted.
+            # SENTINEL Sentinel: Use secure persistence with 0600 permissions.
+            # Bolt BOLT: Use indent=None to reduce I/O overhead and file size.
+            # BOLT Bolt: Use redact=False because the cache is already incrementally redacted.
             # This eliminates a multi-millisecond O(N) bottleneck on every disk write.
             save_secure_config(
                 str(self.cache_path), data, json_format=True, redact=False, indent=None
@@ -189,7 +189,7 @@ class DeploymentMonitor:
                 log_dir / f"deployment_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
             )
             file_handler = logging.FileHandler(log_file, encoding="utf-8")
-            # 🛡️ Sentinel: Ensure log files have secure permissions (0600).
+            # SENTINEL Sentinel: Ensure log files have secure permissions (0600).
             set_secure_permissions(str(log_file))
             file_handler.setLevel(log_level)
             file_formatter = logging.Formatter(
@@ -243,7 +243,7 @@ class DeploymentMonitor:
         """Main monitoring loop"""
         while self.is_monitoring:
             try:
-                # Bolt ⚡: Adaptive polling implementation.
+                # Bolt BOLT: Adaptive polling implementation.
                 # The polling interval starts at `min_poll_interval` and doubles
                 # on each check where no new deployment is found, up to `max_poll_interval`.
                 # This significantly reduces the number of API calls during periods of inactivity,
@@ -280,7 +280,7 @@ class DeploymentMonitor:
             return False
 
         try:
-            # Bolt ⚡: Bypass cache for account info in monitoring loops to ensure immediate detection.
+            # Bolt BOLT: Bypass cache for account info in monitoring loops to ensure immediate detection.
             account_info = self.get_account_info(address, bypass_cache=True)
             if not account_info:
                 return False
@@ -364,7 +364,7 @@ class DeploymentMonitor:
 
     @cache_api_call
     def _get_account_info_cached(self, address: str, **kwargs) -> Optional[Dict]:
-        """Bolt ⚡: Internal cached worker for account info."""
+        """Bolt BOLT: Internal cached worker for account info."""
         try:
             response = self.session.get(f"{self.api_url}/v2/accounts/{address}")
             response.raise_for_status()
@@ -377,12 +377,12 @@ class DeploymentMonitor:
         """Get comprehensive account information with normalized address."""
         if not address:
             return None
-        # Bolt ⚡: Normalize address before hitting the cache to maximize hits.
+        # Bolt BOLT: Normalize address before hitting the cache to maximize hits.
         return self._get_account_info_cached(address.strip().upper(), **kwargs)
 
     @cache_api_call
     def _get_transaction_info_cached(self, tx_id: str, **kwargs) -> Optional[Dict]:
-        """Bolt ⚡: Internal cached worker for transaction info."""
+        """Bolt BOLT: Internal cached worker for transaction info."""
         try:
             # Try v2 first
             response = self.session.get(f"{self.api_url}/v2/transactions/{tx_id}")
@@ -403,7 +403,7 @@ class DeploymentMonitor:
         """Get detailed transaction information with normalized TX ID."""
         if not tx_id:
             return None
-        # Bolt ⚡: Normalize TX ID (lowercase + 0x prefix) before hitting the cache.
+        # Bolt BOLT: Normalize TX ID (lowercase + 0x prefix) before hitting the cache.
         # This ensures '0xabc' and 'ABC' share the same cache entry.
         tx = tx_id.strip().lower()
         formatted_tx_id = tx if tx.startswith("0x") else f"0x{tx}"
@@ -415,7 +415,7 @@ class DeploymentMonitor:
 
         start_time = time.time()
         last_status = None
-        # Bolt ⚡: Implement exponential backoff for polling.
+        # Bolt BOLT: Implement exponential backoff for polling.
         # This reduces the number of API calls for long-running transactions by
         # starting with a short polling interval and increasing it over time.
         # This is more efficient than a fixed interval.
@@ -423,7 +423,7 @@ class DeploymentMonitor:
         max_poll_interval = 30  # Cap at 30 seconds
 
         while time.time() - start_time < timeout:
-            # Bolt ⚡: Bypass cache for transaction info when waiting for confirmation.
+            # Bolt BOLT: Bypass cache for transaction info when waiting for confirmation.
             # This reduces confirmation detection latency from 5 minutes to seconds.
             tx_info = self.get_transaction_info(tx_id, bypass_cache=True)
 
@@ -461,7 +461,7 @@ class DeploymentMonitor:
 
     @cache_api_call
     def _get_deployed_contracts_cached(self, address: str, **kwargs) -> List[Dict]:
-        """Bolt ⚡: Internal cached worker for deployed contracts."""
+        """Bolt BOLT: Internal cached worker for deployed contracts."""
         try:
             response = self.session.get(
                 f"{self.api_url}/v2/accounts/{address}/contracts"
@@ -469,7 +469,7 @@ class DeploymentMonitor:
             response.raise_for_status()
             data = response.json()
 
-            # Bolt ⚡: Robustly extract contracts from either 'contracts' or 'results' key.
+            # Bolt BOLT: Robustly extract contracts from either 'contracts' or 'results' key.
             contracts = data.get("contracts") or data.get("results", [])
 
             self.logger.info(f"📦 Found {len(contracts)} deployed contracts")
@@ -488,7 +488,7 @@ class DeploymentMonitor:
     def _get_recent_transactions_cached(
         self, address: str, limit: int = 50, **kwargs
     ) -> List[Dict]:
-        """Bolt ⚡: Internal cached worker for recent transactions."""
+        """Bolt BOLT: Internal cached worker for recent transactions."""
         try:
             response = self.session.get(
                 f"{self.api_url}/v2/accounts/{address}/transactions?limit={limit}",
@@ -515,7 +515,7 @@ class DeploymentMonitor:
     def _get_contract_details_cached(
         self, contract_id: str, **kwargs
     ) -> Optional[Dict]:
-        """Bolt ⚡: Internal cached worker for contract details."""
+        """Bolt BOLT: Internal cached worker for contract details."""
         try:
             # The contract_id is in the format 'address.name'
             address, name = contract_id.split(".")
@@ -532,7 +532,7 @@ class DeploymentMonitor:
         """Get contract details with normalized contract ID."""
         if not contract_id or "." not in contract_id:
             return None
-        # Bolt ⚡: Normalize contract ID (ADDRESS.name) before hitting the cache.
+        # Bolt BOLT: Normalize contract ID (ADDRESS.name) before hitting the cache.
         addr, name = contract_id.strip().split(".", 1)
         normalized_id = f"{addr.upper()}.{name}"
         return self._get_contract_details_cached(normalized_id, **kwargs)
@@ -541,12 +541,12 @@ class DeploymentMonitor:
         """Verify deployment completeness"""
         self.logger.info("🔍 Verifying deployment...")
 
-        # Bolt ⚡: Bypass cache during verification to ensure accuracy.
+        # Bolt BOLT: Bypass cache during verification to ensure accuracy.
         deployed_contracts = self.get_deployed_contracts(address, bypass_cache=True)
         deployed_names = [
             c.get("contract_id", "").split(".")[-1] for c in deployed_contracts
         ]
-        # Bolt ⚡: Optimization - Use sets for O(1) lookup to avoid O(N^2) complexity.
+        # Bolt BOLT: Optimization - Use sets for O(1) lookup to avoid O(N^2) complexity.
         deployed_names_set = set(deployed_names)
         expected_contracts_set = set(expected_contracts)
 
@@ -629,7 +629,7 @@ class DeploymentMonitor:
 
         summary_path = Path("logs") / "monitoring_summary.json"
         summary_path.parent.mkdir(exist_ok=True)
-        # 🛡️ Sentinel: Use secure persistence with automatic redaction and 0600 permissions.
+        # SENTINEL Sentinel: Use secure persistence with automatic redaction and 0600 permissions.
         save_secure_config(str(summary_path), summary, json_format=True)
 
         self.logger.info(f"💾 Monitoring summary saved to {summary_path}")
@@ -694,10 +694,10 @@ def main():
                     if line and not line.startswith("#") and "=" in line:
                         key, value = line.split("=", 1)
                         k, v = key.strip(), value.strip().strip('"')
-                        # 🛡️ Sentinel: Enforce security policy - no secrets in .env
+                        # SENTINEL Sentinel: Enforce security policy - no secrets in .env
                         if is_sensitive_key(k) and not is_placeholder(v):
                             error_message = (
-                                f"🛡️ Sentinel Security Error: Secret key '{k}' found in .env file.\n"
+                                f"SENTINEL Sentinel Security Error: Secret key '{k}' found in .env file.\n"
                                 "   Storing secrets in plaintext files is a critical security risk and is not permitted.\n"
                                 f"   Example: export {k}='your_secret_value_here'"
                             )
@@ -825,7 +825,7 @@ def main():
         print("\n🛑 Monitoring cancelled by user")
         return 1
     except Exception as e:
-        # 🛡️ Sentinel: Prevent sensitive information disclosure.
+        # SENTINEL Sentinel: Prevent sensitive information disclosure.
         if args.verbose:
             print(f"❌ Monitoring failed: {e}")
             import traceback

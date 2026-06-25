@@ -3,7 +3,7 @@ from conxius_orbit_secrets import is_sensitive_value, redact_recursive
 
 
 def test_is_sensitive_value_newline_bypass():
-    """🛡️ Sentinel: Verify that secrets with newlines are correctly detected."""
+    """SENTINEL Sentinel: Verify that secrets with newlines are correctly detected."""
     # Private key with trailing newline
     pk_newline = "a" * 64 + "\n"
     assert is_sensitive_value(pk_newline) is True
@@ -18,7 +18,7 @@ def test_is_sensitive_value_newline_bypass():
 
 
 def test_redact_recursive_newline_bypass():
-    """🛡️ Sentinel: Verify that secrets with newlines are correctly redacted."""
+    """SENTINEL Sentinel: Verify that secrets with newlines are correctly redacted."""
     config = {
         "pk": "c" * 64 + "\n",
         "mnemonic": "word " * 11 + "\nword",
@@ -33,7 +33,7 @@ def test_redact_recursive_newline_bypass():
 
 
 def test_is_sensitive_value_large_string_still_fast_fails():
-    """Bolt ⚡: Verify that very large strings still fast-fail for performance."""
+    """Bolt BOLT: Verify that very large strings still fast-fail for performance."""
     large_string = "a" * 501
     # This should be False even if it contains 64 hex chars (which it doesn't here, but still)
     assert is_sensitive_value(large_string) is False

@@ -3,7 +3,7 @@ from conxius_orbit_secrets import is_sensitive_key
 
 
 def test_high_confidence_expansion():
-    """🛡️ Sentinel: Verify that expanded high-confidence keywords are redacted even with public prefixes."""
+    """SENTINEL Sentinel: Verify that expanded high-confidence keywords are redacted even with public prefixes."""
 
     # Test cases for newly added high-confidence keywords
     new_sensitive_composite_keys = [
@@ -21,7 +21,7 @@ def test_high_confidence_expansion():
 
 
 def test_existing_high_confidence():
-    """🛡️ Sentinel: Verify that existing high-confidence keywords still work correctly."""
+    """SENTINEL Sentinel: Verify that existing high-confidence keywords still work correctly."""
     existing_sensitive_composite_keys = [
         "PUBLIC_JWT_TOKEN",
         "ADDR_TOKEN_SECRET",
@@ -36,7 +36,7 @@ def test_existing_high_confidence():
 
 
 def test_normal_public_keys():
-    """🛡️ Sentinel: Verify that normal public keys without high-confidence keywords are NOT sensitive."""
+    """SENTINEL Sentinel: Verify that normal public keys without high-confidence keywords are NOT sensitive."""
     normal_public_keys = [
         "PUBLIC_KEY",
         "ADDR_PRINCIPAL",
@@ -49,7 +49,7 @@ def test_normal_public_keys():
 
 
 def test_signature_keys_are_sensitive():
-    """🛡️ Sentinel: Verify that signature-related keys are treated as sensitive."""
+    """SENTINEL Sentinel: Verify that signature-related keys are treated as sensitive."""
     signature_keys = [
         "SIGNATURE",
         "TX_SIGNATURE",

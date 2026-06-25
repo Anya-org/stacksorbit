@@ -8,7 +8,7 @@ import threading
 from datetime import datetime
 from conxius_orbit_secrets import redact_recursive
 
-# 🛡️ Sentinel: Setup infrastructure logger
+# SENTINEL Sentinel: Setup infrastructure logger
 logger = logging.getLogger("conxius_orbit_infra")
 
 
@@ -21,7 +21,7 @@ class InfrastructureWiring:
         self._cache: Dict[str, Any] = {}
         self._cache_ttl = 300  # 5 minutes
 
-        # 🛡️ Sentinel: Redact config before logging in debug mode
+        # SENTINEL Sentinel: Redact config before logging in debug mode
         redacted_config = redact_recursive(config)
         logger.debug(f"InfrastructureWiring initialized with config: {redacted_config}")
 
@@ -43,7 +43,7 @@ class InfrastructureWiring:
                 return {"status": "error", "message": "Missing Supabase configuration"}
 
             headers = {"apikey": key, "Authorization": f"Bearer {key}"}
-            # 🛡️ Sentinel: Explicit timeout to avoid hanging connections.
+            # SENTINEL Sentinel: Explicit timeout to avoid hanging connections.
             response = self.session.get(
                 f"{url}/rest/v1/infrastructure_metrics?select=*",
                 headers=headers,
@@ -108,7 +108,7 @@ class InfrastructureWiring:
             if isinstance(deployment_info, dict):
                 payload = redact_recursive(deployment_info)
             else:
-                # 🛡️ Sentinel: If it's a string, it might be a module name or specific info.
+                # SENTINEL Sentinel: If it's a string, it might be a module name or specific info.
                 # Tests expect 'module_name' in some cases.
                 payload = {
                     "module_name": redact_recursive(deployment_info),
@@ -130,7 +130,7 @@ class InfrastructureWiring:
             return response.status_code in (200, 201)
 
         except Exception as e:
-            # 🛡️ Sentinel: Redact error details to prevent information disclosure.
+            # SENTINEL Sentinel: Redact error details to prevent information disclosure.
             safe_error = redact_recursive({"error": str(e)})
             logger.error(f"Failed to log deployment: {safe_error['error']}")
             return False
