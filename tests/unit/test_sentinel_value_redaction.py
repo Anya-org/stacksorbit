@@ -1,5 +1,5 @@
 import pytest
-from stacksorbit_secrets import redact_recursive, is_sensitive_value
+from conxius_orbit_secrets import redact_recursive, is_sensitive_value
 
 
 def test_is_sensitive_value_private_key():

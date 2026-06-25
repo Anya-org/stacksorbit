@@ -1,11 +1,11 @@
 import pytest
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Button, Input
 
 
 @pytest.mark.asyncio
 async def test_reactive_settings_buttons():
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         # Navigate to settings tab
         await pilot.press("f5")
@@ -56,7 +56,7 @@ async def test_reactive_settings_buttons():
 
 @pytest.mark.asyncio
 async def test_reactive_dashboard_address_update():
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         display_address = app.query_one("#display-address")
         explorer_btn = app.query_one("#view-dashboard-explorer-btn")

@@ -1,12 +1,12 @@
 import pytest
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Input
 
 
 @pytest.mark.asyncio
 async def test_tx_clear_filter_functionality():
     """Verify that the clear filter button and ESC key work as expected."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
 
     async with app.run_test() as pilot:

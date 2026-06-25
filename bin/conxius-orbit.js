@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * StacksOrbit CLI - Professional deployment tool for Stacks blockchain
+ * ConxiusOrbit CLI - Professional deployment tool for Stacks blockchain
  * Enhanced CLI with full deployment and monitoring capabilities
  */
 
@@ -19,7 +19,7 @@ const program = new Command();
 
 // CLI configuration
 program
-  .name("stacksorbit")
+  .name("conxius_orbit")
   .description(
     "Professional deployment tool for Stacks blockchain smart contracts",
   )
@@ -54,7 +54,7 @@ program
   .option("--parallel", "deploy contracts in parallel (experimental)")
   .action(async (options) => {
     try {
-      console.log("🚀 StacksOrbit - Starting deployment...\n");
+      console.log("🚀 ConxiusOrbit - Starting deployment...\n");
 
       // Load configuration
       const config = await ConfigManager.loadConfig(program.opts().config);
@@ -133,7 +133,7 @@ program
   .option("--deployment-only", "check only existing deployments")
   .action(async (options) => {
     try {
-      console.log("🔍 StacksOrbit - Running pre-deployment checks...\n");
+      console.log("🔍 ConxiusOrbit - Running pre-deployment checks...\n");
 
       const config = await ConfigManager.loadConfig(program.opts().config);
       const deployer = new Deployer({
@@ -200,7 +200,7 @@ program
   .option("--api-status", "check Hiro API status")
   .action(async (options) => {
     try {
-      console.log("📊 StacksOrbit - Monitoring deployment...\n");
+      console.log("📊 ConxiusOrbit - Monitoring deployment...\n");
 
       const monitor = new Monitor({
         network: program.opts().network,
@@ -234,7 +234,7 @@ program
       .description("Initialize configuration file")
       .action(async () => {
         try {
-          console.log("⚙️  Initializing StacksOrbit configuration...\n");
+          console.log("⚙️  Initializing ConxiusOrbit configuration...\n");
           await ConfigManager.initConfig();
           console.log("✅ Configuration initialized successfully");
           console.log("📝 Edit .env file with your deployment settings");
@@ -301,10 +301,10 @@ program
   .command("gui")
   .description("Launch GUI interface")
   .action(() => {
-    console.log("🖥️  Launching StacksOrbit GUI...\n");
+    console.log("🖥️  Launching ConxiusOrbit GUI...\n");
 
     const scriptDir = path.join(__dirname, "..");
-    const pythonScript = path.join(scriptDir, "stacksorbit.py");
+    const pythonScript = path.join(scriptDir, "conxius_orbit.py");
 
     const python = spawn("python", [pythonScript], {
       stdio: "inherit",
@@ -335,6 +335,6 @@ process.on("unhandledRejection", (error) => {
 });
 
 process.on("SIGINT", () => {
-  console.log("\n🛑 StacksOrbit stopped by user");
+  console.log("\n🛑 ConxiusOrbit stopped by user");
   process.exit(0);
 });

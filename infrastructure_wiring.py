@@ -6,14 +6,14 @@ import logging
 import time
 import threading
 from datetime import datetime
-from stacksorbit_secrets import redact_recursive
+from conxius_orbit_secrets import redact_recursive
 
 # 🛡️ Sentinel: Setup infrastructure logger
-logger = logging.getLogger("stacksorbit_infra")
+logger = logging.getLogger("conxius_orbit_infra")
 
 
 class InfrastructureWiring:
-    """Handles integration with Supabase and Neon for StacksOrbit."""
+    """Handles integration with Supabase and Neon for ConxiusOrbit."""
 
     def __init__(self, config: Dict):
         self.config = config
@@ -86,7 +86,9 @@ class InfrastructureWiring:
             logger.error(f"Failed to fetch exit velocity: {e}")
             return {"status": "error", "message": str(e)}
 
-    def log_deployment(self, deployment_info: Any, status: Optional[str] = None) -> bool:
+    def log_deployment(
+        self, deployment_info: Any, status: Optional[str] = None
+    ) -> bool:
         """Log deployment event to central infrastructure."""
         try:
             url = self.config.get("SUPABASE_URL", "")
@@ -106,12 +108,12 @@ class InfrastructureWiring:
             if isinstance(deployment_info, dict):
                 payload = redact_recursive(deployment_info)
             else:
-                 # 🛡️ Sentinel: If it's a string, it might be a module name or specific info.
-                 # Tests expect 'module_name' in some cases.
+                # 🛡️ Sentinel: If it's a string, it might be a module name or specific info.
+                # Tests expect 'module_name' in some cases.
                 payload = {
-                     "module_name": redact_recursive(deployment_info),
-                     "info": redact_recursive(deployment_info)
-                 }
+                    "module_name": redact_recursive(deployment_info),
+                    "info": redact_recursive(deployment_info),
+                }
 
             if status:
                 payload["status"] = status

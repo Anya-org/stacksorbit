@@ -1,8 +1,8 @@
 #!/bin/bash
-# Ultimate StacksOrbit Deployment Script
+# Ultimate ConxiusOrbit Deployment Script
 # One-command deployment for any Stacks project
 
-echo "🚀 StacksOrbit - Ultimate Deployment Tool"
+echo "🚀 ConxiusOrbit - Ultimate Deployment Tool"
 echo "=========================================="
 
 # Check prerequisites
@@ -21,30 +21,30 @@ echo "✅ Dependencies installed"
 
 # Setup configuration
 echo "⚙️  Running setup wizard..."
-python stacksorbit_cli.py setup
+python conxius_orbit_cli.py setup
 
 # Run diagnostics
 echo "🔍 Running comprehensive diagnostics..."
-python stacksorbit_cli.py diagnose
+python conxius_orbit_cli.py diagnose
 
 # Deploy to testnet
 echo "🚀 Deploying to testnet..."
-python stacksorbit_cli.py deploy --dry-run
+python conxius_orbit_cli.py deploy --dry-run
 
 echo "🔍 Dry run complete. Ready for actual deployment?"
 read -p "Deploy to testnet? (y/n): " confirm
 
 if [ "$confirm" = "y" ]; then
-    python stacksorbit_cli.py deploy --batch-size 5
+    python conxius_orbit_cli.py deploy --batch-size 5
 
     # Start monitoring
     echo "📊 Starting monitoring dashboard..."
-    python stacksorbit_cli.py dashboard &
+    python conxius_orbit_cli.py dashboard &
     DASHBOARD_PID=$!
 
     # Verify deployment
     echo "🔍 Verifying deployment..."
-    python stacksorbit_cli.py verify --comprehensive
+    python conxius_orbit_cli.py verify --comprehensive
 
     echo "✅ Deployment complete!"
     echo "📊 Dashboard running in background (PID: $DASHBOARD_PID)"
@@ -53,5 +53,5 @@ if [ "$confirm" = "y" ]; then
     # Keep dashboard running
     wait $DASHBOARD_PID
 else
-    echo "✅ Setup complete! Run 'python ultimate_stacksorbit.py deploy' when ready"
+    echo "✅ Setup complete! Run 'python ultimate_conxius_orbit.py deploy' when ready"
 fi

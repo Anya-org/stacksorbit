@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 from scripts.enhanced_conxian_deployment import EnhancedConxianDeployer
-from stacksorbit_secrets import is_sensitive_key, redact_recursive
+from conxius_orbit_secrets import is_sensitive_key, redact_recursive
 
 
 def test_api_key_redaction_expansion():

@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-StacksOrbit Wallet Connect - QR Code Authentication
+ConxiusOrbit Wallet Connect - QR Code Authentication
 Generates a QR code for wallet connection and retrieves the address for deployment
 """
 
@@ -23,7 +23,8 @@ import time
 import secrets
 import urllib.parse
 from pathlib import Path
-from stacksorbit_secrets import (
+from typing import Optional
+from conxius_orbit_secrets import (
     validate_stacks_address,
     set_secure_permissions,
     is_sensitive_key,
@@ -37,7 +38,7 @@ WALLET_CONNECT_HTML = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StacksOrbit - Connect Wallet</title>
+    <title>ConxiusOrbit - Connect Wallet</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -138,7 +139,7 @@ WALLET_CONNECT_HTML = """
 <body>
     <div class="container">
         <div class="logo">🚀</div>
-        <h1>StacksOrbit</h1>
+        <h1>ConxiusOrbit</h1>
         <p class="subtitle">Connect your Stacks wallet for testnet deployment</p>
 
         <div id="connect-section">
@@ -237,7 +238,7 @@ WALLET_CONNECT_HTML = """
                     <button class="copy-btn" onclick="copyAddress()" title="Copy Address">📋</button>
                 </div>
                 <p style="margin-top: 15px; color: #22c55e;">
-                    Address saved. You can close this window and return to StacksOrbit CLI.
+                    Address saved. You can close this window and return to ConxiusOrbit CLI.
                 </p>
             `;
             document.getElementById('connected-addr').textContent = address;
@@ -319,8 +320,9 @@ WALLET_CONNECT_HTML = """
 class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
     """HTTP handler for wallet connection"""
 
-    connected_address = None
-    session_token = None
+    connected_address: Optional[str] = None
+    session_token: Optional[str] = None
+    network: str = "testnet"
 
     def do_GET(self):
         # 🛡️ Sentinel: Validate session token for all GET requests to prevent unauthorized access.
@@ -408,7 +410,7 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
 
                 address = data.get("address")
                 # 🛡️ Sentinel: Validate Stacks address format and network
-                if not address or not validate_stacks_address(
+                if not isinstance(address, str) or not validate_stacks_address(
                     address, network=WalletConnectHandler.network
                 ):
                     print(f"⚠️  Invalid Stacks address received: {address}")
@@ -446,18 +448,21 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
         pass  # Suppress logging
 
 
-def start_wallet_connect_server(port=8765, network="testnet"):
+def start_wallet_connect_server(
+    port: int = 8765, network: str = "testnet"
+) -> Optional[str]:
     """Start the wallet connect server and open browser"""
 
     # 🛡️ Sentinel: Generate a random session token for security
     token = secrets.token_urlsafe(16)
+    WalletConnectHandler.connected_address = None
     WalletConnectHandler.session_token = token
     WalletConnectHandler.network = network
     url = f"http://127.0.0.1:{port}/?token={token}"
 
     print(f"""
 ╔══════════════════════════════════════════════════════════════╗
-║           🚀 StacksOrbit Wallet Connect                      ║
+║           🚀 ConxiusOrbit Wallet Connect                      ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  Opening browser for wallet connection...                    ║
 ║                                                              ║
@@ -488,6 +493,8 @@ def start_wallet_connect_server(port=8765, network="testnet"):
                 return None
 
         address = WalletConnectHandler.connected_address
+        if address is None:
+            return None
 
         # Save to config
         save_wallet_address(address, network)
@@ -495,7 +502,7 @@ def start_wallet_connect_server(port=8765, network="testnet"):
         return address
 
 
-def save_wallet_address(address, network):
+def save_wallet_address(address: str, network: str) -> None:
     """Save the connected wallet address to .env"""
     env_path = Path(".env")
     config = {}
@@ -530,15 +537,16 @@ if __name__ == "__main__":
 
     address = start_wallet_connect_server(port)
 
-    if address:
+    if isinstance(address, str):
+        display_address = str(address)
         print(f"""
 ╔══════════════════════════════════════════════════════════════╗
 ║  ✅ Wallet Connected Successfully!                           ║
 ╠══════════════════════════════════════════════════════════════╣
-║  Address: {address[:20]}...{address[-10:]}
+║  Address: {display_address[:20]}...{display_address[-10:]}
 ║                                                              ║
 ║  Next steps:                                                 ║
 ║  1. Set DEPLOYER_PRIVKEY as environment variable             ║
-║  2. Run: python stacksorbit_cli.py deploy --network testnet  ║
+║  2. Run: python conxius_orbit_cli.py deploy --network testnet  ║
 ╚══════════════════════════════════════════════════════════════╝
 """)

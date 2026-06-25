@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, AsyncMock
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import DataTable, Input
 from textual.widgets.data_table import RowKey
 
@@ -8,7 +8,7 @@ from textual.widgets.data_table import RowKey
 @pytest.mark.asyncio
 async def test_gui_launches():
     """Test that the GUI launches without errors."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         assert pilot is not None
         await pilot.press("q")
@@ -17,7 +17,7 @@ async def test_gui_launches():
 @pytest.mark.asyncio
 async def test_contract_highlighting_triggers_details_fetch():
     """Verify highlighting a contract triggers the details fetch."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     with patch.object(
         app, "fetch_contract_details", new_callable=AsyncMock
     ) as mock_fetch:
@@ -45,7 +45,7 @@ async def test_contract_highlighting_triggers_details_fetch():
 @pytest.mark.asyncio
 async def test_contract_selection_copies_id():
     """Verify selecting a contract (Enter/Click) copies the ID."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     with patch.object(app, "copy_to_clipboard") as mock_copy:
         async with app.run_test() as pilot:
             contracts_table = app.query_one("#contracts-table")
@@ -71,7 +71,7 @@ async def test_contract_selection_copies_id():
 @pytest.mark.asyncio
 async def test_validation_error_messages():
     """Test that validation error messages appear for invalid input."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         # Test Stacks Address validation
         address_input = app.query_one("#address-input")
@@ -109,7 +109,7 @@ async def test_validation_error_messages():
 @pytest.mark.asyncio
 async def test_transaction_selection_enables_buttons():
     """Verify that highlighting a transaction enables the action buttons."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         transactions_table = app.query_one("#transactions-table")
         copy_btn = app.query_one("#copy-selected-tx-btn")
@@ -150,7 +150,7 @@ async def test_transaction_selection_enables_buttons():
 @pytest.mark.asyncio
 async def test_validation_includes_char_count():
     """Verify that validation labels include character count feedback."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         address_input = app.query_one("#address-input")
         address_error = app.query_one("#address-error")
@@ -190,7 +190,7 @@ async def test_validation_includes_char_count():
 @pytest.mark.asyncio
 async def test_wallet_connect_button_triggers_worker():
     """Verify that clicking the wallet connect button triggers the worker."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     with patch(
         "wallet_connect.start_wallet_connect_server",
         return_value="ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",

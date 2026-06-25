@@ -1,5 +1,5 @@
 import unittest
-from stacksorbit_secrets import redact_recursive
+from conxius_orbit_secrets import redact_recursive
 
 
 class TestSentinelRedaction(unittest.TestCase):

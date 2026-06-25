@@ -1,5 +1,5 @@
 import pytest
-from stacksorbit_secrets import validate_stacks_address, validate_private_key
+from conxius_orbit_secrets import validate_stacks_address, validate_private_key
 
 
 def test_validate_stacks_address_mainnet():

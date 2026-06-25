@@ -14,11 +14,11 @@
         "GAS_OPTIMIZATION": false
       },
       "steps": [
-        "Run: stacksorbit check",
-        "Run: stacksorbit deploy --dry-run",
-        "Run: stacksorbit deploy",
-        "Run: stacksorbit monitor --follow",
-        "Run: stacksorbit verify"
+        "Run: conxius_orbit check",
+        "Run: conxius_orbit deploy --dry-run",
+        "Run: conxius_orbit deploy",
+        "Run: conxius_orbit monitor --follow",
+        "Run: conxius_orbit verify"
       ]
     },
 
@@ -38,11 +38,11 @@
         "CONFIRMATION_TIMEOUT": 600
       },
       "steps": [
-        "Run: stacksorbit check --comprehensive",
-        "Run: stacksorbit deploy --dry-run --batch-size 1",
-        "Run: stacksorbit deploy --batch-size 3",
-        "Run: stacksorbit monitor --follow --verbose",
-        "Run: stacksorbit verify --comprehensive",
+        "Run: conxius_orbit check --comprehensive",
+        "Run: conxius_orbit deploy --dry-run --batch-size 1",
+        "Run: conxius_orbit deploy --batch-size 3",
+        "Run: conxius_orbit monitor --follow --verbose",
+        "Run: conxius_orbit verify --comprehensive",
         "Monitor for 24 hours",
         "Run: python deployment_verifier.py --comprehensive"
       ]
@@ -68,7 +68,7 @@
       "steps": [
         "Start: clarinet devnet start",
         "Wait for devnet to be ready",
-        "Run: stacksorbit deploy --network devnet",
+        "Run: conxius_orbit deploy --network devnet",
         "Test contracts locally"
       ]
     },
@@ -85,10 +85,10 @@
         "MONITORING_ENABLED": true
       },
       "steps": [
-        "Run: stacksorbit check",
-        "Run: stacksorbit deploy --category base",
-        "Run: stacksorbit deploy --category core",
-        "Run: stacksorbit verify --contracts all-traits utils-encoding"
+        "Run: conxius_orbit check",
+        "Run: conxius_orbit deploy --category base",
+        "Run: conxius_orbit deploy --category core",
+        "Run: conxius_orbit verify --contracts all-traits utils-encoding"
       ]
     },
 
@@ -105,8 +105,8 @@
       },
       "steps": [
         "Deploy core contracts first (if needed)",
-        "Run: stacksorbit deploy --category tokens",
-        "Run: stacksorbit verify --contracts cxd-token cxlp-token"
+        "Run: conxius_orbit deploy --category tokens",
+        "Run: conxius_orbit verify --contracts cxd-token cxlp-token"
       ]
     },
 
@@ -124,10 +124,10 @@
         "PRIORITY": "high"
       },
       "steps": [
-        "Run: stacksorbit check --comprehensive",
-        "Run: stacksorbit deploy --batch-size 1 --skip-compile",
-        "Run: stacksorbit monitor --follow",
-        "Run: stacksorbit verify --comprehensive"
+        "Run: conxius_orbit check --comprehensive",
+        "Run: conxius_orbit deploy --batch-size 1 --skip-compile",
+        "Run: conxius_orbit monitor --follow",
+        "Run: conxius_orbit verify --comprehensive"
       ]
     }
   },
@@ -187,7 +187,7 @@
       "network_timeout": {
         "symptom": "Network requests timing out",
         "solution": "Check internet connection and API status",
-        "prevention": "Run 'stacksorbit check --network-only' first"
+        "prevention": "Run 'conxius_orbit check --network-only' first"
       },
 
       "compilation_errors": {
@@ -204,7 +204,7 @@
     },
 
     "recovery_steps": [
-      "Run: stacksorbit check --comprehensive",
+      "Run: conxius_orbit check --comprehensive",
       "Check: python deployment_monitor.py --api-status",
       "Verify: python deployment_verifier.py --comprehensive",
       "Review: logs/deployment_failure_*.log",

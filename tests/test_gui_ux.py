@@ -1,13 +1,13 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets.data_table import RowKey
 
 
 @pytest.mark.asyncio
 async def test_transaction_selection_copies_to_clipboard():
     """Verify selecting a transaction row copies the TX ID to clipboard."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     # Mock notify and copy_to_clipboard
     with patch.object(app, "notify") as mock_notify, patch.object(
         app, "copy_to_clipboard"

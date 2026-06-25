@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-StacksOrbit GUI - A modern, feature-rich dashboard for Stacks blockchain deployment
+ConxiusOrbit GUI - A modern, feature-rich dashboard for Stacks blockchain deployment
 """
 
 import asyncio
@@ -15,7 +15,7 @@ import webbrowser
 import re
 from datetime import datetime, timezone
 import functools
-from typing import Dict, List
+from typing import Any, Callable, Dict, List, TypeVar
 
 try:
     from textual.app import App, ComposeResult
@@ -78,6 +78,18 @@ def _format_relative_time_cached(iso_time: str, now_bucket: int) -> str:
         return "N/A"
 
 
+_ThreadResult = TypeVar("_ThreadResult")
+
+
+async def _run_sync_in_thread(
+    func: Callable[..., _ThreadResult], *args: Any, **kwargs: Any
+) -> _ThreadResult:
+    """Run sync work in the default executor (Python 3.8+ compatible)."""
+    loop = asyncio.get_running_loop()
+    bound_func = functools.partial(func, *args, **kwargs)
+    return await loop.run_in_executor(None, bound_func)
+
+
 # Bolt ⚡: Pre-compiled regexes for high-performance contract categorization.
 # We use a list of (regex, category) tuples for O(N) matching with O(1) group search.
 _CONTRACT_CAT_PATTERNS = [
@@ -124,7 +136,7 @@ def _categorize_contract_cached(name: str) -> str:
     return _normalize_and_categorize_contract(name)
 
 
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     SECRET_KEYS,
     is_sensitive_key,
     is_sensitive_value,
@@ -136,13 +148,13 @@ from stacksorbit_secrets import (
 )
 
 
-class StacksOrbitGUI(App):
-    """A Textual dashboard for StacksOrbit."""
+class ConxiusOrbitGUI(App):
+    """A Textual dashboard for ConxiusOrbit."""
 
     CSS_PATH = [
         "styles/dashboard.tcss",
-        "styles/stacksorbit_gui.tcss",
-        "styles/stacksorbit_gui_sovereign.tcss",
+        "styles/conxius_orbit_gui.tcss",
+        "styles/conxius_orbit_gui_sovereign.tcss",
     ]
 
     BINDINGS = [
@@ -196,8 +208,17 @@ class StacksOrbitGUI(App):
     tx_filter = reactive("")
     theme_name = reactive("standard")
 
+    def _has_active_screen_stack(self) -> bool:
+        """Return True when it's safe to mutate app-level CSS classes."""
+        try:
+            return bool(self.screen_stack)
+        except Exception:
+            return False
+
     def watch_theme_name(self, old_theme: str, new_theme: str) -> None:
         """Watch for theme changes and update the application CSS class."""
+        if old_theme == new_theme or not self._has_active_screen_stack():
+            return
         self.remove_class(f"{old_theme}-theme")
         self.add_class(f"{new_theme}-theme")
 
@@ -301,7 +322,7 @@ class StacksOrbitGUI(App):
                 if (
                     key in config
                     or key in SECRET_KEYS
-                    or key.startswith(("STACKS_", "STACKSORBIT_"))
+                    or key.startswith(("STACKS_", "CONXIUS_ORBIT_"))
                 ):
                     config[key] = value
 
@@ -530,7 +551,7 @@ class StacksOrbitGUI(App):
     def on_mount(self) -> None:
         """Initialize the GUI and cache widget references for performance."""
         self.add_class(f"{self.theme_name}-theme")
-        self.title = "StacksOrbit"
+        self.title = "ConxiusOrbit"
         self.sub_title = f"Deployment Dashboard [{self.network.upper()}]"
 
         # Bolt ⚡: Cache frequently accessed widgets to avoid redundant DOM queries via query_one.
@@ -915,28 +936,28 @@ class StacksOrbitGUI(App):
 
         try:
             # ⚡ Bolt: Run synchronous API calls concurrently in threads
-            infra_runway_task = asyncio.to_thread(
+            infra_runway_task = _run_sync_in_thread(
                 self.infra.get_runway_metrics, bypass_cache=bypass_cache
             )
-            infra_exit_velocity_task = asyncio.to_thread(
+            infra_exit_velocity_task = _run_sync_in_thread(
                 self.infra.get_exit_velocity, bypass_cache=bypass_cache
             )
-            api_status_task = asyncio.to_thread(
+            api_status_task = _run_sync_in_thread(
                 self.monitor.check_api_status, bypass_cache=bypass_cache
             )
 
             if self.address != "Not configured":
-                account_info_task = asyncio.to_thread(
+                account_info_task = _run_sync_in_thread(
                     self.monitor.get_account_info,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                contracts_task = asyncio.to_thread(
+                contracts_task = _run_sync_in_thread(
                     self.monitor.get_deployed_contracts,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                transactions_task = asyncio.to_thread(
+                transactions_task = _run_sync_in_thread(
                     self.monitor.get_recent_transactions,
                     self.address,
                     bypass_cache=bypass_cache,
@@ -1375,7 +1396,7 @@ class StacksOrbitGUI(App):
         loader.display = True
         self.current_source_code = None
         try:
-            details = await asyncio.to_thread(
+            details = await _run_sync_in_thread(
                 self.monitor.get_contract_details, contract_id
             )
             if details:
@@ -1496,7 +1517,7 @@ class StacksOrbitGUI(App):
     def on_precheck_pressed(self, event: Button.Pressed) -> None:
         """Handle pre-check button press."""
         self.run_command(
-            ["python", "stacksorbit_cli.py", "diagnose"],
+            ["python", "conxius_orbit_cli.py", "diagnose"],
             event.button,
             in_progress_label="Checking...",
         )
@@ -1505,7 +1526,7 @@ class StacksOrbitGUI(App):
     def on_start_deploy_pressed(self, event: Button.Pressed) -> None:
         """Handle deploy button press."""
         self.run_command(
-            ["python", "stacksorbit_cli.py", "deploy"],
+            ["python", "conxius_orbit_cli.py", "deploy"],
             event.button,
             in_progress_label="Deploying...",
         )
@@ -1592,7 +1613,7 @@ class StacksOrbitGUI(App):
             event.input.add_class("error")
             event.input.remove_class("success")
             prefix = "SP" if self.network == "mainnet" else "ST"
-            # PALETTE: Accurate validation range from stacksorbit_secrets.py
+            # PALETTE: Accurate validation range from conxius_orbit_secrets.py
             error_label.update(
                 f"[red]❌ Must be 28-41 chars and start with {prefix}[/red]{count_display}"
             )
@@ -1669,7 +1690,7 @@ class StacksOrbitGUI(App):
         try:
             # Run the server in a thread and suppress stdout to keep TUI clean
             with contextlib.redirect_stdout(io.StringIO()):
-                address = await asyncio.to_thread(
+                address = await _run_sync_in_thread(
                     start_wallet_connect_server, network=self.network
                 )
 
@@ -1904,7 +1925,7 @@ class StacksOrbitGUI(App):
 
         try:
             # 🛡️ Sentinel: Only save non-sensitive settings to the file.
-            await asyncio.to_thread(_save_config_io, address_val, self.theme_name)
+            await _run_sync_in_thread(_save_config_io, address_val, self.theme_name)
             self.address = address_val
             self.unsaved_changes = False
 
@@ -1956,7 +1977,7 @@ def main():
         )
         return
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     app.run()
 
 

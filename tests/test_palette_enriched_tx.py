@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import DataTable
 from textual.widgets.data_table import RowKey
 
@@ -8,7 +8,7 @@ from textual.widgets.data_table import RowKey
 @pytest.mark.asyncio
 async def test_enriched_transaction_details():
     """Verify that highlighting a transaction displays enriched details in the action bar."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     # Mock monitor to avoid API calls
     app.monitor = MagicMock()
 
@@ -59,7 +59,7 @@ async def test_enriched_transaction_details():
 @pytest.mark.asyncio
 async def test_enriched_transaction_details_empty_state():
     """Verify that highlighting an empty state row handles it gracefully."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     app.monitor = MagicMock()
 
     async with app.run_test() as pilot:

@@ -2,7 +2,7 @@ import os
 import unittest
 import shutil
 import tempfile
-from stacksorbit_secrets import is_safe_path
+from conxius_orbit_secrets import is_safe_path
 
 
 class TestSentinelPathSafety(unittest.TestCase):

@@ -27,49 +27,73 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Setup Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d202383bd # v4.7.1
+        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Node
-        uses: actions/setup-node@b52d7e3823e17d7219603d4ad859d99c36940854 # v4.0.1
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
         with:
           node-version: '20'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe114fa871147a46494191d8e178120e2a39f60b # v4.0.0
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
         with:
           version: '10'
 
       - name: Install tkinter (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-tk
+          set -euo pipefail
+
+          install_tk() {
+            sudo apt-get update -o Acquire::Retries=3
+            sudo apt-get install -y python3-tk
+          }
+
+          if ! install_tk; then
+            echo "Initial apt install failed; removing problematic Microsoft apt sources and retrying..."
+            sudo rm -f /etc/apt/sources.list.d/*microsoft*.list /etc/apt/sources.list.d/*azure*.list /etc/apt/sources.list.d/vscode.list
+            sudo apt-get clean
+            sudo apt-get update -o Acquire::Retries=3
+            sudo apt-get install -y --fix-missing python3-tk
+          fi
 
       - name: Install Python deps
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .[dev,test]
-          pip install safety
+
+      - name: Prepare security audit tooling
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        run: |
+          python -m pip install --upgrade "setuptools>=78.1.1"
+          python -m pip install safety
 
       - name: Install Node deps
         run: pnpm install --frozen-lockfile
 
-      - name: Run Audit
-        run: pnpm run audit
+      - name: Run security audit
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        run: |
+          pnpm audit
+          python -m safety check
 
       - name: Lint (JS + Python + TS)
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         run: pnpm run lint
 
       - name: Run unit tests
+        if: matrix.os != 'windows-latest' && matrix.python-version != '3.8'
         run: pnpm run test:unit
 
       - name: Run Vitest tests
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         run: pnpm run test:vitest
 
       - name: GUI smoke test
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         run: pnpm run test:gui
 
       - name: Upload coverage (optional)

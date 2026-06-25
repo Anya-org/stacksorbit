@@ -45,7 +45,7 @@ def rebuild_clarinet_toml(project_dir: str):
     # Ref: https://docs.stacks.co/clarinet/project-structure
     toml_lines = [
         "[project]",
-        'name = "StacksOrbit"',
+        'name = "ConxiusOrbit"',
         "authors = []",
         'description = ""',
         "telemetry = false",
@@ -87,7 +87,5 @@ def rebuild_clarinet_toml(project_dir: str):
 
 
 if __name__ == "__main__":
-    target_project = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..")
-    )
+    target_project = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     rebuild_clarinet_toml(target_project)

@@ -15,7 +15,7 @@
           },
           "then": {
             "http_post": {
-              "url": "https://webhook.stacksorbit.com/mainnet",
+              "url": "https://webhook.conxius_orbit.com/mainnet",
               "authorization_header": "Bearer ${MAINNET_WEBHOOK_TOKEN}"
             }
           }
@@ -29,7 +29,7 @@
           },
           "then": {
             "http_post": {
-              "url": "https://webhook.stacksorbit.com/mainnet",
+              "url": "https://webhook.conxius_orbit.com/mainnet",
               "authorization_header": "Bearer ${MAINNET_WEBHOOK_TOKEN}"
             }
           }
@@ -43,7 +43,7 @@
           },
           "then": {
             "http_post": {
-              "url": "https://webhook.stacksorbit.com/mainnet",
+              "url": "https://webhook.conxius_orbit.com/mainnet",
               "authorization_header": "Bearer ${MAINNET_WEBHOOK_TOKEN}"
             }
           }
@@ -57,7 +57,7 @@
           },
           "then": {
             "http_post": {
-              "url": "https://webhook.stacksorbit.com/mainnet",
+              "url": "https://webhook.conxius_orbit.com/mainnet",
               "authorization_header": "Bearer ${MAINNET_WEBHOOK_TOKEN}"
             }
           }

@@ -1,13 +1,13 @@
 import pytest
 from unittest.mock import patch
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Label, Static, Button
 
 
 @pytest.mark.asyncio
 async def test_dashboard_address_bar_exists():
     """Verify that the new address bar and its components exist in the Dashboard."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         address_bar = app.query_one("#address-bar")
         assert address_bar is not None
@@ -21,7 +21,7 @@ async def test_dashboard_address_bar_exists():
 @pytest.mark.asyncio
 async def test_network_status_dot():
     """Verify that the network status now includes a colored dot."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         await app.update_data()
         status_label = app.query_one("#network-status")
@@ -31,7 +31,7 @@ async def test_network_status_dot():
 @pytest.mark.asyncio
 async def test_address_synchronization():
     """Verify that saving settings updates the dashboard address display."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         new_address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
         with patch("asyncio.to_thread", return_value=None):

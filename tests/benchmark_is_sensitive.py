@@ -1,6 +1,6 @@
 import time
 import sys
-from stacksorbit_secrets import is_sensitive_value
+from conxius_orbit_secrets import is_sensitive_value
 
 
 def benchmark_is_sensitive():
