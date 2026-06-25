@@ -12,7 +12,9 @@ async def mock_async_none(*args, **kwargs):
 async def test_tx_filtering_logic(monkeypatch):
     """Verify that the transaction filter correctly narrows down results."""
     # Disable background data fetching for clean testing
-    monkeypatch.setattr("conxius_orbit_gui.ConxiusOrbitGUI.update_data", mock_async_none)
+    monkeypatch.setattr(
+        "conxius_orbit_gui.ConxiusOrbitGUI.update_data", mock_async_none
+    )
     app = ConxiusOrbitGUI()
     app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
 
@@ -77,7 +79,9 @@ async def test_tx_filtering_logic(monkeypatch):
 @pytest.mark.asyncio
 async def test_tx_filter_focus_shortcut(monkeypatch):
     """Verify that the '/' shortcut focuses the filter input."""
-    monkeypatch.setattr("conxius_orbit_gui.ConxiusOrbitGUI.update_data", mock_async_none)
+    monkeypatch.setattr(
+        "conxius_orbit_gui.ConxiusOrbitGUI.update_data", mock_async_none
+    )
     app = ConxiusOrbitGUI()
     app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
     async with app.run_test() as pilot:
@@ -103,7 +107,9 @@ async def test_tx_filter_focus_shortcut(monkeypatch):
 @pytest.mark.asyncio
 async def test_tx_filter_input_event(monkeypatch):
     """Verify that typing in the filter input updates the filter state."""
-    monkeypatch.setattr("conxius_orbit_gui.ConxiusOrbitGUI.update_data", mock_async_none)
+    monkeypatch.setattr(
+        "conxius_orbit_gui.ConxiusOrbitGUI.update_data", mock_async_none
+    )
     app = ConxiusOrbitGUI()
     # Set address before running to ensure it's picked up by reactive logic
     app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"

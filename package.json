@@ -73,8 +73,7 @@
     "@stacks/wallet-sdk": "^7.4.0",
     "axios": "^1.18.0",
     "commander": "^15.0.0",
-    "dotenv": "^17.4.2",
-    "next": "^16.2.9"
+    "dotenv": "^17.4.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

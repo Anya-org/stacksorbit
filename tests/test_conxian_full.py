@@ -25,14 +25,19 @@ class TestConxianFullIntegration(unittest.TestCase):
         cls.conxius_orbit_path = Path(os.environ.get("CONXIUS_ORBIT_PATH", "."))
 
         # Only skip if we explicitly need an external workspace and it is missing
-        if os.environ.get("REQUIRE_CONXIAN_WORKSPACE") and not cls.conxian_path.exists():
+        if (
+            os.environ.get("REQUIRE_CONXIAN_WORKSPACE")
+            and not cls.conxian_path.exists()
+        ):
             raise unittest.SkipTest("Conxian workspace not found at expected path")
 
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
 
         # Set mock secret in environment to bypass Sentinel .env check
-        os.environ["DEPLOYER_PRIVKEY"] = "mock_private_key_string_for_testing_purposes_only_1234567890abcde"
+        os.environ["DEPLOYER_PRIVKEY"] = (
+            "mock_private_key_string_for_testing_purposes_only_1234567890abcde"
+        )
 
         # Create a mock .env for testing (non-sensitive fields)
         self.config_path = Path(self.temp_dir) / ".env"
@@ -44,7 +49,8 @@ class TestConxianFullIntegration(unittest.TestCase):
         self.config = self.config_manager.load_config()
 
     def tearDown(self):
-        if "DEPLOYER_PRIVKEY" in os.environ: del os.environ["DEPLOYER_PRIVKEY"]
+        if "DEPLOYER_PRIVKEY" in os.environ:
+            del os.environ["DEPLOYER_PRIVKEY"]
         shutil.rmtree(self.temp_dir)
 
     def test_01_verify_clarinet_toml(self):
@@ -74,7 +80,9 @@ class TestConxianFullIntegration(unittest.TestCase):
             checks_passed = deployer.run_pre_checks()
             # In environments without Clarinet, we expect compilation check to fail but others to pass
             if not shutil.which("clarinet"):
-                print("⚠️ Skipping strict checks_passed assertion as clarinet is missing")
+                print(
+                    "⚠️ Skipping strict checks_passed assertion as clarinet is missing"
+                )
             else:
                 self.assertTrue(checks_passed, "Pre-deployment checks should pass")
 

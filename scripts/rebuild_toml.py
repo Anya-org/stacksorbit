@@ -87,7 +87,5 @@ def rebuild_clarinet_toml(project_dir: str):
 
 
 if __name__ == "__main__":
-    target_project = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..")
-    )
+    target_project = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     rebuild_clarinet_toml(target_project)

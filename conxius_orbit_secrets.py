@@ -1,4 +1,3 @@
-from typing import Optional, List, Dict, Any, Union
 # Copyright (c) 2025 Conxian-Labs
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for full license information.
@@ -7,6 +6,7 @@ from typing import Optional, List, Dict, Any, Union
 Centralized list of secret keys for ConxiusOrbit.
 """
 
+from typing import Optional, List, Dict, Any, Union
 import os
 import functools
 import json
@@ -473,9 +473,11 @@ def is_sensitive_key(key: str) -> bool:
 
 
 @functools.lru_cache(maxsize=1024)
-def _validate_stacks_address_cached(address: str, network: Optional[str] = None) -> bool:
+def _validate_stacks_address_cached(
+    address: str, network: Optional[str] = None
+) -> bool:
     """Bolt ⚡: Internal cached validation for pre-normalized addresses."""
-    reg = NETWORK_ADDR_RE_MAP.get(network, GENERIC_ADDR_RE)
+    reg = NETWORK_ADDR_RE_MAP.get(network or "", GENERIC_ADDR_RE)
     return bool(reg.match(address))
 
 
