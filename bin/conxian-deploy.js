@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Enhanced Conxius Orbit CLI with Conxian deployment support
+ * Enhanced ConxiusOrbit CLI with Conxian deployment support
  * Deploy Conxian protocol to testnet with full monitoring
  */
 
@@ -14,7 +14,7 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0] || "help";
 
-  console.log("🚀 Conxius Orbit - Enhanced Conxian Deployment Tool\n");
+  console.log("🚀 ConxiusOrbit - Enhanced Conxian Deployment Tool\n");
 
   switch (command) {
     case "deploy":
@@ -275,7 +275,7 @@ async function verifyDeployment(args) {
 }
 
 async function initializeConfig(args) {
-  console.log("⚙️  Initializing Conxius Orbit configuration...\n");
+  console.log("⚙️  Initializing ConxiusOrbit configuration...\n");
 
   const options = parseArgs(args, {
     network: "network",
@@ -311,7 +311,7 @@ async function initializeConfig(args) {
 }
 
 async function launchGUI(args) {
-  console.log("🖥️  Launching Conxius Orbit GUI...\n");
+  console.log("🖥️  Launching ConxiusOrbit GUI...\n");
 
   const { spawn } = require("child_process");
   const pythonScript = path.join(__dirname, "..", "conxius_orbit.py");
@@ -352,7 +352,7 @@ function parseArgs(args, optionMap) {
 
 function showHelp() {
   console.log(`
-🚀 Conxius Orbit - Enhanced CLI for Conxian Deployment
+🚀 ConxiusOrbit - Enhanced CLI for Conxian Deployment
 
 Usage:
   conxius_orbit <command> [options]
@@ -408,7 +408,7 @@ process.on("unhandledRejection", (error) => {
 });
 
 process.on("SIGINT", () => {
-  console.log("\n🛑 Conxius Orbit stopped by user");
+  console.log("\n🛑 ConxiusOrbit stopped by user");
   process.exit(0);
 });
 

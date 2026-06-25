@@ -21,8 +21,8 @@ class TestConxianFullIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # path to Conxian workspace
-        cls.conxian_path = Path(os.environ.get("CONXIAN_PATH", "."))
-        cls.conxius_orbit_path = Path(os.environ.get("CONXIUS_ORBIT_PATH", "."))
+        cls.conxian_path = Path("c:/Users/bmokoka/anyachainlabs/Conxian")
+        cls.conxius_orbit_path = Path("c:/Users/bmokoka/anyachainlabs/conxius_orbit")
 
         # Only skip if we explicitly need an external workspace and it is missing
         if (

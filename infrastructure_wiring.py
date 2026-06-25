@@ -12,7 +12,7 @@ import threading
 from datetime import datetime
 from conxius_orbit_secrets import redact_recursive
 
-# SENTINEL Sentinel: Setup infrastructure logger
+# 🛡️ Sentinel: Setup infrastructure logger
 logger = logging.getLogger("conxius_orbit_infra")
 
 
@@ -112,7 +112,7 @@ class InfrastructureWiring:
             if isinstance(deployment_info, dict):
                 payload = redact_recursive(deployment_info)
             else:
-                # SENTINEL Sentinel: If it's a string, it might be a module name or specific info.
+                # 🛡️ Sentinel: If it's a string, it might be a module name or specific info.
                 # Tests expect 'module_name' in some cases.
                 payload = {
                     "module_name": redact_recursive(deployment_info),

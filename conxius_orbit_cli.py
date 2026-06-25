@@ -828,7 +828,8 @@ class UltimateConxiusOrbit:
 
     def run_command(self, command: str, **kwargs) -> int:
         """Run ConxiusOrbit command with enhanced features"""
-        print(f"\n{Fore.CYAN}🚀 Executing: {command}{Style.RESET_ALL}")
+        if kwargs.get("output") != "json":
+            print(f"\n{Fore.CYAN}🚀 Executing: {command}{Style.RESET_ALL}")
 
         try:
             if command == "setup":
@@ -884,27 +885,35 @@ class UltimateConxiusOrbit:
 
     def run_auto_detection(self, options: Dict) -> int:
         """Run enhanced auto-detection"""
-        print(f"{Fore.CYAN}🔍 Enhanced Auto-Detection{Style.RESET_ALL}")
+        is_json = options.get("output") == "json"
+        if not is_json:
+            print(f"{Fore.CYAN}🔍 Enhanced Auto-Detection{Style.RESET_ALL}")
 
         from conxius_orbit_auto_detect import ConxiusOrbitCLIIntegration
 
-        integration = ConxiusOrbitCLIIntegration()
+        integration = ConxiusOrbitCLIIntegration(verbose=not is_json)
 
         # Pass directory if specified
         directory = options.get("directory")
         if directory:
-            import os
-
             os.chdir(directory)
-
         analysis = integration.run_detection()
-        integration.show_detection_results()
+        if is_json:
+            print(json.dumps(redact_recursive(analysis), indent=2))
+        else:
+            integration.show_detection_results()
 
+        # Handle output-file if specified
+        output_file = options.get("output_file")
+        if output_file:
+            save_secure_config(output_file, analysis, json_format=True)
         return 0 if analysis["ready"] else 1
 
     def run_enhanced_deployment(self, options: Dict) -> int:
         """Run enhanced deployment with all features"""
-        print(f"{Fore.CYAN}🚀 Enhanced Deployment Mode{Style.RESET_ALL}")
+        is_json = options.get("output") == "json"
+        if not is_json:
+            print(f"{Fore.CYAN}🚀 Enhanced Deployment Mode{Style.RESET_ALL}")
 
         # Load configuration (Bolt BOLT: use shared lazy property)
         config = self.config
@@ -916,9 +925,17 @@ class UltimateConxiusOrbit:
         # Validate configuration (Bolt BOLT: use shared lazy manager)
         is_valid, errors = self.config_manager.validate_config()
         if not is_valid:
-            print(f"{Fore.RED}❌ Configuration validation failed:{Style.RESET_ALL}")
-            for error in errors:
-                print(f"   • {error}")
+            if not is_json:
+                print(f"{Fore.RED}❌ Configuration validation failed:{Style.RESET_ALL}")
+                for error in errors:
+                    print(f"   • {error}")
+            else:
+                print(
+                    json.dumps(
+                        {"error": "Configuration validation failed", "details": errors},
+                        indent=2,
+                    )
+                )
             return 1
 
         # Initialize deployer
@@ -941,27 +958,48 @@ class UltimateConxiusOrbit:
         # Run pre-deployment checks
         pre_checks_passed = True
         if not options.get("skip_checks"):
-            print("🔍 Running comprehensive pre-deployment checks...")
+            if not is_json:
+                print("🔍 Running comprehensive pre-deployment checks...")
             pre_checks_passed = deployer.run_pre_checks()
             if not pre_checks_passed:
                 if options.get("dry_run") and not options.get("force"):
-                    print(
-                        f"{Fore.YELLOW}⚠️  Pre-deployment checks reported issues. Continuing because --dry-run was specified.{Style.RESET_ALL}"
-                    )
+                    if not is_json:
+                        print(
+                            f"{Fore.YELLOW}⚠️  Pre-deployment checks reported issues. Continuing because --dry-run was specified.{Style.RESET_ALL}"
+                        )
                 elif not options.get("force"):
-                    print(
-                        f"{Fore.RED}❌ Pre-deployment checks failed.{Style.RESET_ALL}"
-                    )
-                    print("💡 Use --force to continue anyway")
+                    if not is_json:
+                        print(
+                            f"{Fore.RED}❌ Pre-deployment checks failed.{Style.RESET_ALL}"
+                        )
+                        print("💡 Use --force to continue anyway")
+                    else:
+                        print(
+                            json.dumps(
+                                {"error": "Pre-deployment checks failed"}, indent=2
+                            )
+                        )
                     return 1
 
         # Execute deployment
-        print(f"🚀 Starting deployment...")
+        if not is_json:
+            print(f"🚀 Starting deployment...")
         results = deployer.deploy_conxian(
             category=options.get("category"), dry_run=options.get("dry_run", False)
         )
 
         # Show results
+        if is_json:
+            print(json.dumps(redact_recursive(results), indent=2))
+
+        # Handle output-file if specified
+        output_file = options.get("output_file")
+        if output_file:
+            save_secure_config(output_file, results, json_format=True)
+
+        if is_json:
+            return 0 if not results.get("failed") else 1
+
         if options.get("dry_run"):
             if pre_checks_passed:
                 print(
@@ -1042,14 +1080,19 @@ class UltimateConxiusOrbit:
 
     def run_enhanced_verification(self, options: Dict) -> int:
         """Run enhanced verification"""
-        print(f"{Fore.CYAN}🔍 Enhanced Verification Mode{Style.RESET_ALL}")
+        is_json = options.get("output") == "json"
+        if not is_json:
+            print(f"{Fore.CYAN}🔍 Enhanced Verification Mode{Style.RESET_ALL}")
 
         # Load configuration (Bolt BOLT: use shared lazy property)
         config = self.config
 
         address = config.get("SYSTEM_ADDRESS")
         if not address:
-            print(f"{Fore.RED}❌ SYSTEM_ADDRESS not configured{Style.RESET_ALL}")
+            if not is_json:
+                print(f"{Fore.RED}❌ SYSTEM_ADDRESS not configured{Style.RESET_ALL}")
+            else:
+                print(json.dumps({"error": "SYSTEM_ADDRESS not configured"}, indent=2))
             return 1
 
         # Get expected contracts
@@ -1061,9 +1104,16 @@ class UltimateConxiusOrbit:
             expected_contracts = load_expected_contracts()
 
         if not expected_contracts:
-            print(
-                f"{Fore.YELLOW}⚠️  No contracts specified for verification{Style.RESET_ALL}"
-            )
+            if not is_json:
+                print(
+                    f"{Fore.YELLOW}⚠️  No contracts specified for verification{Style.RESET_ALL}"
+                )
+            else:
+                print(
+                    json.dumps(
+                        {"error": "No contracts specified for verification"}, indent=2
+                    )
+                )
             return 1
 
         # Initialize verifier
@@ -1074,10 +1124,22 @@ class UltimateConxiusOrbit:
         )
 
         # Run comprehensive verification
+        if is_json:
+            # Silence internal prints in verifier if possible (not implemented yet, so we just capture)
+            pass
+
         results = verifier.run_comprehensive_verification(expected_contracts)
 
         # Print detailed summary
-        verifier.print_verification_summary()
+        if is_json:
+            print(json.dumps(redact_recursive(results), indent=2))
+        else:
+            verifier.print_verification_summary()
+
+        # Handle output-file if specified
+        output_file = options.get("output_file")
+        if output_file:
+            save_secure_config(output_file, results, json_format=True)
 
         # Exit with appropriate code
         return 0 if results["overall_status"] == "success" else 1
@@ -1354,107 +1416,168 @@ class UltimateConxiusOrbit:
 
     def apply_deployment_template(self, options: Dict) -> int:
         """Apply deployment template"""
-        # (Bolt BOLT: configuration manager available via shared property)
+        # (Bolt ⚡: configuration manager available via shared property)
+        is_json = options.get("output") == "json"
 
         template_name = options.get("template")
         if not template_name:
-            print(f"{Fore.RED}❌ Template name required{Style.RESET_ALL}")
-            print("Available templates:")
-            for name, template in self.templates.get("templates", {}).items():
-                print(f"  • {name} - {template['name']}")
+            if not is_json:
+                print(f"{Fore.RED}❌ Template name required{Style.RESET_ALL}")
+                print("Available templates:")
+                for name, template in self.templates.get("templates", {}).items():
+                    print(f"  • {name} - {template['name']}")
+            else:
+                print(
+                    json.dumps(
+                        {
+                            "error": "Template name required",
+                            "available_templates": list(
+                                self.templates.get("templates", {}).keys()
+                            ),
+                        },
+                        indent=2,
+                    )
+                )
             return 1
 
         templates = self.templates.get("templates", {})
         if template_name not in templates:
-            print(f"{Fore.RED}❌ Template '{template_name}' not found{Style.RESET_ALL}")
+            if not is_json:
+                print(
+                    f"{Fore.RED}❌ Template '{template_name}' not found{Style.RESET_ALL}"
+                )
+            else:
+                print(
+                    json.dumps(
+                        {"error": f"Template '{template_name}' not found"}, indent=2
+                    )
+                )
             return 1
 
         template = templates[template_name]
 
-        print(f"📋 Applying template: {Fore.CYAN}{template['name']}{Style.RESET_ALL}")
-        print(f"📝 Description: {template['description']}")
+        if not is_json:
+            print(
+                f"📋 Applying template: {Fore.CYAN}{template['name']}{Style.RESET_ALL}"
+            )
+            print(f"📝 Description: {template['description']}")
 
-        if template.get("warning"):
-            print(f"{Fore.RED}⚠️  WARNING: {template['warning']}{Style.RESET_ALL}")
+            if template.get("warning"):
+                print(f"{Fore.RED}⚠️  WARNING: {template['warning']}{Style.RESET_ALL}")
 
-        print(f"\n⚙️  Configuration:")
+            print(f"\n⚙️  Configuration:")
+
         config = template["config"]
-        # SENTINEL Sentinel: Standardize redaction for templates, ensuring nested secrets are also protected.
-        redacted_config = redact_recursive(config)
-        for key, value in redacted_config.items():
-            print(f"   {key}: {value}")
+        for key, value in config.items():
+            if not is_json:
+                display_value = redact_recursive({key: value})[key]
+                print(f"   • {key}: {display_value}")
 
-        print(f"\n📋 Deployment Steps:")
-        for i, step in enumerate(template["steps"], 1):
-            print(f"   {i}. {step}")
-
-        # Apply template to configuration (Bolt BOLT: use shared lazy properties)
+        # Update configuration
         current_config = self.config
-
-        # Update with template config
         current_config.update(config)
-
-        # Save updated configuration
         self.config_manager.save_config(current_config)
 
-        print(f"\n✅ Template applied!")
-        print(f"💾 Updated configuration saved to {self.config_path}")
-
-        return 0
+        if is_json:
+            print(
+                json.dumps(
+                    redact_recursive(
+                        {
+                            "status": "success",
+                            "template": template_name,
+                            "applied_config": config,
+                        }
+                    ),
+                    indent=2,
+                )
+            )
+        else:
+            print(f"\n{Fore.GREEN}✅ Template applied successfully!{Style.RESET_ALL}")
+            print(f"💾 Updated configuration saved to {self.config_path}")
 
     def run_comprehensive_tests(self, options: Dict) -> int:
         """Run comprehensive test suite using Vitest and Clarinet SDK"""
-        print(
-            f"{Fore.CYAN}🧪 Running Comprehensive Test Suite (Vitest + Clarinet SDK){Style.RESET_ALL}"
-        )
-        print("=" * 60)
+        is_json = options.get("output") == "json"
+        if not is_json:
+            print(
+                f"{Fore.CYAN}🧪 Running Comprehensive Test Suite (Vitest + Clarinet SDK){Style.RESET_ALL}"
+            )
+            print("=" * 60)
+
+        results = {"clarinet_check": None, "vitest": None}
 
         try:
             # 1. Clarinet Check (Basic syntax check)
             if options.get("clarinet_only") or not options.get("vitest_only"):
-                print(
-                    f"{Fore.YELLOW}🔍 Running Clarinet syntax checks...{Style.RESET_ALL}"
-                )
+                if not is_json:
+                    print(
+                        f"{Fore.YELLOW}🔍 Running Clarinet syntax checks...{Style.RESET_ALL}"
+                    )
                 try:
                     # Stream output to terminal so user can see progress
                     result = subprocess.run(
                         ["clarinet", "check"],
                         cwd=self.project_root,
-                        capture_output=False,
+                        capture_output=True,
                         text=True,
                         timeout=300,
                     )
 
-                    if result.returncode == 0:
-                        print(f"{Fore.GREEN}✅ Clarinet check passed{Style.RESET_ALL}")
-                        if options.get("clarinet_only"):
-                            return 0
-                    else:
-                        print(f"{Fore.RED}❌ Clarinet check failed{Style.RESET_ALL}")
-                        if options.get("clarinet_only"):
-                            return 1
-                except FileNotFoundError:
-                    print(
-                        f"{Fore.YELLOW}⚠️  Clarinet not found. Skipping syntax checks.{Style.RESET_ALL}"
-                    )
+                    results["clarinet_check"] = {
+                        "passed": result.returncode == 0,
+                        "output": result.stdout,
+                        "error": result.stderr,
+                    }
+
+                    if not is_json:
+                        if result.returncode == 0:
+                            print(
+                                f"{Fore.GREEN}✅ Clarinet check passed{Style.RESET_ALL}"
+                            )
+                        else:
+                            print(
+                                f"{Fore.RED}❌ Clarinet check failed{Style.RESET_ALL}"
+                            )
+
                     if options.get("clarinet_only"):
+                        if is_json:
+                            print(json.dumps(results, indent=2))
+                        return 0 if result.returncode == 0 else 1
+                except FileNotFoundError:
+                    if not is_json:
+                        print(
+                            f"{Fore.YELLOW}⚠️  Clarinet not found. Skipping syntax checks.{Style.RESET_ALL}"
+                        )
+                    results["clarinet_check"] = {
+                        "passed": False,
+                        "error": "Clarinet not found",
+                    }
+                    if options.get("clarinet_only"):
+                        if is_json:
+                            print(json.dumps(results, indent=2))
                         return 1
 
             # 2. Vitest Tests (Logic and integration tests)
             if options.get("vitest_only") or not options.get("clarinet_only"):
-                print(f"{Fore.YELLOW}🧪 Running Vitest test suite...{Style.RESET_ALL}")
+                if not is_json:
+                    print(
+                        f"{Fore.YELLOW}🧪 Running Vitest test suite...{Style.RESET_ALL}"
+                    )
 
                 # Check if node_modules exists
                 if not (self.project_root / "node_modules").exists():
-                    print(
-                        f"{Fore.YELLOW}📦 node_modules not found. Running pnpm install...{Style.RESET_ALL}"
-                    )
+                    if not is_json:
+                        print(
+                            f"{Fore.YELLOW}📦 node_modules not found. Running pnpm install...{Style.RESET_ALL}"
+                        )
                     subprocess.run(
-                        ["pnpm", "install"], cwd=self.project_root, check=True
+                        ["pnpm", "install"],
+                        cwd=self.project_root,
+                        check=True,
+                        capture_output=is_json,
                     )
 
                 test_command = ["pnpm", "run", "test:vitest"]
-
                 if options.get("test_coverage"):
                     test_command = ["npx", "vitest", "run", "--coverage"]
 
@@ -1462,26 +1585,36 @@ class UltimateConxiusOrbit:
                 result = subprocess.run(
                     test_command,
                     cwd=self.project_root,
-                    capture_output=False,
+                    capture_output=True,
                     text=True,
                 )
 
-                if result.returncode == 0:
-                    print(f"{Fore.GREEN}✅ Vitest tests passed{Style.RESET_ALL}")
-                else:
-                    print(f"{Fore.RED}❌ Vitest tests failed{Style.RESET_ALL}")
-                    return 1
+                results["vitest"] = {
+                    "passed": result.returncode == 0,
+                    "output": result.stdout,
+                    "error": result.stderr,
+                }
 
+                if not is_json:
+                    if result.returncode == 0:
+                        print(f"{Fore.GREEN}✅ Vitest tests passed{Style.RESET_ALL}")
+                    else:
+                        print(f"{Fore.RED}❌ Vitest tests failed{Style.RESET_ALL}")
+
+                if is_json:
+                    print(json.dumps(results, indent=2))
+
+                return 0 if result.returncode == 0 else 1
+
+            if is_json:
+                print(json.dumps(results, indent=2))
             return 0
 
         except Exception as e:
-            # SENTINEL Sentinel: Prevent sensitive information disclosure.
-            print(f"{Fore.RED}❌ Test execution failed.{Style.RESET_ALL}")
-            if options.get("verbose"):
-                print(f"   Error details: {e}")
-                import traceback
-
-                traceback.print_exc()
+            if is_json:
+                print(json.dumps({"error": str(e)}, indent=2))
+            else:
+                print(f"{Fore.RED}❌ Test execution error: {e}{Style.RESET_ALL}")
             return 1
 
     def run_devnet(self, options: Dict) -> int:
@@ -1553,6 +1686,10 @@ class UltimateConxiusOrbit:
         print("  --force             Force deployment despite check failures")
         print("  --verbose           Enable detailed logging")
         print()
+        print("Output Options:")
+        print("  --output <format>   Output format (text, json)")
+        print("  --output-file <path> Path to write machine-readable output")
+        print()
         print("Monitoring Options:")
         print("  --follow            Follow deployment in real-time")
         print("  --dashboard         Launch interactive dashboard")
@@ -1584,29 +1721,14 @@ class UltimateConxiusOrbit:
         print("  # Deploy with template")
         print("  conxius_orbit deploy --template testnet_quick_start")
         print()
-        print("  # Deploy specific category")
-        print("  conxius_orbit deploy --category core --dry-run")
+        print("  # Deploy with JSON output")
+        print("  conxius_orbit deploy --category core --output json")
         print()
-        print("  # Run comprehensive tests with Hiro SDK")
-        print("  conxius_orbit test")
-        print()
-        print("  # Run only Hiro SDK integration tests")
-        print("  conxius_orbit test --hiro-only")
-        print()
-        print("  # Run specific dimension tests")
-        print("  conxius_orbit test --test-suite dex-dimension")
-        print()
-        print("  # Run only Clarinet contract checks")
-        print("  conxius_orbit test --clarinet-only")
+        print("  # Comprehensive verification with result file")
+        print("  conxius_orbit verify --comprehensive --output-file results.json")
         print()
         print("  # Run tests with coverage")
         print("  conxius_orbit test --test-coverage")
-        print()
-        print("  # Monitor in real-time")
-        print("  conxius_orbit monitor --follow")
-        print()
-        print("  # Comprehensive verification")
-        print("  conxius_orbit verify --comprehensive")
         print()
         print("  # Full diagnosis")
         print("  conxius_orbit diagnose --verbose")
@@ -1671,6 +1793,11 @@ def main():
         default="test",
         help="pnpm script to run (e.g. test, test:all)",
     )
+    # Output options
+    parser.add_argument(
+        "--output", choices=["text", "json"], default="text", help="Output format"
+    )
+    parser.add_argument("--output-file", help="Path to write machine-readable output")
     parser.add_argument(
         "--clarinet-check-timeout",
         type=int,
@@ -1754,6 +1881,8 @@ def main():
             "force": args.force,
             "run_pnpm_tests": args.run_pnpm_tests,
             "pnpm_test_script": args.pnpm_test_script,
+            "output": args.output,
+            "output_file": args.output_file,
             "clarinet_check_timeout": args.clarinet_check_timeout,
             "follow": args.follow,
             "api_only": args.api_only,
@@ -1798,4 +1927,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

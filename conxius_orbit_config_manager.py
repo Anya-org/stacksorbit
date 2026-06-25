@@ -73,7 +73,7 @@ class ConfigManager:
             for k, v in os.environ.items()
             if k in file_vars
             or k in SECRET_KEYS
-            or k.startswith(("STACKS_", "STACKSORBIT_"))
+            or k.startswith(("STACKS_", "CONXIUS_ORBIT_"))
         }
         self.config.update(env_overrides)
 

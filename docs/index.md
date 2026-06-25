@@ -1,8 +1,8 @@
 ---
-title: Conxius Orbit
+title: ConxiusOrbit
 ---
 
-Conxius Orbit is a CLI-first toolkit for building, testing, deploying, monitoring, and verifying Stacks smart contracts.
+ConxiusOrbit is a CLI-first toolkit for building, testing, deploying, monitoring, and verifying Stacks smart contracts.
 
 - [Agent Instructions]({{ "/agents/" | relative_url }})
 - [Product Requirements (PRD)]({{ "/prd/" | relative_url }})

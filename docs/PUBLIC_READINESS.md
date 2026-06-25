@@ -1,4 +1,4 @@
-Conxius Orbit is intended to be a public-facing Stacks / Clarity deployment tool.
+ConxiusOrbit is intended to be a public-facing Stacks / Clarity deployment tool.
 
 This document tracks a small set of changes needed to keep the repository "public-ready" (clear landing docs, governance files present, CI consistent with the lockfile, and no operational artifacts committed).
 

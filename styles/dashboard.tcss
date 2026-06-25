@@ -1,4 +1,4 @@
-/* A basic CSS file for the Conxius Orbit dashboard */
+/* A basic CSS file for the ConxiusOrbit dashboard */
 
 Screen {
     layout: vertical;

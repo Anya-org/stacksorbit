@@ -16,12 +16,36 @@ import hashlib
 import re
 import fnmatch
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from datetime import datetime
 from conxius_orbit_secrets import is_safe_path, save_secure_config
 
 # Bolt BOLT: Global cache for Clarinet version to avoid redundant subprocess calls.
 _CLARINET_VERSION_CACHE: Optional[str] = None
+
+
+def _load_toml_data(path: Path) -> Dict[str, Any]:
+    """Load TOML with stdlib `tomllib`, then `tomli`, then `toml`."""
+    try:
+        import tomllib
+
+        with open(path, "rb") as f:
+            return tomllib.load(f)
+    except ImportError:
+        pass
+
+    try:
+        import tomli
+
+        with open(path, "rb") as f:
+            return tomli.load(f)
+    except ImportError:
+        pass
+
+    import toml
+
+    with open(path, "r", encoding="utf-8") as f:
+        return toml.load(f)
 
 
 class GenericStacksAutoDetector:
@@ -139,14 +163,16 @@ class GenericStacksAutoDetector:
     ]
 
     def __init__(
-        self, project_root: Optional[Path] = None, use_conxian_mode: bool = False
+        self,
+        project_root: Optional[Path] = None,
+        use_conxian_mode: bool = False,
+        verbose: bool = True,
     ):
         self.project_root = project_root or Path.cwd()
-        self.use_conxian_mode = (
-            use_conxian_mode  # Keep Conxian-specific features as optional
-        )
-        self.contract_cache = {}
+        self.use_conxian_mode = use_conxian_mode
+        self.verbose = verbose
         self.deployment_cache = {}
+        self.contract_cache = {}
         self.project_files_cache = (
             {}
         )  # Bolt BOLT: Cache for project files (indexed by directory)
@@ -447,7 +473,8 @@ class GenericStacksAutoDetector:
                 with open(self.state_file, "r") as f:
                     return json.load(f)
             except Exception as e:
-                print(f"⚠️  Error loading state: {e}")
+                if self.verbose:
+                    print(f"⚠️  Error loading state: {e}")
 
         return {
             "current_directory": str(self.project_root),
@@ -568,7 +595,8 @@ class GenericStacksAutoDetector:
 
     def detect_and_analyze(self) -> Dict:
         """Complete generic auto-detection and analysis"""
-        print("🔍 ConxiusOrbit Generic Auto-Detection Starting...\n")
+        if self.verbose:
+            print("🔍 ConxiusOrbit Generic Auto-Detection Starting...\n")
 
         # Step 1: Detect current directory and contracts
         detection_result = self._detect_current_setup()
@@ -576,13 +604,17 @@ class GenericStacksAutoDetector:
         # Step 2: Check wallet balance if configuration is available
         wallet_status = self._check_wallet_balance()
         if wallet_status["has_balance"]:
-            print(f"💰 Wallet Balance: {wallet_status['balance_stx']:.6f} STX")
+            if self.verbose:
+                print(f"💰 Wallet Balance: {wallet_status['balance_stx']:.6f} STX")
             if wallet_status["available_stx"] < wallet_status["recommended_minimum"]:
-                print(f"   ⚠️  WARNING: Low balance - add STX before deployment")
+                if self.verbose:
+                    print(f"   ⚠️  WARNING: Low balance - add STX before deployment")
             else:
-                print(f"   ✅ Sufficient balance for deployment")
+                if self.verbose:
+                    print(f"   ✅ Sufficient balance for deployment")
         else:
-            print(f"💰 Wallet: Not configured or no balance info available")
+            if self.verbose:
+                print(f"💰 Wallet: Not configured or no balance info available")
 
         # Step 3: Analyze deployment status
         deployment_analysis = self._analyze_deployment_status()
@@ -610,19 +642,22 @@ class GenericStacksAutoDetector:
         config_project_root = self._check_config_project_root()
         if config_project_root and config_project_root.exists():
             current_dir = config_project_root
-            print(f"📂 Using configured project directory: {current_dir}")
+            if self.verbose:
+                print(f"📂 Using configured project directory: {current_dir}")
         else:
             current_dir = Path.cwd()
-            print(f"📂 Current directory: {current_dir}")
+            if self.verbose:
+                print(f"📂 Current directory: {current_dir}")
 
         # Bolt BOLT: Run single-pass scan for the determined directory
         self._scan_project_files(current_dir)
 
         # Check if directory changed
         if str(current_dir) != self.state.get("current_directory"):
-            print(
-                f"📍 Directory change detected: {self.state.get('current_directory')} → {current_dir}"
-            )
+            if self.verbose:
+                print(
+                    f"📍 Directory change detected: {self.state.get('current_directory')} → {current_dir}"
+                )
             self.state["current_directory"] = str(current_dir)
             self.state["directory_history"].append(
                 {
@@ -639,7 +674,8 @@ class GenericStacksAutoDetector:
 
         # If no contracts found, try to look in parent directories or ask user
         if not contracts:
-            print("⚠️  No contracts found in current directory.")
+            if self.verbose:
+                print("⚠️  No contracts found in current directory.")
 
             # Try parent directory
             parent_dir = current_dir.parent
@@ -648,7 +684,8 @@ class GenericStacksAutoDetector:
             )
 
             if parent_contracts:
-                print(f"✅ Found contracts in parent directory: {parent_dir}")
+                if self.verbose:
+                    print(f"✅ Found contracts in parent directory: {parent_dir}")
                 use_parent = (
                     input(f"   Use parent directory '{parent_dir}'? (y/n): ").lower()
                     == "y"
@@ -659,21 +696,24 @@ class GenericStacksAutoDetector:
                     contracts = parent_contracts
             else:
                 # Ask user for path
-                print(
-                    "❓ Please specify the path to your Stacks project (or press Enter to keep current):"
-                )
+                if self.verbose:
+                    print(
+                        "❓ Please specify the path to your Stacks project (or press Enter to keep current):"
+                    )
                 user_path = input("   Project path: ").strip()
                 if user_path:
                     user_dir = Path(user_path).resolve()
                     if user_dir.exists():
-                        print(f"📂 Switching to: {user_dir}")
+                        if self.verbose:
+                            print(f"📂 Switching to: {user_dir}")
                         current_dir = user_dir
                         self._scan_project_files(current_dir)
                         contracts = self._comprehensive_generic_contract_detection(
                             current_dir
                         )
                     else:
-                        print(f"❌ Directory does not exist: {user_dir}")
+                        if self.verbose:
+                            print(f"❌ Directory does not exist: {user_dir}")
 
         # Check for deployment artifacts
         deployment_artifacts = self._find_deployment_artifacts(current_dir)
@@ -727,7 +767,10 @@ class GenericStacksAutoDetector:
         if clarinet_contracts:
             contracts.extend(clarinet_contracts)
             seen_names.update(c["name"] for c in clarinet_contracts)
-            print(f"✅ Clarinet.toml detection: {len(clarinet_contracts)} contracts")
+            if self.verbose:
+                print(
+                    f"✅ Clarinet.toml detection: {len(clarinet_contracts)} contracts"
+                )
 
         # Method 2: Efficient directory scanning (any .clar files, skipping heavy dirs)
         # Bolt BOLT: Consolidate directory and project structure scanning into a single
@@ -739,7 +782,10 @@ class GenericStacksAutoDetector:
             ]
             contracts.extend(new_contracts)
             seen_names.update(c["name"] for c in new_contracts)
-            print(f"✅ Efficient scanning: {len(new_contracts)} additional contracts")
+            if self.verbose:
+                print(
+                    f"✅ Efficient scanning: {len(new_contracts)} additional contracts"
+                )
 
         # Method 3: Check for deployment manifests
         manifest_contracts = self._parse_deployment_manifests(directory)
@@ -749,9 +795,10 @@ class GenericStacksAutoDetector:
             ]
             contracts.extend(new_contracts)
             seen_names.update(c["name"] for c in new_contracts)
-            print(
-                f"📦 Found deployment manifests: {len(manifest_contracts)} contracts referenced ({len(new_contracts)} new)"
-            )
+            if self.verbose:
+                print(
+                    f"📦 Found deployment manifests: {len(manifest_contracts)} contracts referenced ({len(new_contracts)} new)"
+                )
 
         # Categorize contracts generically
         contracts = self._categorize_contracts(contracts)
@@ -773,22 +820,12 @@ class GenericStacksAutoDetector:
             return contracts
 
         try:
-            # Try to parse as TOML first
+            # Try TOML parser chain: tomllib -> tomli -> toml
             try:
-                import tomllib
-
-                with open(clarinet_path, "rb") as f:
-                    toml_data = tomllib.load(f)
+                toml_data = _load_toml_data(clarinet_path)
             except ImportError:
-                # Fallback for older Python versions
-                try:
-                    import toml
-
-                    with open(clarinet_path, "r") as f:
-                        toml_data = toml.load(f)
-                except ImportError:
-                    # Manual parsing fallback
-                    return self._parse_clarinet_toml_manually(clarinet_path)
+                # Manual parsing fallback when no TOML parser is installed
+                return self._parse_clarinet_toml_manually(clarinet_path)
 
             # Extract contracts from TOML structure
             if "contracts" in toml_data:
@@ -834,7 +871,8 @@ class GenericStacksAutoDetector:
                             )
 
         except Exception as e:
-            print(f"⚠️  Error parsing Clarinet.toml: {e}")
+            if self.verbose:
+                print(f"⚠️  Error parsing Clarinet.toml: {e}")
             # Fallback to manual parsing
             return self._parse_clarinet_toml_manually(clarinet_path)
 
@@ -909,7 +947,8 @@ class GenericStacksAutoDetector:
                     break  # Use first successful pattern
 
         except Exception as e:
-            print(f"⚠️  Manual parsing failed: {e}")
+            if self.verbose:
+                print(f"⚠️  Manual parsing failed: {e}")
 
         return contracts
 
@@ -1037,7 +1076,8 @@ class GenericStacksAutoDetector:
                                 }
                             )
                 except Exception as e:
-                    print(f"⚠️  Error reading manifest {manifest_file}: {e}")
+                    if self.verbose:
+                        print(f"⚠️  Error reading manifest {manifest_file}: {e}")
 
         return manifests
 
@@ -1105,21 +1145,12 @@ class GenericStacksAutoDetector:
         analysis["exists"] = True
 
         try:
-            # Try TOML parsing first
+            # Try TOML parser chain: tomllib -> tomli -> toml
             try:
-                import tomllib
-
-                with open(clarinet_path, "rb") as f:
-                    toml_data = tomllib.load(f)
+                toml_data = _load_toml_data(clarinet_path)
             except ImportError:
-                try:
-                    import toml
-
-                    with open(clarinet_path, "r") as f:
-                        toml_data = toml.load(f)
-                except ImportError:
-                    # Manual parsing
-                    return self._analyze_clarinet_toml_manually(clarinet_path)
+                # Manual parsing
+                return self._analyze_clarinet_toml_manually(clarinet_path)
 
             # Analyze project structure
             if "project" in toml_data:
@@ -1202,7 +1233,8 @@ class GenericStacksAutoDetector:
                 self.json_cache[cache_key] = data
                 return data
         except Exception as e:
-            print(f"⚠️  Error reading JSON {file_path}: {e}")
+            if self.verbose:
+                print(f"⚠️  Error reading JSON {file_path}: {e}")
             return None
 
     def _calculate_file_hash(
@@ -1298,7 +1330,8 @@ class GenericStacksAutoDetector:
                         }
                     )
                 except Exception as e:
-                    print(f"⚠️  Error reading artifact {artifact_file}: {e}")
+                    if self.verbose:
+                        print(f"⚠️  Error reading artifact {artifact_file}: {e}")
 
         return artifacts
 
@@ -1381,7 +1414,8 @@ class GenericStacksAutoDetector:
 
     def _analyze_deployment_status(self) -> Dict:
         """Analyze current deployment status"""
-        print("📊 Analyzing deployment status...")
+        if self.verbose:
+            print("📊 Analyzing deployment status...")
 
         # Check local deployment history
         local_status = self._check_local_deployment_status()
@@ -1446,7 +1480,8 @@ class GenericStacksAutoDetector:
                             self.json_cache[file_key] = {"data": data, "mtime": mtime}
                     deployment_history.extend(data)
                 except Exception as e:
-                    print(f"⚠️  Error reading {history_file}: {e}")
+                    if self.verbose:
+                        print(f"⚠️  Error reading {history_file}: {e}")
 
         # Bolt BOLT: Check manifest files using pre-filtered bucket.
         manifests = []
@@ -1474,7 +1509,8 @@ class GenericStacksAutoDetector:
                             self.json_cache[file_key] = {"data": data, "mtime": mtime}
                     manifests.append(data)
                 except Exception as e:
-                    print(f"⚠️  Error reading {manifest_file}: {e}")
+                    if self.verbose:
+                        print(f"⚠️  Error reading {manifest_file}: {e}")
 
         return {
             "has_local_history": len(deployment_history) > 0,
@@ -1631,7 +1667,8 @@ class GenericStacksAutoDetector:
 
     def handle_directory_change(self, new_directory: Path) -> Dict:
         """Handle directory change and update detection"""
-        print(f"\n📂 Handling directory change to: {new_directory}")
+        if self.verbose:
+            print(f"\n📂 Handling directory change to: {new_directory}")
 
         old_dir = self.state.get("current_directory", "")
         self.state["previous_directory"] = old_dir
@@ -1756,7 +1793,8 @@ class GenericStacksAutoDetector:
                     ) / 1000000
 
         except Exception as e:
-            print(f"⚠️  Could not check wallet balance: {e}")
+            if self.verbose:
+                print(f"⚠️  Could not check wallet balance: {e}")
 
         return status
 
@@ -1784,47 +1822,65 @@ class GenericStacksAutoDetector:
 if __name__ == "__main__":
     detector = GenericStacksAutoDetector()
     analysis = detector.detect_and_analyze()
+    verbose = detector.verbose
 
     # Show results
-    print(f"\n📂 Directory: {analysis['detection']['directory']}")
-    print(f"📦 Contracts found: {analysis['detection']['contracts_found']}")
-    print(f"📊 Deployment mode: {analysis['deployment_plan']['deployment_mode']}")
-    print(
-        f"🚀 Contracts to deploy: {analysis['deployment_plan']['contracts_to_deploy']}"
-    )
-    print(f"⏭️  Contracts to skip: {analysis['deployment_plan']['contracts_to_skip']}")
-    print(f"🏷️  Mode: {analysis['mode']}")
+    if verbose:
+        print(f"\n📂 Directory: {analysis['detection']['directory']}")
+    if verbose:
+        print(f"📦 Contracts found: {analysis['detection']['contracts_found']}")
+    if verbose:
+        print(f"📊 Deployment mode: {analysis['deployment_plan']['deployment_mode']}")
+    if verbose:
+        print(
+            f"🚀 Contracts to deploy: {analysis['deployment_plan']['contracts_to_deploy']}"
+        )
+    if verbose:
+        print(
+            f"⏭️  Contracts to skip: {analysis['deployment_plan']['contracts_to_skip']}"
+        )
+    if verbose:
+        print(f"🏷️  Mode: {analysis['mode']}")
 
     # Show SDK compatibility
     sdk_compat = analysis["detection"]["sdk_compatibility"]
-    print(f"🔧 SDK Compatibility: {sdk_compat}")
+    if verbose:
+        print(f"🔧 SDK Compatibility: {sdk_compat}")
 
     # Show recommendations
     recommendations = detector.get_deployment_recommendations(analysis)
     if recommendations:
-        print("\n💡 Recommendations:")
+        if verbose:
+            print("\n💡 Recommendations:")
         for rec in recommendations:
-            print(f"   {rec}")
+            if verbose:
+                print(f"   {rec}")
 
     # Show deployment plan
     filtered_contracts = analysis["deployment_plan"]["filtered_contracts"]
     if filtered_contracts:
-        print("\n📋 Deployment order:")
+        if verbose:
+            print("\n📋 Deployment order:")
         max_display = 10
         for i, contract in enumerate(filtered_contracts[:max_display], 1):
             category = contract.get("category", "general")
-            print(f"   {i}. {contract['name']} ({category})")
+            if verbose:
+                print(f"   {i}. {contract['name']} ({category})")
 
         remaining = len(filtered_contracts) - max_display
         if remaining > 0:
-            print(f"   ... and {remaining} more")
+            if verbose:
+                print(f"   ... and {remaining} more")
 
     # Show deployment estimates
     deployment_plan = analysis["deployment_plan"]
-    print(f"\n⛽ Estimated gas: {deployment_plan['estimated_gas']:.1f} STX")
-    print(f"⏰ Estimated time: {deployment_plan['estimated_time']} minutes")
+    if verbose:
+        print(f"\n⛽ Estimated gas: {deployment_plan['estimated_gas']:.1f} STX")
+    if verbose:
+        print(f"⏰ Estimated time: {deployment_plan['estimated_time']} minutes")
 
     is_ready = analysis["ready"]
-    print(f"\n✅ Ready: {is_ready}")
+    if verbose:
+        print(f"\n✅ Ready: {is_ready}")
 
     sys.exit(0 if is_ready else 1)

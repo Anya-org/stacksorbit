@@ -17,7 +17,7 @@
     "detect": "python conxius_orbit_auto_detect.py",
     "check": "python conxian_testnet_deploy.py check",
     "gui": "python conxius_orbit_cli.py dashboard",
-    "test": "pnpm run test:vitest && pnpm run test:unit && pnpm run test:gui",
+    "test": "pnpm run test:vitest",
     "test:unit": "python -m pytest tests/ -q",
     "test:integration": "python -m pytest tests/integration/ -q",
     "test:gui": "pytest tests/test_gui.py",

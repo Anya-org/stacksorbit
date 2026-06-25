@@ -5,7 +5,7 @@
 import { defineConfig } from "vitest/config";
 
 /**
- * Modernized Vitest configuration for Conxius Orbit.
+ * Modernized Vitest configuration for ConxiusOrbit.
  * Optimized for @stacks/clarinet-sdk ^3.17.0 and Vitest 4.
  * Root-Up synchronized.
  */

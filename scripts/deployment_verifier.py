@@ -54,7 +54,8 @@ class DeploymentVerifier:
         }
 
     def _safe_print(self, *args, **kwargs):
-        """Thread-safe printing"""
+        if self.config.get("output") == "json":
+            return
         with self.print_lock:
             print(*args, **kwargs)
 
@@ -534,7 +535,7 @@ def main():
             if (
                 key in config
                 or key in SECRET_KEYS
-                or key.startswith(("STACKS_", "STACKSORBIT_"))
+                or key.startswith(("STACKS_", "CONXIUS_ORBIT_"))
             ):
                 config[key] = value
 

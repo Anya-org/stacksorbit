@@ -22,10 +22,12 @@ from scripts.enhanced_auto_detector import GenericStacksAutoDetector
 class ConxiusOrbitCLIIntegration:
     """Generic CLI integration for ConxiusOrbit auto-detection"""
 
-    def __init__(self):
+    def __init__(self, verbose: bool = True):
         # Use generic mode by default, Conxian mode only if explicitly requested
-        use_conxian = os.getenv("STACKSORBIT_CONXIAN_MODE", "false").lower() == "true"
-        self.auto_detector = GenericStacksAutoDetector(use_conxian_mode=use_conxian)
+        use_conxian = os.getenv("CONXIUS_ORBIT_CONXIAN_MODE", "false").lower() == "true"
+        self.auto_detector = GenericStacksAutoDetector(
+            use_conxian_mode=use_conxian, verbose=verbose
+        )
         self.current_analysis = None
 
     def run_detection(self, directory: Optional[str] = None) -> Dict:

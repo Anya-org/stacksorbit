@@ -1,9 +1,9 @@
-# Conxian ⇄ Conxius Orbit ⇄ Conxian_UI Deployment Map
+# Conxian ⇄ ConxiusOrbit ⇄ Conxian_UI Deployment Map
 
-> **Purpose:** This document captures the end‑to‑end mapping between Conxian’s on‑chain modules, the Conxian_UI DApps, and the Conxius Orbit deploy / monitor / verify pipeline. It should be read together with:
+> **Purpose:** This document captures the end‑to‑end mapping between Conxian’s on‑chain modules, the Conxian_UI DApps, and the ConxiusOrbit deploy / monitor / verify pipeline. It should be read together with:
 >
 > - Conxian: `Clarinet.toml`, `documentation/architecture/CONXIAN_DAPPS_MAP.md`
-> - Conxius Orbit: `AGENTS.md`, `enhanced_conxian_deployment.py`, `conxius_orbit_cli.py`
+> - ConxiusOrbit: `AGENTS.md`, `enhanced_conxian_deployment.py`, `conxius_orbit_cli.py`
 > - Conxian_UI: `README.md`, `src/lib/contracts.ts`, `src/app/*`
 
 _Last updated: November 30, 2025_
@@ -16,20 +16,20 @@ _Last updated: November 30, 2025_
    - Source of truth: `Clarinet.toml` + trait files in `contracts/traits/`.
    - Syntax & structure checked via `clarinet check`.
 
-2. **Configure Conxius Orbit** in the Conxian project root
+2. **Configure ConxiusOrbit** in the Conxian project root
    - Run setup wizard from the project root:
      - `conxius_orbit setup` (or `python conxius_orbit_cli.py setup`).
    - Wizard detects `Clarinet.toml`, writes `.env` with:
      - `DEPLOYER_PRIVKEY`, `SYSTEM_ADDRESS`, `NETWORK`, `BATCH_SIZE`, `PARALLEL_DEPLOY`, etc.
 
 3. **Dry‑run deployments per module / DApp surface**
-   - Use Conxius Orbit CLI categories (see §2) to preview contract groups:
+   - Use ConxiusOrbit CLI categories (see §2) to preview contract groups:
      - `conxius_orbit deploy --dry-run --category dex`
      - `conxius_orbit deploy --dry-run --category tokens`
      - `conxius_orbit deploy --dry-run --category oracle`
      - etc.
 
-4. **Testnet deployment via Conxius Orbit**
+4. **Testnet deployment via ConxiusOrbit**
    - After dry‑runs and compilation checks:
      - `conxius_orbit deploy --category <category>`.
    - Internally calls `EnhancedConxianDeployer.deploy_conxian`, which:
@@ -51,13 +51,13 @@ _Last updated: November 30, 2025_
 
 ---
 
-## 2. Conxius Orbit Categories ↔ Conxian Modules
+## 2. ConxiusOrbit Categories ↔ Conxian Modules
 
-Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substring filters) over Clarinet contract names. The table below aligns those categories with Conxian’s architecture and DApps.
+ConxiusOrbit’s `EnhancedConxianDeployer` defines loose **categories** (substring filters) over Clarinet contract names. The table below aligns those categories with Conxian’s architecture and DApps.
 
 ### 2.1 Category Mapping Table
 
-| Conxius Orbit Category | Matching Conxian Modules / Contracts (examples) | DApps / Surfaces | Notes |
+| ConxiusOrbit Category | Matching Conxian Modules / Contracts (examples) | DApps / Surfaces | Notes |
 |----------------------|--------------------------------------------------|------------------|-------|
 | **core** | Traits & utilities: `sip-standards`, `core-protocol`, `defi-primitives`, `dimensional-traits`, `oracle-pricing`, `risk-management`, `math-utilities`, `trait-errors`, `encoding`, `utils`, etc. | All DApps | Must be deployed first; provides shared interfaces and helpers. |
 | **tokens** | `cxd-token`, `cxlp-token`, `cxvg-token`, `cxtr-token`, `cxs-token`, `token-system-coordinator`, `cxd-price-initializer` | DEX, Governance, Staking, Vaults | Conxian_UI `Tokens[]` uses `cxd`, `cxvg`, `cxtr`, `cxs`. |
@@ -66,7 +66,7 @@ Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substr
 | **dimensional** | `dim-registry`, `dim-metrics`, `dimensional-core`, `dim-graph`, `dim-oracle-automation`, `dim-yield-stake`, CLP position‑NFT within `concentrated-liquidity-pool` | Core Engine & Dimensional metrics | Drives advanced routing, liquidity graph, and dimensional analytics. |
 | **oracle** | `oracle`, `oracle-aggregator-v2`, `dimensional-oracle`, `twap-oracle`, `btc-adapter`, `oracle-adapter` stubs | Price feeds for DEX, Lending, Enterprise | Conxian_UI uses `oracle-aggregator-v2` via `ContractInteractions.getPrice`. |
 | **security** | `circuit-breaker`, `mev-protector`, `mev-protector-root`, `ownable`, `pausable`, roles & RBAC | Circuit breakers, MEV protection, access controls | Used by DEX, lending, governance. Critical for safe deployment. |
-| **monitoring** | `analytics-aggregator`, `finance-metrics`, `protocol-invariant-monitor`, any `monitoring-dashboard` contracts | Monitoring dashboards, analytics | Feeds both on‑chain analytics and Conxius Orbit/enterprise dashboards. |
+| **monitoring** | `analytics-aggregator`, `finance-metrics`, `protocol-invariant-monitor`, any `monitoring-dashboard` contracts | Monitoring dashboards, analytics | Feeds both on‑chain analytics and ConxiusOrbit/enterprise dashboards. |
 | **self-run** / **self-managed** | Placeholder patterns (`self-run`, `autonomous`, etc.) | N/A (future) | No matching contracts yet; filters currently no‑op. |
 
 **Important:** Category membership is purely name‑based (substring matching). The authoritative list of contracts and their roles remains `Clarinet.toml` and `CONXIAN_DAPPS_MAP.md`.
@@ -88,7 +88,7 @@ Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substr
     - `/pools` – pool KPIs (reserves, TVL, fees, performance).
     - `/router` – multi‑hop path estimation using on‑chain router.
     - `/tx` – generic contract call builder with DEX templates.
-- **Recommended Conxius Orbit categories** for DEX deployments:
+- **Recommended ConxiusOrbit categories** for DEX deployments:
   - `core`, `tokens`, `dex`, `dimensional`, `oracle`, `security`, `monitoring`.
 - **Example CLI sequence (testnet):**
   - Dry run:
@@ -115,7 +115,7 @@ Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substr
 - **Conxian_UI**:
   - `Tokens[]` for token selection and SIP‑010 templates in `/tx`.
   - Vault balances via `getVaultBalance()` using `CoreContracts` vault entries.
-- **Conxius Orbit categories**:
+- **ConxiusOrbit categories**:
   - `core`, `tokens`, `oracle` (for pricing), `security`, `monitoring`.
 
 ### 3.3 Governance
@@ -124,7 +124,7 @@ Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substr
   - `governance-token`, `proposal-engine`, `proposal-registry`, `governance-voting`, `timelock-controller`.
 - **DApp**:
   - Governance UI (planned): create proposals, vote, execute with timelock.
-- **Conxius Orbit**:
+- **ConxiusOrbit**:
   - Deploy with `core`, `tokens`, `governance`, `security`, `monitoring`.
   - Use `conxius_orbit verify` to confirm governance wiring before enabling parameter changes for other modules.
 
@@ -136,7 +136,7 @@ Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substr
   - Enterprise: `enterprise-api`, `enterprise-loan-manager`.
 - **Current UI**:
   - Primarily CLI/tests driven (no dedicated Conxian_UI screens yet).
-- **Conxius Orbit categories**:
+- **ConxiusOrbit categories**:
   - No explicit `lending` / `enterprise` categories; contracts fall under `core`, `dimensional`, `oracle`, `security`, and `other`.
   - Deployment is handled via **full manifest** or by selective contract lists in the setup wizard.
 
@@ -145,8 +145,8 @@ Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substr
 - **Contracts**:
   - `analytics-aggregator`, `finance-metrics`, `protocol-invariant-monitor`, plus any `monitoring-dashboard` contracts.
 - **DApps**:
-  - On‑chain monitoring surfaces; off‑chain dashboards (Conxius Orbit TUI and potential web dashboards) read from these.
-- **Conxius Orbit**:
+  - On‑chain monitoring surfaces; off‑chain dashboards (ConxiusOrbit TUI and potential web dashboards) read from these.
+- **ConxiusOrbit**:
   - Category: `monitoring`.
   - CLI:
     - `conxius_orbit monitor --dashboard` – live view of API status, block height, accounts, and (optionally) deployment state.
@@ -155,7 +155,7 @@ Conxius Orbit’s `EnhancedConxianDeployer` defines loose **categories** (substr
 
 ## 4. Compliance & Risk Hooks
 
-Conxian and Conxius Orbit are designed to accommodate regulatory and risk oversight (e.g., FSCA/IFWG/Markaicode‑style expectations) without hard‑coding specific jurisdictional rules.
+Conxian and ConxiusOrbit are designed to accommodate regulatory and risk oversight (e.g., FSCA/IFWG/Markaicode‑style expectations) without hard‑coding specific jurisdictional rules.
 
 ### 4.1 On‑Chain Compliance Anchors (Conxian)
 
@@ -166,7 +166,7 @@ Conxian and Conxius Orbit are designed to accommodate regulatory and risk oversi
 - **Enterprise APIs**:
   - `enterprise-api`, `enterprise-loan-manager` – structured entry points for institutional flows, with room for KYB/KYC attestations at the API level.
 
-### 4.2 Conxius Orbit Touchpoints
+### 4.2 ConxiusOrbit Touchpoints
 
 - **Pre‑deployment checks** (`run_pre_checks` in `EnhancedConxianDeployer`):
   - Can be extended to require:
@@ -190,7 +190,7 @@ Conxian and Conxius Orbit are designed to accommodate regulatory and risk oversi
 
 1. **Pre‑deployment gate** (testnet & mainnet):
    - `clarinet check` clean + key tests passing.
-   - Conxius Orbit `diagnose` and `verify` confirm:
+   - ConxiusOrbit `diagnose` and `verify` confirm:
      - Core, DEX, oracle, security, monitoring modules present.
      - `audit-registry` & `protocol-invariant-monitor` deployed.
 
@@ -204,7 +204,7 @@ Conxian and Conxius Orbit are designed to accommodate regulatory and risk oversi
      - `finance-metrics` (sanity metrics for TVL, utilization, spreads).
 
 4. **Ongoing monitoring**:
-   - Conxius Orbit `monitor --follow` or dashboard for technical health.
+   - ConxiusOrbit `monitor --follow` or dashboard for technical health.
    - Chainhooks / external services consuming events from:
      - DEX (swaps, LP changes, price feeds).
      - Lending & risk (liquidations, funding rates).
@@ -219,16 +219,16 @@ Conxian and Conxius Orbit are designed to accommodate regulatory and risk oversi
 - **Frontend / UX teams (Conxian_UI)**
   - When adding a route or template, ensure the backing contracts are:
     - Listed in `Clarinet.toml` and `CONXIAN_DAPPS_MAP.md`.
-    - Covered by at least one Conxius Orbit category.
+    - Covered by at least one ConxiusOrbit category.
     - Exposed via `CoreContracts` / `Tokens` with the correct IDs.
 - **DevOps / SRE / compliance**
   - Treat this mapping as the **deployment playbook** for Conxian.
-  - Extend Conxius Orbit pre‑checks, verification, and monitoring to call the right Conxian contracts (e.g. `audit-registry`, `protocol-invariant-monitor`, `finance-metrics`) as part of your operational runbooks.
+  - Extend ConxiusOrbit pre‑checks, verification, and monitoring to call the right Conxian contracts (e.g. `audit-registry`, `protocol-invariant-monitor`, `finance-metrics`) as part of your operational runbooks.
 
 This document is meant to stay in sync with:
 
 - Conxian’s `Clarinet.toml` and `CONXIAN_DAPPS_MAP.md`.
-- Conxius Orbit’s `AGENTS.md`, `enhanced_conxian_deployment.py`, and `conxius_orbit_cli.py`.
+- ConxiusOrbit’s `AGENTS.md`, `enhanced_conxian_deployment.py`, and `conxius_orbit_cli.py`.
 - Conxian_UI’s `README.md` and `src/lib/contracts.ts`.
 
 When any of those change materially, update this map accordingly.

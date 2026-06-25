@@ -1,6 +1,6 @@
 # Governance
 
-Conxius Orbit is a deployment and operations toolkit for Stacks / Clarity smart contracts.
+ConxiusOrbit is a deployment and operations toolkit for Stacks / Clarity smart contracts.
 
 This repository is maintained under the Conxian organization. Public-facing documentation should avoid embedding operational secrets, private infrastructure identifiers, or private key material.
 

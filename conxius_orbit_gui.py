@@ -15,7 +15,7 @@ import webbrowser
 import re
 from datetime import datetime, timezone
 import functools
-from typing import Dict, List
+from typing import Any, Callable, Dict, List, TypeVar
 
 
 async def _to_thread_compat(func, *args, **kwargs):
@@ -89,7 +89,19 @@ def _format_relative_time_cached(iso_time: str, now_bucket: int) -> str:
         return "N/A"
 
 
-# Bolt BOLT: Pre-compiled regexes for high-performance contract categorization.
+_ThreadResult = TypeVar("_ThreadResult")
+
+
+async def _run_sync_in_thread(
+    func: Callable[..., _ThreadResult], *args: Any, **kwargs: Any
+) -> _ThreadResult:
+    """Run sync work in the default executor (Python 3.8+ compatible)."""
+    loop = asyncio.get_running_loop()
+    bound_func = functools.partial(func, *args, **kwargs)
+    return await loop.run_in_executor(None, bound_func)
+
+
+# Bolt ⚡: Pre-compiled regexes for high-performance contract categorization.
 # We use a list of (regex, category) tuples for O(N) matching with O(1) group search.
 _CONTRACT_CAT_PATTERNS = [
     (re.compile(r"dex|swap|pool|factory|router|amm|liquidity", re.I), "dex"),
@@ -207,8 +219,17 @@ class ConxiusOrbitGUI(App):
     tx_filter = reactive("")
     theme_name = reactive("standard")
 
+    def _has_active_screen_stack(self) -> bool:
+        """Return True when it's safe to mutate app-level CSS classes."""
+        try:
+            return bool(self.screen_stack)
+        except Exception:
+            return False
+
     def watch_theme_name(self, old_theme: str, new_theme: str) -> None:
         """Watch for theme changes and update the application CSS class."""
+        if old_theme == new_theme or not self._has_active_screen_stack():
+            return
         self.remove_class(f"{old_theme}-theme")
         self.add_class(f"{new_theme}-theme")
 
@@ -314,7 +335,7 @@ class ConxiusOrbitGUI(App):
                 if (
                     key in config
                     or key in SECRET_KEYS
-                    or key.startswith(("STACKS_", "STACKSORBIT_"))
+                    or key.startswith(("STACKS_", "CONXIUS_ORBIT_"))
                 ):
                     config[key] = value
 
@@ -927,29 +948,29 @@ class ConxiusOrbitGUI(App):
             indicator.display = True
 
         try:
-            # BOLT Bolt: Run synchronous API calls concurrently in threads
-            infra_runway_task = _to_thread_compat(
+            # ⚡ Bolt: Run synchronous API calls concurrently in threads
+            infra_runway_task = _run_sync_in_thread(
                 self.infra.get_runway_metrics, bypass_cache=bypass_cache
             )
-            infra_exit_velocity_task = _to_thread_compat(
+            infra_exit_velocity_task = _run_sync_in_thread(
                 self.infra.get_exit_velocity, bypass_cache=bypass_cache
             )
-            api_status_task = _to_thread_compat(
+            api_status_task = _run_sync_in_thread(
                 self.monitor.check_api_status, bypass_cache=bypass_cache
             )
 
             if self.address != "Not configured":
-                account_info_task = _to_thread_compat(
+                account_info_task = _run_sync_in_thread(
                     self.monitor.get_account_info,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                contracts_task = _to_thread_compat(
+                contracts_task = _run_sync_in_thread(
                     self.monitor.get_deployed_contracts,
                     self.address,
                     bypass_cache=bypass_cache,
                 )
-                transactions_task = _to_thread_compat(
+                transactions_task = _run_sync_in_thread(
                     self.monitor.get_recent_transactions,
                     self.address,
                     bypass_cache=bypass_cache,
@@ -1388,7 +1409,7 @@ class ConxiusOrbitGUI(App):
         loader.display = True
         self.current_source_code = None
         try:
-            details = await _to_thread_compat(
+            details = await _run_sync_in_thread(
                 self.monitor.get_contract_details, contract_id
             )
             if details:
@@ -1682,7 +1703,7 @@ class ConxiusOrbitGUI(App):
         try:
             # Run the server in a thread and suppress stdout to keep TUI clean
             with contextlib.redirect_stdout(io.StringIO()):
-                address = await _to_thread_compat(
+                address = await _run_sync_in_thread(
                     start_wallet_connect_server, network=self.network
                 )
 
@@ -1916,8 +1937,8 @@ class ConxiusOrbitGUI(App):
             save_secure_config(str(self.config_path), config)
 
         try:
-            # SENTINEL Sentinel: Only save non-sensitive settings to the file.
-            await _to_thread_compat(_save_config_io, address_val, self.theme_name)
+            # 🛡️ Sentinel: Only save non-sensitive settings to the file.
+            await _run_sync_in_thread(_save_config_io, address_val, self.theme_name)
             self.address = address_val
             self.unsaved_changes = False
 

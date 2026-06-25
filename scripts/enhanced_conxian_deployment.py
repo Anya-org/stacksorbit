@@ -104,7 +104,7 @@ class EnhancedConfigManager:
                 for k, v in os.environ.items()
                 if k in file_config
                 or k in SECRET_KEYS
-                or k.startswith(("STACKS_", "STACKSORBIT_"))
+                or k.startswith(("STACKS_", "CONXIUS_ORBIT_"))
                 or k
                 in (
                     "PROJECT_ROOT",

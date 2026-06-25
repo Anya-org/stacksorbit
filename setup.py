@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name="conxius_orbit",
-    version="1.2.9",
+    version="1.2.8",
     description="CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -33,7 +33,17 @@ setup(
         "Discussions": "https://github.com/Conxian/conxius_orbit/discussions",
     },
     packages=find_packages(exclude=["tests*", "docs*"]),
-    py_modules=["conxius_orbit"],
+    py_modules=[
+        "conxius_orbit",
+        "conxius_orbit_cli",
+        "conxius_orbit_gui",
+        "conxius_orbit_secrets",
+        "conxius_orbit_config_manager",
+        "conxius_orbit_auto_detect",
+        "infrastructure_wiring",
+        "deployment_monitor",
+        "wallet_connect",
+    ],
     entry_points={
         "console_scripts": [
             "conxius_orbit=conxius_orbit:main",
@@ -49,17 +59,18 @@ setup(
             "pytest>=7.0.0",
             "pytest-cov>=4.0.0",
             "pytest-asyncio",
-            "black>=23.0.0",
+            "black==26.3.1; python_version >= '3.10'",
+            "tomli>=2.0.1; python_version < '3.11'",
             "pylint>=2.17.0",
             "mypy>=1.0.0",
             "types-requests",
             "types-toml",
-            "safety>=3.0.0",
         ],
         "test": [
             "pytest>=7.0.0",
             "pytest-mock>=3.10.0",
             "pytest-asyncio",
+            "tomli>=2.0.1; python_version < '3.11'",
         ],
     },
     classifiers=[

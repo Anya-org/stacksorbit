@@ -1,4 +1,4 @@
-# Conxius Orbit Publishing Guide
+# ConxiusOrbit Publishing Guide
 
 **Version**: 1.0.0  
 **Status**: Ready to publish  
@@ -91,7 +91,7 @@
 
 **Check workflow status**:
 - Go to: https://github.com/Conxian/conxius_orbit/actions
-- Look for "Publish Conxius Orbit" workflow
+- Look for "Publish ConxiusOrbit" workflow
 - Verify it runs successfully after configuring tokens
 
 ### Method 2: Manual Publishing
@@ -284,7 +284,7 @@ git push origin v1.0.1
 - **npm Documentation**: https://docs.npmjs.com/
 - **PyPI Documentation**: https://packaging.python.org/
 - **GitHub Actions**: https://docs.github.com/en/actions
-- **Conxius Orbit README**: https://github.com/Conxian/conxius_orbit#readme
+- **ConxiusOrbit README**: https://github.com/Conxian/conxius_orbit#readme
 
 ---
 

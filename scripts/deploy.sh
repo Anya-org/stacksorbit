@@ -1,8 +1,8 @@
 #!/bin/bash
-# Ultimate Conxius Orbit Deployment Script
+# Ultimate ConxiusOrbit Deployment Script
 # One-command deployment for any Stacks project
 
-echo "🚀 Conxius Orbit - Ultimate Deployment Tool"
+echo "🚀 ConxiusOrbit - Ultimate Deployment Tool"
 echo "=========================================="
 
 # Check prerequisites

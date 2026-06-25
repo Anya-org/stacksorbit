@@ -1,14 +1,14 @@
-# Conxius Orbit Agent Instructions
+# ConxiusOrbit Agent Instructions
 
-Welcome to Conxius Orbit! This document provides a comprehensive guide for developers and AI agents working on this project. It is the "single source of truth" for all development and deployment information.
+Welcome to ConxiusOrbit! This document provides a comprehensive guide for developers and AI agents working on this project. It is the "single source of truth" for all development and deployment information.
 
 ## 1. Project Overview
 
-Conxius Orbit is an advanced deployment tool for the Stacks blockchain. It provides a full-featured command-line interface (CLI), integration with the Hiro API, comprehensive monitoring, and support for chainhooks. The goal of this project is to provide a user-friendly and powerful tool for deploying smart contracts to the Stacks blockchain with confidence.
+ConxiusOrbit is an advanced deployment tool for the Stacks blockchain. It provides a full-featured command-line interface (CLI), integration with the Hiro API, comprehensive monitoring, and support for chainhooks. The goal of this project is to provide a user-friendly and powerful tool for deploying smart contracts to the Stacks blockchain with confidence.
 
 ### 1.1. Architectural Overview
 
-Conxius Orbit is a modular, command-line-driven tool for deploying and managing Stacks-based smart contracts. The following diagram illustrates the high-level architecture of the system:
+ConxiusOrbit is a modular, command-line-driven tool for deploying and managing Stacks-based smart contracts. The following diagram illustrates the high-level architecture of the system:
 
 ```graph
 [ User ] -> [ CLI (`conxius_orbit_cli.py`) ] -> [ Core Deployer ] -> [ Stacks Blockchain ]
@@ -25,9 +25,9 @@ Conxius Orbit is a modular, command-line-driven tool for deploying and managing 
 
 ### 1.2. Core Components & Terminology
 
-The Conxius Orbit project is composed of the following key components:
+The ConxiusOrbit project is composed of the following key components:
 
-* **`conxius_orbit_cli.py` (formerly `ultimate_conxius_orbit.py`):** The primary command-line interface for interacting with the Conxius Orbit tool. The "ultimate" terminology was used to signify that this is the main, all-in-one entry point for the tool.
+* **`conxius_orbit_cli.py` (formerly `ultimate_conxius_orbit.py`):** The primary command-line interface for interacting with the ConxiusOrbit tool. The "ultimate" terminology was used to signify that this is the main, all-in-one entry point for the tool.
 * **`conxius_orbit_dashboard.py` (formerly `enhanced_dashboard.py`):** A real-time, interactive dashboard for monitoring the deployment process, network health, and other key metrics. The "enhanced" terminology was used to highlight the advanced, real-time nature of the dashboard.
 * **Core Deployer (`enhanced_conxian_deployment.py`):** The main engine for deploying smart contracts. It includes features for smart category recognition, dependency ordering, and parallel deployment.
 * **Setup Wizard (`setup_wizard.py`):** An interactive wizard to guide users through the initial setup and configuration of the project.
@@ -55,7 +55,7 @@ The Conxius Orbit project is composed of the following key components:
 
 ### Installation from Source
 
-Currently, Conxius Orbit is run directly from the source code.
+Currently, ConxiusOrbit is run directly from the source code.
 
 1. **Clone the Repository:**
 
@@ -177,7 +177,7 @@ npx vitest --coverage
 
 ## 4. Deployment Workflow
 
-The recommended workflow for deploying smart contracts with Conxius Orbit is as follows:
+The recommended workflow for deploying smart contracts with ConxiusOrbit is as follows:
 
 1. **Setup and Configuration:**
     Run the interactive setup wizard to configure your deployment environment.
@@ -223,7 +223,7 @@ The recommended workflow for deploying smart contracts with Conxius Orbit is as 
 
 ## 5. Key Commands
 
-The primary interface for the Conxius Orbit tool is the `conxius_orbit_cli.py` script. Here are some of the most common commands:
+The primary interface for the ConxiusOrbit tool is the `conxius_orbit_cli.py` script. Here are some of the most common commands:
 
 ### 5.1. Setup
 

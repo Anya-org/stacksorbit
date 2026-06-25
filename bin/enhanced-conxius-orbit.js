@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Enhanced Conxius Orbit CLI for Conxian Deployment
+ * Enhanced ConxiusOrbit CLI for Conxian Deployment
  * Full-featured deployment tool with Hiro API integration
  */
 
@@ -11,7 +11,7 @@ function main() {
   const args = process.argv.slice(2);
   const command = args[0] || "help";
 
-  console.log("🚀 Conxius Orbit - Enhanced Conxian Deployment Tool\n");
+  console.log("🚀 ConxiusOrbit - Enhanced Conxian Deployment Tool\n");
 
   // Handle Node.js CLI commands
   if (command === "deploy") {
@@ -30,7 +30,7 @@ function main() {
     console.log("🔍 Running enhanced auto-detection...\n");
     runPythonScript("conxius_orbit_auto_detect.py", args.slice(1));
   } else if (command === "gui") {
-    console.log("🖥️  Launching Conxius Orbit GUI...\n");
+    console.log("🖥️  Launching ConxiusOrbit GUI...\n");
     const scriptDir = path.join(__dirname, "..");
     const pythonScript = path.join(scriptDir, "conxius_orbit.py");
 
@@ -75,7 +75,7 @@ function runPythonScript(scriptName, args = []) {
 
 function showHelp() {
   console.log(`
-🚀 Conxius Orbit - Enhanced CLI for Conxian Deployment
+🚀 ConxiusOrbit - Enhanced CLI for Conxian Deployment
 
 Usage:
   conxius_orbit <command> [options]

@@ -1,13 +1,13 @@
-# Conxius Orbit Product Requirements Document (PRD)
+# ConxiusOrbit Product Requirements Document (PRD)
 
 ## 1. Overview
 
-Conxius Orbit is a comprehensive deployment and management tool for the Stacks blockchain. This document outlines the project's migration to a modern, efficient, and synchronized development environment using the Clarinet SDK, Vitest, and Chainhooks. This "Root-Up" methodology ensures that documentation and implementation are always aligned.
+ConxiusOrbit is a comprehensive deployment and management tool for the Stacks blockchain. This document outlines the project's migration to a modern, efficient, and synchronized development environment using the Clarinet SDK, Vitest, and Chainhooks. This "Root-Up" methodology ensures that documentation and implementation are always aligned.
 
 ## 2. Current Architecture & Dependencies
 
 ### 2.1. Core Architecture
-Conxius Orbit is built with a high-fidelity hybrid architecture optimized for the Stacks ecosystem:
+ConxiusOrbit is built with a high-fidelity hybrid architecture optimized for the Stacks ecosystem:
 *   **Orchestration Layer:** Python-based CLI (`conxius_orbit_cli.py`) and Textual TUI (`conxius_orbit_gui.py`) providing a unified interface for the entire lifecycle.
 *   **Blockchain Logic:** Clarity 2 smart contracts integrated with the native Clarinet toolchain.
 *   **Modern Test Suite:** Native Vitest environment utilizing `@stacks/clarinet-sdk` and `vitest-environment-clarinet` for zero-latency WASM Simnet simulation.
@@ -21,7 +21,7 @@ Conxius Orbit is built with a high-fidelity hybrid architecture optimized for th
 
 ## 3. Migration Roadmap (Vitest & Clarinet SDK)
 
-The modernization roadmap ensures Conxius Orbit remains at the forefront of Stacks developer tooling.
+The modernization roadmap ensures ConxiusOrbit remains at the forefront of Stacks developer tooling.
 
 *   **Phase 1: Foundation Modernization (Current)**
     *   [x] Standardize `package.json` with Clarinet SDK and Vitest 4.x.
@@ -56,7 +56,7 @@ The modernization roadmap ensures Conxius Orbit remains at the forefront of Stac
 ## 4. Feature Alignment
 
 ### 4.1. Full Development Cycle
-Conxius Orbit handles the entire development lifecycle:
+ConxiusOrbit handles the entire development lifecycle:
 *   **Setup:** Interactive wizard for rapid environment configuration.
 *   **Detect:** Automatic discovery of contracts and project structure.
 *   **Test:** Native integration with Vitest and Clarinet SDK for robust unit and integration testing.
@@ -70,7 +70,7 @@ Conxius Orbit handles the entire development lifecycle:
 *   **Mainnet:** Secure production deployment with error masking and sentinel security hardening.
 
 ### 4.3. Clarity 4 Native Support
-Conxius Orbit is committed to supporting the latest Clarity language features.
+ConxiusOrbit is committed to supporting the latest Clarity language features.
 *   **Current:** Full support for Clarity 1 and Clarity 2.
 *   **Upcoming:** Native support for Clarity 4 (Nakamoto) is on the roadmap to enable developers to leverage the latest Stacks blockchain innovations.
 
@@ -98,7 +98,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 ### Session 48: Foundation Modernization & Vitest Transition (Jules)
 
-*   **Objective:** Modernize the Conxius Orbit foundation by transitioning to the Clarinet SDK and Vitest architecture, establishing a foundation for multi-network event tracking.
+*   **Objective:** Modernize the ConxiusOrbit foundation by transitioning to the Clarinet SDK and Vitest architecture, establishing a foundation for multi-network event tracking.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
     *   **Chainhook Reconciliation:** Corrected drift in `/chainhooks` JSON predicates for Devnet, Testnet, and Mainnet. Replaced legacy `stake` method monitoring with the correct `issue-bond` method for the `dlc-bond` contract.
@@ -110,7 +110,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 ### Session 44: Foundation Alignment & Root-Up Reinforcement (Jules)
 
-*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the ConxiusOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed alignment between `PRD.md`, `Clarinet.toml`, and the codebase across all networks.
     *   **Technical Modernization:** Updated `package.json` with latest dependencies: `@stacks/network` (^7.3.1), `@stacks/transactions` (^7.4.0), `@stacks/clarinet-sdk` (^3.16.0), `vitest` (^4.1.4).
@@ -169,7 +169,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 *   **Changes:**
     *   Mitigated XSS vulnerability in `wallet_connect.py` by replacing `innerHTML` with `textContent` for displaying Stacks addresses and error messages in the frontend template.
     *   Centralized secret placeholder logic in `conxius_orbit_secrets.py` via the `is_placeholder` utility, ensuring consistent, case-insensitive handling of safe defaults (e.g., `your_private_key_here`).
-    *   Standardized all configuration loaders (`EnhancedConfigManager`, `Conxius OrbitGUI`, `DeploymentMonitor`, and `DeploymentVerifier`) to utilize `is_placeholder` for security enforcement.
+    *   Standardized all configuration loaders (`EnhancedConfigManager`, `ConxiusOrbitGUI`, `DeploymentMonitor`, and `DeploymentVerifier`) to utilize `is_placeholder` for security enforcement.
     *   Hardened file persistence in `EnhancedConfigManager` by using `save_secure_config` for default configuration creation, eliminating world-readable race conditions.
     *   Enhanced `DeploymentVerifier` to use `save_secure_config` with recursive redaction for restricted `0600` permissions on verification artifact output.
     *   Verified the XSS fix with a targeted Playwright script and confirmed system integrity via full pytest and vitest suites.
@@ -271,7 +271,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
     *   Enhanced the `@cache_api_call` decorator in `deployment_monitor.py` to support explicit cache bypassing via the `bypass_cache` keyword argument.
     *   Optimized `wait_for_transaction` to bypass the 5-minute cache during polling, reducing transaction confirmation detection latency by up to 96%.
     *   Updated the monitoring loop (`_check_for_new_deployments`) and verification logic (`verify_deployment`) to use fresh data for critical state checks.
-    *   Enhanced `Conxius OrbitGUI` to support cache-bypassing refreshes, ensuring manual "Refresh" button clicks always provide the latest blockchain state.
+    *   Enhanced `ConxiusOrbitGUI` to support cache-bypassing refreshes, ensuring manual "Refresh" button clicks always provide the latest blockchain state.
     *   Refactored `tests/test_bolt_performance.py` to eliminate race conditions in automated GUI testing.
     *   Added `tests/unit/test_bolt_cache_bypass.py` for comprehensive validation of the new caching logic.
 *   **Status:** Complete.
@@ -431,7 +431,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 ### Session 27: Root-Up Alignment & Foundation Verification
 
-*   **Objective:** Modernize the Conxius Orbit repository using a "Root-Up" methodology and ensure the foundation is aligned with the Clarinet SDK and Vitest architecture.
+*   **Objective:** Modernize the ConxiusOrbit repository using a "Root-Up" methodology and ensure the foundation is aligned with the Clarinet SDK and Vitest architecture.
 *   **Changes:**
     *   Performed a comprehensive "Root-Up" drift analysis and confirmed alignment between `PRD.md`, `Clarinet.toml`, and the codebase.
     *   Standardized all Node.js-related scripts and documentation to utilize `pnpm`, including `package.json`, `README.md`, `AGENTS.md`, and `deploy.sh`.
@@ -444,7 +444,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the configuration experience in the TUI by providing clear feedback for pending changes and interactive controls for sensitive data visibility.
 *   **Changes:**
-    *   Implemented a reactive `unsaved_changes` state in `Conxius OrbitGUI` to track modifications to the account address and private key.
+    *   Implemented a reactive `unsaved_changes` state in `ConxiusOrbitGUI` to track modifications to the account address and private key.
     *   Added dynamic visual feedback to the Settings Save button, which now updates its variant to `warning` (orange) and its label to `💾 Save Changes*` when modifications are pending.
     *   Implemented an interactive "Show/Hide" label toggle for the private key visibility switch, providing immediate textual feedback upon state changes.
     *   Enhanced `on_save_config_pressed` to reset the unsaved state and synchronize the internal configuration dictionary upon successful persistence.
@@ -454,7 +454,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 ### Session 29: Dashboard & Settings Explorer Integration (Palette)
 
-*   **Objective:** Enhance the Conxius Orbit TUI by providing consistent, immediate access to external blockchain explorers for primary user addresses from both the Dashboard and Settings views.
+*   **Objective:** Enhance the ConxiusOrbit TUI by providing consistent, immediate access to external blockchain explorers for primary user addresses from both the Dashboard and Settings views.
 *   **Changes:**
     *   Added "View on Explorer" (🌐) buttons to the Dashboard and Settings address bars in `conxius_orbit_gui.py`.
     *   Implemented a network-aware explorer link handler with support for address-level deep-linking and devnet safety checks.
@@ -471,7 +471,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
     *   Implemented `is_sensitive_value` in `conxius_orbit_secrets.py` to identify Stacks private keys (64/66 hex chars) and BIP39-style mnemonics.
     *   Hardened `redact_recursive` to automatically redact recognized sensitive values regardless of their parent key name.
     *   Enhanced `save_secure_config` to block the persistence of recognized secrets to disk, ensuring that even misnamed keys do not result in plaintext secret storage.
-    *   Standardized all configuration loaders (`ConfigManager`, `EnhancedConfigManager`, and `Conxius OrbitGUI`) to enforce this new value-based security policy during initialization.
+    *   Standardized all configuration loaders (`ConfigManager`, `EnhancedConfigManager`, and `ConxiusOrbitGUI`) to enforce this new value-based security policy during initialization.
     *   Unified secret placeholder handling across the project using the centralized `is_placeholder` utility.
     *   Added comprehensive security regression tests in `tests/unit/test_sentinel_value_redaction.py`.
     *   Verified system integrity with full unit test suite (55 passed).
@@ -503,7 +503,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 ### Session 33: Initialization & Alignment (Root-Up Reinforcement)
 
-*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the ConxiusOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   Upgraded `@stacks/clarinet-sdk` to `^3.14.1` in `package.json` to leverage latest Simnet features.
     *   Reinforced `PRD.md` with detailed **Architecture Overview**, a modernized **Migration Roadmap**, and a **Multi-Network Alignment** registry.
@@ -539,8 +539,8 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 *   **Changes:**
     *   **License Standardization:** Added MIT license headers to all major Python and TypeScript/JavaScript source files to ensure legal compliance and professional standards.
     *   **Documentation Alignment:** Updated `ISSUES.md` to reflect the resolved state of documentation issues (ambiguity, redundancy, and missing elements).
-    *   **Performance Verification:** Confirmed implementation of Bolt BOLT optimizations, including pre-compiled regex in `conxius_orbit_auto_detect.py` and hoisted bucketing in `conxius_orbit_gui.py`.
-    *   **Security Reinforcement:** Verified Sentinel SENTINEL protections in `conxius_orbit_secrets.py`, including input normalization before LRU caching and value-based secret detection.
+    *   **Performance Verification:** Confirmed implementation of Bolt ⚡ optimizations, including pre-compiled regex in `conxius_orbit_auto_detect.py` and hoisted bucketing in `conxius_orbit_gui.py`.
+    *   **Security Reinforcement:** Verified Sentinel 🛡️ protections in `conxius_orbit_secrets.py`, including input normalization before LRU caching and value-based secret detection.
     *   **Registry Sync:** Verified that the Multi-Network Alignment registry in `PRD.md` correctly reflects the Chainhook predicates and contract principals across Devnet, Testnet, and Mainnet.
 *   **Status:** Complete.
 
@@ -559,7 +559,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Reinforce the project's foundation by aligning documentation and technical infrastructure with the Clarinet SDK and Vitest architecture, following the Root-Up Protocol.
 *   **Changes:**
-    *   **Drift Analysis:** Identified significant discrepancies between `Clarinet.toml` and the filesystem. Reconciled `Clarinet.toml` by renaming the project to `Conxius Orbit` and adding the missing `placeholder` contract definition.
+    *   **Drift Analysis:** Identified significant discrepancies between `Clarinet.toml` and the filesystem. Reconciled `Clarinet.toml` by renaming the project to `ConxiusOrbit` and adding the missing `placeholder` contract definition.
     *   **Configuration Standardization:** Verified `package.json` dependencies and `vitest.config.ts` for native Simnet support and ESM compatibility.
     *   **Documentation Sync:** Updated `PRD.md` to reflect the latest foundation alignment and documented the drift reconciliation logic.
 *   **Status:** Complete.
@@ -576,7 +576,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 ### Session 40: Foundation Alignment & Root-Up Reinforcement (Jules)
 
-*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the ConxiusOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Reconciliation:** Aligned `Clarinet.toml` and `PRD.md` with the active contracts in the `contracts/` directory (`revenue-automation`, `dlc-orchestrator`, `dlc-bond`, `placeholder`).
     *   **Dependency Management:** Updated `package.json` with the latest versions of `@stacks/clarinet-sdk`, `vitest`, and `vitest-environment-clarinet`.
@@ -600,7 +600,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 
 ### Session 49: Foundation Alignment & Dependency Modernization (Jules)
 
-*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the ConxiusOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
     *   **Dependency Modernization:** Updated `package.json` with latest stable versions: `@stacks/clarinet-sdk` (^3.17.0), `vitest` (^4.1.6), and `@vitest/coverage-v8` (^4.1.6). Bumped project version to 1.2.9.
@@ -632,7 +632,7 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 *   **Status:** Complete.
 ### Session 46: Foundation Modernization & Root-Up Reinforcement (Jules)
 
-*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the ConxiusOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
     *   **Technical Modernization:** Explicitly re-initialized `vitest.config.ts` for native Clarinet SDK integration and Vitest 4 compatibility.
@@ -645,4 +645,24 @@ Conxius Orbit is committed to supporting the latest Clarity language features.
 *   **Version:** 1.2.9
 *   **License:** MIT (Standardized)
 *   **Documentation:** Root-Up Protocol Active
+*   **Tests:** Passed (Vitest Simnet & Pytest)
+
+### Session 50: Rebranding & Machine-Readable Output (Jules)
+
+*   **Objective:** Rebrand the repository from `conxius-orbit` to `conxius-orbit` and implement machine-readable CLI interfaces with standardized artifact schemas.
+*   **Changes:**
+    *   **Full Rebranding:** Renamed all files and modules to `conxius_orbit` (Python) or `conxius-orbit` (Repository/JS). Updated all imports, documentation, and logic to reflect the new naming convention.
+    *   **Machine-Readable CLI:** Implemented `--output json` and `--output-file <path>` flags across all primary commands (`deploy`, `verify`, `monitor`, `diagnose`, `detect`, `test`, `template`).
+    *   **Artifact Standardization:** Created explicit JSON schemas in `/schemas` for `deployment-manifest.json` and `verification-result.json`.
+    *   **Quiet Mode:** Automated suppression of interactive/logging output when JSON mode is active to ensure clean stdout for machine consumers.
+    *   **Rebranded TUI:** Visual verification of the rebranded Textual TUI and saved a new reference screenshot.
+    *   **Security & Redaction:** Ensured all JSON outputs are processed through the standard `redact_recursive` engine to prevent credential leakage in automated logs.
+    *   **System Verification:** Confirmed full-system integrity via successful execution of Vitest Simnet tests (7 passed) and Pytest core suites (125 passed).
+*   **Status:** Complete.
+
+### Session Snapshot
+*   **Version:** 1.2.8
+*   **Name:** ConxiusOrbit
+*   **Artifacts:** JSON Schemas Standardized
+*   **Output:** Machine-Readable (JSON) Enabled
 *   **Tests:** Passed (Vitest Simnet & Pytest)

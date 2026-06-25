@@ -1,4 +1,4 @@
-# Conxius Orbit v1.0.0 - Release Checklist
+# ConxiusOrbit v1.0.0 - Release Checklist
 
 **Release Date**: 2025-10-04  
 **Repository**: <https://github.com/Conxian/conxius_orbit>
@@ -74,7 +74,7 @@ git push origin v1.0.0
 ### Step 3: Verify GitHub Actions ⏳
 
 - Go to: <https://github.com/Conxian/conxius_orbit/actions>
-- Check "Publish Conxius Orbit" workflow
+- Check "Publish ConxiusOrbit" workflow
 - Verify tests pass
 - Confirm publishing (after tokens configured)
 
@@ -100,7 +100,7 @@ conxius_orbit --version
 
 - Go to: <https://github.com/Conxian/conxius_orbit/releases/new>
 - Tag: v1.0.0
-- Title: "Conxius Orbit v1.0.0 - Initial Release"
+- Title: "ConxiusOrbit v1.0.0 - Initial Release"
 - Description: See template below
 - Publish release
 
@@ -109,7 +109,7 @@ conxius_orbit --version
 ## 📝 GitHub Release Template
 
 ```markdown
-# Conxius Orbit v1.0.0 🚀
+# ConxiusOrbit v1.0.0 🚀
 
 Professional GUI deployment tool for Stacks blockchain smart contracts.
 

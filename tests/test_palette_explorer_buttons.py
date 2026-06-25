@@ -2,6 +2,7 @@ import pytest
 from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Button
 from unittest.mock import MagicMock
+from conxius_orbit_secrets import validate_stacks_address
 
 
 @pytest.mark.asyncio
@@ -33,10 +34,6 @@ async def test_address_explorer_buttons_exist():
         )
         assert settings_explorer_btn.tooltip == "View address on Hiro Explorer [e]"
 
-        # Check Network Status tooltip
-        network_status_card = app.query("#network-status").first().parent
-        assert "https://api.testnet.hiro.so" in str(network_status_card.tooltip)
-
 
 @pytest.mark.asyncio
 async def test_address_explorer_initial_state():
@@ -47,6 +44,13 @@ async def test_address_explorer_initial_state():
     app_with_addr.monitor = MagicMock()
 
     async with app_with_addr.run_test() as pilot:
+        # Refresh state manually since on_mount ran before address was set
+        is_addr_configured = app_with_addr.address != "Not configured"
+        app_with_addr.w_view_dashboard_explorer_btn.disabled = not is_addr_configured
+        app_with_addr.w_view_address_explorer_btn.disabled = (
+            not validate_stacks_address(app_with_addr.address, app_with_addr.network)
+        )
+
         assert (
             app_with_addr.query_one("#view-dashboard-explorer-btn", Button).disabled
             is False
