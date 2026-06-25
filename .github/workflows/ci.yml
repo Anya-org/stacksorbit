@@ -27,12 +27,12 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Setup Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d202383bd # v4.7.1
+        uses: actions/setup-python@0b93645e9fea7318ecad2b470db3fb2f4c8a5209 # v5.1.1
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Setup Node
-        uses: actions/setup-node@b52d7e3823e17d7219603d4ad859d99c36940854 # v4.0.1
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
           node-version: '20'
 
