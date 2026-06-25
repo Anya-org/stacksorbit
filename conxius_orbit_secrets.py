@@ -476,7 +476,10 @@ def _validate_stacks_address_cached(
     address: str, network: Optional[str] = None
 ) -> bool:
     """Bolt ⚡: Internal cached validation for pre-normalized addresses."""
-    reg = NETWORK_ADDR_RE_MAP.get(network, GENERIC_ADDR_RE)
+    if network is None:
+        reg = GENERIC_ADDR_RE
+    else:
+        reg = NETWORK_ADDR_RE_MAP.get(network.lower(), GENERIC_ADDR_RE)
     return bool(reg.match(address))
 
 
