@@ -22,7 +22,7 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
 
 # Import our enhanced modules
-from conxius_orbit_secrets import is_sensitive_key, redact_recursive, save_secure_config
+from conxius_orbit_secrets import redact_recursive, save_secure_config
 from scripts.enhanced_conxian_deployment import (
     EnhancedConfigManager,
     EnhancedConxianDeployer,
