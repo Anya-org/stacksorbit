@@ -213,6 +213,9 @@ class ConxiusOrbitGUI(App):
 
     def watch_theme_name(self, old_theme: str, new_theme: str) -> None:
         """Watch for theme changes and update the application CSS class."""
+        if not self._screen_stack:
+            return
+
         self.remove_class(f"{old_theme}-theme")
         self.add_class(f"{new_theme}-theme")
 

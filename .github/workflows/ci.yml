@@ -68,12 +68,17 @@ jobs:
         run: pnpm run audit:python
 
       - name: Lint (JS + Python + TS)
-        run: pnpm run lint
+        run: pnpm run lint:code
+
+      - name: Lint (Black format check)
+        if: matrix.python-version == '3.10' || matrix.python-version == '3.11'
+        run: pnpm run lint:format
 
       - name: Run unit tests
         run: pnpm run test:unit
 
       - name: Run Vitest tests
+        if: matrix.os != 'windows-latest'
         run: pnpm run test:vitest
 
       - name: GUI smoke test

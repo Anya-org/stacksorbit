@@ -49,7 +49,7 @@ setup(
             "pytest>=7.0.0",
             "pytest-cov>=4.0.0",
             "pytest-asyncio",
-            "black>=23.0.0",
+            "black==26.3.1; python_version >= '3.10'",
             "pylint>=2.17.0",
             "mypy>=1.0.0",
         ],
