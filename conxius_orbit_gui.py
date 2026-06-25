@@ -1322,11 +1322,18 @@ class ConxiusOrbitGUI(App):
         # Pilot BOLT: Use call_after_refresh to ensure tab-change focus doesn't override us.
         self.call_after_refresh(self.w_tx_filter_input.focus)
 
+    def _clear_tx_filter_state(self) -> None:
+        """Synchronously clear the transaction filter and dependent UI state."""
+        self.tx_filter = ""
+        self.w_tx_filter_input.value = ""
+        self.w_clear_tx_filter_btn.display = False
+        self._update_transactions_table()
+        self.w_tx_filter_input.focus()
+
     def action_clear_tx_filter(self) -> None:
         """Action to clear the transaction filter."""
         if self.w_tabbed_content.active == "transactions":
-            self.w_tx_filter_input.value = ""
-            self.w_tx_filter_input.focus()
+            self._clear_tx_filter_state()
 
     def action_switch_tab(self, tab_id: str) -> None:
         """Switch to a specific tab."""
@@ -1615,8 +1622,7 @@ class ConxiusOrbitGUI(App):
     @on(Button.Pressed, "#clear-tx-filter-btn")
     def on_clear_tx_filter_pressed(self) -> None:
         """Handle the clear filter button press."""
-        self.w_tx_filter_input.value = ""
-        self.w_tx_filter_input.focus()
+        self._clear_tx_filter_state()
 
     @on(Input.Changed, "#tx-filter-input")
     def on_tx_filter_changed(self, event: Input.Changed) -> None:
