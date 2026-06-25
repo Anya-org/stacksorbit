@@ -13,17 +13,24 @@ export default defineConfig(async () => {
   const { vitestSetupFilePath, getClarinetVitestsArgv } = await import(
     "@stacks/clarinet-sdk/vitest"
   );
+  const isWindows = process.platform === "win32";
 
   return {
     test: {
       environment: "clarinet",
       globals: true,
-      // Use forks+singleFork across platforms; Windows thread workers have been
-      // flaky in CI for Clarinet-powered suites.
-      pool: "forks",
-      forks: {
-        singleFork: true,
-      },
+      pool: isWindows ? "threads" : "forks",
+      ...(isWindows
+        ? {
+            threads: {
+              singleThread: true,
+            },
+          }
+        : {
+            forks: {
+              singleFork: true,
+            },
+          }),
       setupFiles: [vitestSetupFilePath],
       environmentOptions: {
         clarinet: {
