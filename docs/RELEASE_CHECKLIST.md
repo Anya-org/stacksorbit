@@ -1,7 +1,7 @@
 # Conxius Orbit v1.0.0 - Release Checklist
 
 **Release Date**: 2025-10-04  
-**Repository**: <https://github.com/Conxian/conxius_orbit>
+**Repository**: <https://github.com/Conxian/conxius-orbit>
 **Status**: ✅ **READY TO PUBLISH**
 
 **Note**: This checklist was created for v1.0.0; update version references for newer releases.
@@ -54,12 +54,12 @@
 1. **NPM_TOKEN**
    - Go to: <https://www.npmjs.com/settings/[username]/tokens>
    - Generate "Automation" token
-   - Add to: <https://github.com/Conxian/conxius_orbit/settings/secrets/actions>
+   - Add to: <https://github.com/Conxian/conxius-orbit/settings/secrets/actions>
 
 2. **PYPI_API_TOKEN**
    - Go to: <https://pypi.org/manage/account/token/>
    - Generate token for conxius_orbit
-   - Add to: <https://github.com/Conxian/conxius_orbit/settings/secrets/actions>
+   - Add to: <https://github.com/Conxian/conxius-orbit/settings/secrets/actions>
 
 ### Step 2: Tag Release ✅
 
@@ -73,7 +73,7 @@ git push origin v1.0.0
 
 ### Step 3: Verify GitHub Actions ⏳
 
-- Go to: <https://github.com/Conxian/conxius_orbit/actions>
+- Go to: <https://github.com/Conxian/conxius-orbit/actions>
 - Check "Publish Conxius Orbit" workflow
 - Verify tests pass
 - Confirm publishing (after tokens configured)
@@ -98,7 +98,7 @@ conxius_orbit --version
 
 ### Step 5: Create GitHub Release ⏳
 
-- Go to: <https://github.com/Conxian/conxius_orbit/releases/new>
+- Go to: <https://github.com/Conxian/conxius-orbit/releases/new>
 - Tag: v1.0.0
 - Title: "Conxius Orbit v1.0.0 - Initial Release"
 - Description: See template below
@@ -156,7 +156,7 @@ conxius_orbit
 
 ## 🔗 Links
 
-- **Repository**: <https://github.com/Conxian/conxius_orbit>
+- **Repository**: <https://github.com/Conxian/conxius-orbit>
 - **npm**: <https://www.npmjs.com/package/conxius_orbit>
 - **PyPI**: <https://pypi.org/project/conxius_orbit/>
 
@@ -200,7 +200,7 @@ See our [roadmap](README.md#roadmap) for planned features in v1.2.0 and v2.0.0.
 
 When complete, verify:
 
-1. ✅ GitHub tag: https://github.com/Conxian/conxius_orbit/releases/tag/v1.0.0
+1. ✅ GitHub tag: https://github.com/Conxian/conxius-orbit/releases/tag/v1.0.0
 2. ⏳ npm package: https://www.npmjs.com/package/conxius_orbit
 3. ⏳ PyPI package: https://pypi.org/project/conxius_orbit/
 4. ⏳ `npm install -g conxius_orbit` works globally

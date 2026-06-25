@@ -15,4 +15,4 @@ This document tracks a small set of changes needed to keep the repository "publi
 - Keep CI aligned with the repo toolchain (`pnpm-lock.yaml` implies CI should use `pnpm`).
 - Never commit secret material (private keys, mnemonics, tokens) or secret-bearing env files.
 - Never commit runtime deployment artifacts (manifests / histories under `deployment/` or `.conxius_orbit/`).
-- Ensure release automation references the canonical documentation site (`https://conxian.github.io/conxius_orbit/`).
+- Ensure release automation references the canonical documentation site (`https://conxian.github.io/conxius-orbit/`).
