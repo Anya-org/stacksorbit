@@ -460,8 +460,7 @@ def start_wallet_connect_server(
     WalletConnectHandler.network = network
     url = f"http://127.0.0.1:{port}/?token={token}"
 
-    print(
-        f"""
+    print(f"""
 ╔══════════════════════════════════════════════════════════════╗
 ║           🚀 ConxiusOrbit Wallet Connect                      ║
 ╠══════════════════════════════════════════════════════════════╣
@@ -473,8 +472,7 @@ def start_wallet_connect_server(
 ║  Scan the QR code with your mobile Stacks wallet             ║
 ║  or click "Connect" if using browser extension               ║
 ╚══════════════════════════════════════════════════════════════╝
-"""
-    )
+""")
 
     socketserver.TCPServer.allow_reuse_address = True
     # 🛡️ Sentinel: Bind only to localhost (127.0.0.1) for security.
@@ -541,8 +539,7 @@ if __name__ == "__main__":
 
     if isinstance(address, str):
         display_address = str(address)
-        print(
-            f"""
+        print(f"""
 ╔══════════════════════════════════════════════════════════════╗
 ║  ✅ Wallet Connected Successfully!                           ║
 ╠══════════════════════════════════════════════════════════════╣
@@ -552,5 +549,4 @@ if __name__ == "__main__":
 ║  1. Set DEPLOYER_PRIVKEY as environment variable             ║
 ║  2. Run: python conxius_orbit_cli.py deploy --network testnet  ║
 ╚══════════════════════════════════════════════════════════════╝
-"""
-        )
+""")

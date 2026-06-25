@@ -768,7 +768,9 @@ class GenericStacksAutoDetector:
             contracts.extend(clarinet_contracts)
             seen_names.update(c["name"] for c in clarinet_contracts)
             if self.verbose:
-                print(f"✅ Clarinet.toml detection: {len(clarinet_contracts)} contracts")
+                print(
+                    f"✅ Clarinet.toml detection: {len(clarinet_contracts)} contracts"
+                )
 
         # Method 2: Efficient directory scanning (any .clar files, skipping heavy dirs)
         # Bolt ⚡: Consolidate directory and project structure scanning into a single
