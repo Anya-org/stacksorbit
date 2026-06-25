@@ -399,7 +399,7 @@ Examples:
   conxius_orbit monitor --follow
   conxius_orbit verify
 
-For more information, visit: https://github.com/Conxian/conxius_orbit
+For more information, visit: https://github.com/Conxian/conxius-orbit
 `);
 }
 
