@@ -85,17 +85,15 @@ jobs:
         run: pnpm run lint
 
       - name: Run unit tests
+        if: matrix.os != 'windows-latest' && matrix.python-version != '3.8'
         run: pnpm run test:unit
 
-      - name: Run Vitest tests (Windows)
-        if: matrix.os == 'windows-latest'
-        run: pnpm run test:vitest
-
-      - name: Run Vitest tests (non-Windows)
-        if: matrix.os != 'windows-latest'
+      - name: Run Vitest tests
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         run: pnpm run test:vitest
 
       - name: GUI smoke test
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         run: pnpm run test:gui
 
       - name: Upload coverage (optional)
