@@ -6,7 +6,7 @@
 Centralized list of secret keys for ConxiusOrbit.
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, Dict, Any, Union
 import os
 import functools
 import json
