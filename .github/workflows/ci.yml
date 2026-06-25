@@ -52,13 +52,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .[dev,test]
-          pip install safety
 
       - name: Install Node deps
         run: pnpm install --frozen-lockfile
 
-      - name: Run Audit
-        run: pnpm run audit
+      - name: Install Safety (Python audit lane)
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        run: pip install safety
+
+      - name: Run JS audit
+        run: pnpm run audit:js
+
+      - name: Run Python audit (requirements)
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        run: pnpm run audit:python
 
       - name: Lint (JS + Python + TS)
         run: pnpm run lint
