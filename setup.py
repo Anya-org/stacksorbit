@@ -59,7 +59,8 @@ setup(
             "pytest>=7.0.0",
             "pytest-cov>=4.0.0",
             "pytest-asyncio",
-            "black>=23.0.0",
+            "black==23.12.1",
+            "tomli>=2.0.1; python_version < '3.11'",
             "pylint>=2.17.0",
             "mypy>=1.0.0",
             "types-requests",
@@ -69,6 +70,7 @@ setup(
             "pytest>=7.0.0",
             "pytest-mock>=3.10.0",
             "pytest-asyncio",
+            "tomli>=2.0.1; python_version < '3.11'",
         ],
     },
     classifiers=[

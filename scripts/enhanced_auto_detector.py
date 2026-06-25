@@ -16,12 +16,36 @@ import hashlib
 import re
 import fnmatch
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from datetime import datetime
 from conxius_orbit_secrets import is_safe_path, save_secure_config
 
 # Bolt ⚡: Global cache for Clarinet version to avoid redundant subprocess calls.
 _CLARINET_VERSION_CACHE: Optional[str] = None
+
+
+def _load_toml_data(path: Path) -> Dict[str, Any]:
+    """Load TOML with stdlib `tomllib`, then `tomli`, then `toml`."""
+    try:
+        import tomllib
+
+        with open(path, "rb") as f:
+            return tomllib.load(f)
+    except ImportError:
+        pass
+
+    try:
+        import tomli
+
+        with open(path, "rb") as f:
+            return tomli.load(f)
+    except ImportError:
+        pass
+
+    import toml
+
+    with open(path, "r", encoding="utf-8") as f:
+        return toml.load(f)
 
 
 class GenericStacksAutoDetector:
@@ -744,9 +768,7 @@ class GenericStacksAutoDetector:
             contracts.extend(clarinet_contracts)
             seen_names.update(c["name"] for c in clarinet_contracts)
             if self.verbose:
-                print(
-                    f"✅ Clarinet.toml detection: {len(clarinet_contracts)} contracts"
-                )
+                print(f"✅ Clarinet.toml detection: {len(clarinet_contracts)} contracts")
 
         # Method 2: Efficient directory scanning (any .clar files, skipping heavy dirs)
         # Bolt ⚡: Consolidate directory and project structure scanning into a single
@@ -796,22 +818,12 @@ class GenericStacksAutoDetector:
             return contracts
 
         try:
-            # Try to parse as TOML first
+            # Try TOML parser chain: tomllib -> tomli -> toml
             try:
-                import tomllib
-
-                with open(clarinet_path, "rb") as f:
-                    toml_data = tomllib.load(f)
+                toml_data = _load_toml_data(clarinet_path)
             except ImportError:
-                # Fallback for older Python versions
-                try:
-                    import toml
-
-                    with open(clarinet_path, "r") as f:
-                        toml_data = toml.load(f)
-                except ImportError:
-                    # Manual parsing fallback
-                    return self._parse_clarinet_toml_manually(clarinet_path)
+                # Manual parsing fallback when no TOML parser is installed
+                return self._parse_clarinet_toml_manually(clarinet_path)
 
             # Extract contracts from TOML structure
             if "contracts" in toml_data:
@@ -1131,21 +1143,12 @@ class GenericStacksAutoDetector:
         analysis["exists"] = True
 
         try:
-            # Try TOML parsing first
+            # Try TOML parser chain: tomllib -> tomli -> toml
             try:
-                import tomllib
-
-                with open(clarinet_path, "rb") as f:
-                    toml_data = tomllib.load(f)
+                toml_data = _load_toml_data(clarinet_path)
             except ImportError:
-                try:
-                    import toml
-
-                    with open(clarinet_path, "r") as f:
-                        toml_data = toml.load(f)
-                except ImportError:
-                    # Manual parsing
-                    return self._analyze_clarinet_toml_manually(clarinet_path)
+                # Manual parsing
+                return self._analyze_clarinet_toml_manually(clarinet_path)
 
             # Analyze project structure
             if "project" in toml_data:

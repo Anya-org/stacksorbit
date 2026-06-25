@@ -74,7 +74,12 @@ jobs:
       - name: Run unit tests
         run: pnpm run test:unit
 
-      - name: Run Vitest tests
+      - name: Run Vitest tests (Windows)
+        if: matrix.os == 'windows-latest'
+        run: pnpm exec vitest run --pool=threads
+
+      - name: Run Vitest tests (non-Windows)
+        if: matrix.os != 'windows-latest'
         run: pnpm run test:vitest
 
       - name: GUI smoke test

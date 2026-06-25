@@ -97,36 +97,27 @@ def test_stat_avoidance_in_clarinet_toml():
         "contracts/my-contract.clar": {"mtime": 9999, "size": 500}
     }
 
-    # Mock Clarinet.toml content
-    toml_content = """
-    [contracts.my-contract]
-    path = "contracts/my-contract.clar"
-    """
-
     with patch("pathlib.Path.exists", return_value=True):
-        with patch("builtins.open", MagicMock()):
-            with patch(
-                "tomllib.load",
-                return_value={
-                    "contracts": {"my-contract": {"path": "contracts/my-contract.clar"}}
-                },
-            ):
-                # Mock stat to ensure it's NOT called for the contract
-                with patch("pathlib.Path.stat") as mock_stat:
-                    contracts = detector._parse_generic_clarinet_toml(directory)
+        with patch(
+            "scripts.enhanced_auto_detector._load_toml_data",
+            return_value={
+                "contracts": {"my-contract": {"path": "contracts/my-contract.clar"}}
+            },
+        ):
+            # Mock stat to ensure it's NOT called for the contract
+            with patch("pathlib.Path.stat") as mock_stat:
+                contracts = detector._parse_generic_clarinet_toml(directory)
 
-                    assert len(contracts) == 1
-                    assert contracts[0]["modified"] == 9999
-                    assert contracts[0]["size"] == 500
+                assert len(contracts) == 1
+                assert contracts[0]["modified"] == 9999
+                assert contracts[0]["size"] == 500
 
-                    # mock_stat should NOT have been called for the contract file
-                    # It might be called for Clarinet.toml though if we didn't cache that
-                    # But in our implementation, we retrieve metadata for 'contract_path'
+                # mock_stat should NOT have been called for the contract file
+                # It might be called for Clarinet.toml though if we didn't cache that
+                # But in our implementation, we retrieve metadata for 'contract_path'
 
-                    # Filter calls to check if any call was for the contract file
-                    contract_stat_calls = [
-                        c
-                        for c in mock_stat.call_args_list
-                        if "my-contract.clar" in str(c)
-                    ]
-                    assert len(contract_stat_calls) == 0
+                # Filter calls to check if any call was for the contract file
+                contract_stat_calls = [
+                    c for c in mock_stat.call_args_list if "my-contract.clar" in str(c)
+                ]
+                assert len(contract_stat_calls) == 0
