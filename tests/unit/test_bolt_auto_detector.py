@@ -5,7 +5,6 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 from scripts.enhanced_auto_detector import GenericStacksAutoDetector
 
-
 TOML_LOAD_PATCH_TARGET = "tomllib.load" if sys.version_info >= (3, 11) else "toml.load"
 
 

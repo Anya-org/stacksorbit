@@ -531,11 +531,19 @@ if __name__ == "__main__":
     address = start_wallet_connect_server(port)
 
     if address:
+        if isinstance(address, str):
+            address_display = (
+                f"{address[:20]}...{address[-10:]}" if len(address) > 30 else address
+            )
+        else:
+            print(f"\n⚠️ Unexpected wallet address type: {type(address).__name__}")
+            address_display = str(address)
+
         print(f"""
 ╔══════════════════════════════════════════════════════════════╗
 ║  ✅ Wallet Connected Successfully!                           ║
 ╠══════════════════════════════════════════════════════════════╣
-║  Address: {address[:20]}...{address[-10:]}
+║  Address: {address_display}
 ║                                                              ║
 ║  Next steps:                                                 ║
 ║  1. Set DEPLOYER_PRIVKEY as environment variable             ║
