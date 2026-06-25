@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 import time
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 # Add parent directory to path to import modules
@@ -67,6 +68,41 @@ class TestDeploymentMonitorCache(unittest.TestCase):
         self.assertEqual(len(result3), 1)
         # The mock should now have been called a second time
         self.assertEqual(mock_get.call_count, 2)
+
+    def test_load_cache_malformed_json_without_logger(self):
+        """Malformed cache JSON should safely fall back even without self.logger."""
+        with open(self.test_cache_path, "w", encoding="utf-8") as cache_file:
+            cache_file.write("{not-valid-json")
+
+        if hasattr(self.monitor, "logger"):
+            delattr(self.monitor, "logger")
+
+        loaded_cache = self.monitor._load_cache()
+        self.assertEqual(loaded_cache, {})
+
+
+class TestDeploymentMonitorInitialization(unittest.TestCase):
+    """Initialization behavior with malformed cache files."""
+
+    def test_init_handles_malformed_default_cache_file(self):
+        """DeploymentMonitor init should not crash when logs/api_cache.json is malformed."""
+        original_cwd = os.getcwd()
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            os.chdir(temp_dir)
+            try:
+                os.makedirs("logs", exist_ok=True)
+                with open("logs/api_cache.json", "w", encoding="utf-8") as cache_file:
+                    cache_file.write("{invalid-json")
+
+                monitor = DeploymentMonitor(
+                    network="testnet",
+                    config={"LOG_LEVEL": "DEBUG", "SAVE_LOGS": "false"},
+                )
+
+                self.assertEqual(monitor.cache, {})
+            finally:
+                os.chdir(original_cwd)
 
 
 if __name__ == "__main__":

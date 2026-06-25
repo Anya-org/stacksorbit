@@ -23,6 +23,7 @@ import time
 import secrets
 import urllib.parse
 from pathlib import Path
+from typing import cast
 from conxius_orbit_secrets import (
     validate_stacks_address,
     set_secure_permissions,
@@ -532,14 +533,15 @@ if __name__ == "__main__":
 
     if address:
         if isinstance(address, str):
-            address_str = address
-            if len(address_str) > 30:
-                address_display = f"{address_str[:20]}...{address_str[-10:]}"
-            else:
-                address_display = address_str
+            address_str: str = cast(str, address)
         else:
             print(f"\n⚠️ Unexpected wallet address type: {type(address).__name__}")
-            address_display = str(address)
+            address_str = str(address)
+
+        if len(address_str) > 30:
+            address_display = f"{address_str[:20]}...{address_str[-10:]}"
+        else:
+            address_display = address_str
 
         print(f"""
 ╔══════════════════════════════════════════════════════════════╗
