@@ -28,9 +28,6 @@ class ConxiusOrbitCLIIntegration:
         self.auto_detector = GenericStacksAutoDetector(
             use_conxian_mode=use_conxian, verbose=verbose
         )
-        # Use generic mode by default, Conxian mode only if explicitly requested
-        use_conxian = os.getenv("CONXIUS_ORBIT_CONXIAN_MODE", "false").lower() == "true"
-        self.auto_detector = GenericStacksAutoDetector(use_conxian_mode=use_conxian)
         self.current_analysis = None
 
     def run_detection(self, directory: Optional[str] = None) -> Dict:

@@ -1817,64 +1817,65 @@ class GenericStacksAutoDetector:
 if __name__ == "__main__":
     detector = GenericStacksAutoDetector()
     analysis = detector.detect_and_analyze()
+    verbose = detector.verbose
 
     # Show results
-    if self.verbose:
+    if verbose:
         print(f"\n📂 Directory: {analysis['detection']['directory']}")
-    if self.verbose:
+    if verbose:
         print(f"📦 Contracts found: {analysis['detection']['contracts_found']}")
-    if self.verbose:
+    if verbose:
         print(f"📊 Deployment mode: {analysis['deployment_plan']['deployment_mode']}")
-    if self.verbose:
+    if verbose:
         print(
             f"🚀 Contracts to deploy: {analysis['deployment_plan']['contracts_to_deploy']}"
         )
-    if self.verbose:
+    if verbose:
         print(
             f"⏭️  Contracts to skip: {analysis['deployment_plan']['contracts_to_skip']}"
         )
-    if self.verbose:
+    if verbose:
         print(f"🏷️  Mode: {analysis['mode']}")
 
     # Show SDK compatibility
     sdk_compat = analysis["detection"]["sdk_compatibility"]
-    if self.verbose:
+    if verbose:
         print(f"🔧 SDK Compatibility: {sdk_compat}")
 
     # Show recommendations
     recommendations = detector.get_deployment_recommendations(analysis)
     if recommendations:
-        if self.verbose:
+        if verbose:
             print("\n💡 Recommendations:")
         for rec in recommendations:
-            if self.verbose:
+            if verbose:
                 print(f"   {rec}")
 
     # Show deployment plan
     filtered_contracts = analysis["deployment_plan"]["filtered_contracts"]
     if filtered_contracts:
-        if self.verbose:
+        if verbose:
             print("\n📋 Deployment order:")
         max_display = 10
         for i, contract in enumerate(filtered_contracts[:max_display], 1):
             category = contract.get("category", "general")
-            if self.verbose:
+            if verbose:
                 print(f"   {i}. {contract['name']} ({category})")
 
         remaining = len(filtered_contracts) - max_display
         if remaining > 0:
-            if self.verbose:
+            if verbose:
                 print(f"   ... and {remaining} more")
 
     # Show deployment estimates
     deployment_plan = analysis["deployment_plan"]
-    if self.verbose:
+    if verbose:
         print(f"\n⛽ Estimated gas: {deployment_plan['estimated_gas']:.1f} STX")
-    if self.verbose:
+    if verbose:
         print(f"⏰ Estimated time: {deployment_plan['estimated_time']} minutes")
 
     is_ready = analysis["ready"]
-    if self.verbose:
+    if verbose:
         print(f"\n✅ Ready: {is_ready}")
 
     sys.exit(0 if is_ready else 1)
