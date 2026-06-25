@@ -84,11 +84,7 @@ _ThreadResult = TypeVar("_ThreadResult")
 async def _run_sync_in_thread(
     func: Callable[..., _ThreadResult], *args: Any, **kwargs: Any
 ) -> _ThreadResult:
-    """Run sync work in a background thread on Python 3.8+."""
-    to_thread_fn = getattr(asyncio, "to_thread", None)
-    if callable(to_thread_fn):
-        return await to_thread_fn(func, *args, **kwargs)
-
+    """Run sync work in the default executor (Python 3.8+ compatible)."""
     loop = asyncio.get_running_loop()
     bound_func = functools.partial(func, *args, **kwargs)
     return await loop.run_in_executor(None, bound_func)

@@ -448,7 +448,9 @@ class WalletConnectHandler(http.server.SimpleHTTPRequestHandler):
         pass  # Suppress logging
 
 
-def start_wallet_connect_server(port: int = 8765, network: str = "testnet") -> Optional[str]:
+def start_wallet_connect_server(
+    port: int = 8765, network: str = "testnet"
+) -> Optional[str]:
     """Start the wallet connect server and open browser"""
 
     # 🛡️ Sentinel: Generate a random session token for security
