@@ -208,8 +208,17 @@ class ConxiusOrbitGUI(App):
     tx_filter = reactive("")
     theme_name = reactive("standard")
 
+    def _has_active_screen_stack(self) -> bool:
+        """Return True when it's safe to mutate app-level CSS classes."""
+        try:
+            return bool(self.screen_stack)
+        except Exception:
+            return False
+
     def watch_theme_name(self, old_theme: str, new_theme: str) -> None:
         """Watch for theme changes and update the application CSS class."""
+        if old_theme == new_theme or not self._has_active_screen_stack():
+            return
         self.remove_class(f"{old_theme}-theme")
         self.add_class(f"{new_theme}-theme")
 
