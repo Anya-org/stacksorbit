@@ -4,9 +4,7 @@ from typing import Optional, List, Dict, Any, Union
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for full license information.
 
-"""
-Centralized list of secret keys for ConxiusOrbit.
-"""
+# Centralized list of secret keys for ConxiusOrbit.
 
 import os
 import functools
