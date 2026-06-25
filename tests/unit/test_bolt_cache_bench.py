@@ -1,6 +1,6 @@
 import time
 import functools
-from conxius_orbit_secrets import is_sensitive_key, _is_sensitive_normalized
+from conxius_orbit_secrets import is_sensitive_key
 from deployment_monitor import DeploymentMonitor
 
 
