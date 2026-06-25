@@ -20,6 +20,7 @@ async def test_dashboard_navigation_from_metrics():
         # Go back to overview
         await pilot.press("f1")
         assert app.query_one("TabbedContent").active == "overview"
+        await pilot.pause(0.1)
 
         # Click on balance metric
         await pilot.click("#metric-balance")

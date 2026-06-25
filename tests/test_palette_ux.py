@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Label, Static, Button
 
@@ -34,7 +34,10 @@ async def test_address_synchronization():
     app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         new_address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
-        with patch("asyncio.to_thread", return_value=None):
+        with patch(
+            "conxius_orbit_gui._to_thread_compat",
+            new=AsyncMock(return_value=None),
+        ):
             app.query_one("#address-input").value = new_address
             app.query_one("#privkey-input").value = ""
             await app.on_save_config_pressed()
