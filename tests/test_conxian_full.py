@@ -20,16 +20,22 @@ class TestConxianFullIntegration(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # path to Conxian workspace
-        cls.conxian_path = Path("c:/Users/bmokoka/anyachainlabs/Conxian")
-        cls.conxius_orbit_path = Path("c:/Users/bmokoka/anyachainlabs/conxius_orbit")
+        # Resolve integration workspace path portably:
+        # 1) explicit override via CONXIAN_PATH
+        # 2) otherwise use repository root inferred from this test file location
+        conxian_path_env = os.environ.get("CONXIAN_PATH")
+        if conxian_path_env:
+            cls.conxian_path = Path(conxian_path_env).expanduser().resolve()
+        else:
+            cls.conxian_path = Path(__file__).resolve().parents[1]
 
-        # Only skip if we explicitly need an external workspace and it is missing
-        if (
-            os.environ.get("REQUIRE_CONXIAN_WORKSPACE")
-            and not cls.conxian_path.exists()
-        ):
-            raise unittest.SkipTest("Conxian workspace not found at expected path")
+        cls.conxius_orbit_path = cls.conxian_path
+
+        clarinet_path = cls.conxian_path / "Clarinet.toml"
+        if not clarinet_path.is_file():
+            raise unittest.SkipTest(
+                f"Conxian integration workspace unavailable: missing {clarinet_path}"
+            )
 
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
