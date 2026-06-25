@@ -1,11 +1,11 @@
-# Documentation Status for StacksOrbit
+# Documentation Status for Conxius Orbit
 
 This document tracks the resolution of documentation issues.
 
 ## 1. Ambiguity & Redundancy (Resolved)
 
-*   **Standardized Commands:** All documentation now standardizes on `stacksorbit_cli.py` and `pnpm` for canonical entry points. Legacy scripts (`setup_wizard.py`, etc.) have been consolidated or marked as legacy in `AGENTS.md`.
-*   **Terminology Alignment:** Labels like "ultimate" and "enhanced" have been unified under the core StacksOrbit identity.
+*   **Standardized Commands:** All documentation now standardizes on `conxius_orbit_cli.py` and `pnpm` for canonical entry points. Legacy scripts (`setup_wizard.py`, etc.) have been consolidated or marked as legacy in `AGENTS.md`.
+*   **Terminology Alignment:** Labels like "ultimate" and "enhanced" have been unified under the core Conxius Orbit identity.
 
 ## 2. Contradictions (Resolved)
 

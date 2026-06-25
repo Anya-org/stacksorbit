@@ -22,7 +22,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Import monitoring components
 from deployment_monitor import DeploymentMonitor
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     SECRET_KEYS,
     is_sensitive_key,
     is_placeholder,

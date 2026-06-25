@@ -1,5 +1,5 @@
 import pytest
-from stacksorbit_secrets import is_sensitive_value, redact_recursive
+from conxius_orbit_secrets import is_sensitive_value, redact_recursive
 
 
 def test_is_sensitive_value_newline_bypass():

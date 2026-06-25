@@ -45,7 +45,7 @@ def rebuild_clarinet_toml(project_dir: str):
     # Ref: https://docs.stacks.co/clarinet/project-structure
     toml_lines = [
         "[project]",
-        'name = "StacksOrbit"',
+        'name = "ConxiusOrbit"',
         "authors = []",
         'description = ""',
         "telemetry = false",

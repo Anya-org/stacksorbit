@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-StacksOrbit GUI - A modern, feature-rich dashboard for Stacks blockchain deployment
+ConxiusOrbit GUI - A modern, feature-rich dashboard for Stacks blockchain deployment
 """
 
 import asyncio
@@ -124,7 +124,7 @@ def _categorize_contract_cached(name: str) -> str:
     return _normalize_and_categorize_contract(name)
 
 
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     SECRET_KEYS,
     is_sensitive_key,
     is_sensitive_value,
@@ -136,13 +136,13 @@ from stacksorbit_secrets import (
 )
 
 
-class StacksOrbitGUI(App):
-    """A Textual dashboard for StacksOrbit."""
+class ConxiusOrbitGUI(App):
+    """A Textual dashboard for ConxiusOrbit."""
 
     CSS_PATH = [
         "styles/dashboard.tcss",
-        "styles/stacksorbit_gui.tcss",
-        "styles/stacksorbit_gui_sovereign.tcss",
+        "styles/conxius_orbit_gui.tcss",
+        "styles/conxius_orbit_gui_sovereign.tcss",
     ]
 
     BINDINGS = [
@@ -530,7 +530,7 @@ class StacksOrbitGUI(App):
     def on_mount(self) -> None:
         """Initialize the GUI and cache widget references for performance."""
         self.add_class(f"{self.theme_name}-theme")
-        self.title = "StacksOrbit"
+        self.title = "ConxiusOrbit"
         self.sub_title = f"Deployment Dashboard [{self.network.upper()}]"
 
         # Bolt ⚡: Cache frequently accessed widgets to avoid redundant DOM queries via query_one.
@@ -1496,7 +1496,7 @@ class StacksOrbitGUI(App):
     def on_precheck_pressed(self, event: Button.Pressed) -> None:
         """Handle pre-check button press."""
         self.run_command(
-            ["python", "stacksorbit_cli.py", "diagnose"],
+            ["python", "conxius_orbit_cli.py", "diagnose"],
             event.button,
             in_progress_label="Checking...",
         )
@@ -1505,7 +1505,7 @@ class StacksOrbitGUI(App):
     def on_start_deploy_pressed(self, event: Button.Pressed) -> None:
         """Handle deploy button press."""
         self.run_command(
-            ["python", "stacksorbit_cli.py", "deploy"],
+            ["python", "conxius_orbit_cli.py", "deploy"],
             event.button,
             in_progress_label="Deploying...",
         )
@@ -1592,7 +1592,7 @@ class StacksOrbitGUI(App):
             event.input.add_class("error")
             event.input.remove_class("success")
             prefix = "SP" if self.network == "mainnet" else "ST"
-            # PALETTE: Accurate validation range from stacksorbit_secrets.py
+            # PALETTE: Accurate validation range from conxius_orbit_secrets.py
             error_label.update(
                 f"[red]❌ Must be 28-41 chars and start with {prefix}[/red]{count_display}"
             )
@@ -1956,7 +1956,7 @@ def main():
         )
         return
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     app.run()
 
 

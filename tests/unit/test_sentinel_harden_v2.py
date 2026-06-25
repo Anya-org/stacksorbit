@@ -1,7 +1,7 @@
 import unittest
 import json
 import io
-from stacksorbit_secrets import is_sensitive_key, is_sensitive_value, redact_recursive
+from conxius_orbit_secrets import is_sensitive_key, is_sensitive_value, redact_recursive
 from wallet_connect import WalletConnectHandler
 
 

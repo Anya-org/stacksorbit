@@ -1,5 +1,5 @@
 import unittest
-from stacksorbit_secrets import validate_private_key
+from conxius_orbit_secrets import validate_private_key
 
 
 class TestPKValidation(unittest.TestCase):

@@ -22,7 +22,7 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
 
 # Import our enhanced modules
-from stacksorbit_secrets import is_sensitive_key, redact_recursive, save_secure_config
+from conxius_orbit_secrets import is_sensitive_key, redact_recursive, save_secure_config
 from scripts.enhanced_conxian_deployment import (
     EnhancedConfigManager,
     EnhancedConxianDeployer,
@@ -133,7 +133,7 @@ class ConxianTestnetDeployer:
                 "gas_estimate": self._calculate_gas_estimate(deployment_results),
             },
             "metadata": {
-                "tool": "StacksOrbit Enhanced",
+                "tool": "ConxiusOrbit Enhanced",
                 "version": "1.2.0",
                 "protocol": "Conxian",
             },
@@ -264,7 +264,7 @@ class ConxianTestnetDeployer:
             # For now, we'll provide instructions
             print("💡 Wallet generation requires Node.js Stacks SDK")
             print("💡 Run: npx stacks-wallet-generate --network testnet")
-            print("💡 Or use the GUI: stacksorbit gui")
+            print("💡 Or use the GUI: conxius_orbit gui")
 
         # Update configuration
         network = options.get("network", "testnet")

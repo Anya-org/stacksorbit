@@ -1,6 +1,6 @@
 import os
 import unittest
-from stacksorbit_secrets import save_secure_config
+from conxius_orbit_secrets import save_secure_config
 
 
 class TestSentinelInjection(unittest.TestCase):

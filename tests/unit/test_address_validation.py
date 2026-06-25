@@ -1,5 +1,5 @@
 import unittest
-from stacksorbit_secrets import validate_stacks_address
+from conxius_orbit_secrets import validate_stacks_address
 
 
 class TestAddressValidation(unittest.TestCase):

@@ -1,12 +1,12 @@
 import pytest
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Label, Input
 
 
 @pytest.mark.asyncio
 async def test_palette_clickable_labels_and_tooltips():
     """Verify the new clickable labels, tooltips, and interactive metrics."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         # Check Dashboard System Address label tooltip
         address_label = app.query_one("#system-address-label", Label)

@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import DataTable
 
 # Mock data
@@ -22,7 +22,7 @@ mock_exit_velocity = {"current_estimated_valuation_zar": 500000}
 @pytest.mark.asyncio
 async def test_update_data_skips_clear_when_data_is_same():
     """Verify that update_data does not clear tables if data has not changed."""
-    with patch("stacksorbit_gui.asyncio.gather", new_callable=AsyncMock) as mock_gather:
+    with patch("conxius_orbit_gui.asyncio.gather", new_callable=AsyncMock) as mock_gather:
         mock_gather.return_value = (
             mock_runway,
             mock_exit_velocity,
@@ -32,7 +32,7 @@ async def test_update_data_skips_clear_when_data_is_same():
             mock_transactions,
         )
 
-        app = StacksOrbitGUI()
+        app = ConxiusOrbitGUI()
         app.address = "ST123..."
         app._last_contracts = mock_contracts
         app._last_transactions = mock_transactions
@@ -65,7 +65,7 @@ async def test_update_data_skips_clear_when_data_is_same():
 @pytest.mark.asyncio
 async def test_update_data_calls_clear_when_data_changes():
     """Verify that update_data clears tables if data has changed."""
-    with patch("stacksorbit_gui.asyncio.gather", new_callable=AsyncMock) as mock_gather:
+    with patch("conxius_orbit_gui.asyncio.gather", new_callable=AsyncMock) as mock_gather:
         mock_gather.return_value = (
             mock_runway,
             mock_exit_velocity,
@@ -75,7 +75,7 @@ async def test_update_data_calls_clear_when_data_changes():
             mock_transactions,
         )
 
-        app = StacksOrbitGUI()
+        app = ConxiusOrbitGUI()
         app.address = "ST123..."
         app._last_contracts = []
         app._last_transactions = []

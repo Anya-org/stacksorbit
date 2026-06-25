@@ -3,10 +3,10 @@ import os
 
 def test_license_headers():
     files_to_check = [
-        "stacksorbit.py",
-        "stacksorbit_gui.py",
-        "stacksorbit_secrets.py",
-        "stacksorbit_cli.py",
+        "conxius_orbit.py",
+        "conxius_orbit_gui.py",
+        "conxius_orbit_secrets.py",
+        "conxius_orbit_cli.py",
         "setup.py",
         "vitest.config.ts",
     ]

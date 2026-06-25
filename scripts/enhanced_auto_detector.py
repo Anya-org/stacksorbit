@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-Enhanced StacksOrbit Auto-Detection System
+Enhanced ConxiusOrbit Auto-Detection System
 Complete solution for directory change handling, contract discovery, deployment status tracking
 """
 
@@ -18,7 +18,7 @@ import fnmatch
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
-from stacksorbit_secrets import is_safe_path, save_secure_config
+from conxius_orbit_secrets import is_safe_path, save_secure_config
 
 # Bolt ⚡: Global cache for Clarinet version to avoid redundant subprocess calls.
 _CLARINET_VERSION_CACHE: Optional[str] = None
@@ -33,7 +33,7 @@ class GenericStacksAutoDetector:
         ".git",
         "dist",
         "build",
-        ".stacksorbit",
+        ".conxius_orbit",
         "logs",
         "target",
         "__pycache__",
@@ -159,7 +159,7 @@ class GenericStacksAutoDetector:
 
         self.json_cache = {}  # Bolt ⚡: Cache for parsed JSON files
         self.state_file = (
-            self.project_root / ".stacksorbit" / "auto_detection_state.json"
+            self.project_root / ".conxius_orbit" / "auto_detection_state.json"
         )
         self.state_file.parent.mkdir(parents=True, exist_ok=True)
         self.state = self._load_state()
@@ -183,8 +183,8 @@ class GenericStacksAutoDetector:
                 "**/manifest.json",
                 "deployments.json",
                 "**/deployments.json",
-                ".stacksorbit/*.json",
-                ".stacksorbit/**/*.json",
+                ".conxius_orbit/*.json",
+                ".conxius_orbit/**/*.json",
             ]
         )
         self._artifact_re = self._compile_glob_regex(
@@ -195,8 +195,8 @@ class GenericStacksAutoDetector:
                 "**/manifest.json",
                 "deployments.json",
                 "**/deployments.json",
-                ".stacksorbit/*.json",
-                ".stacksorbit/**/*.json",
+                ".conxius_orbit/*.json",
+                ".conxius_orbit/**/*.json",
                 "*.deployment",
                 "**/*.deployment",
             ]
@@ -204,14 +204,14 @@ class GenericStacksAutoDetector:
         self._history_re = self._compile_glob_regex(
             [
                 "deployment/history.json",
-                ".stacksorbit/deployment_history.json",
+                ".conxius_orbit/deployment_history.json",
                 "**/deployment_history.json",
             ]
         )
         self._manifest_legacy_re = self._compile_glob_regex(
             [
                 "deployment/manifest.json",
-                ".stacksorbit/manifest.json",
+                ".conxius_orbit/manifest.json",
                 "**/testnet-manifest.json",
                 "**/mainnet-manifest.json",
             ]
@@ -568,7 +568,7 @@ class GenericStacksAutoDetector:
 
     def detect_and_analyze(self) -> Dict:
         """Complete generic auto-detection and analysis"""
-        print("🔍 StacksOrbit Generic Auto-Detection Starting...\n")
+        print("🔍 ConxiusOrbit Generic Auto-Detection Starting...\n")
 
         # Step 1: Detect current directory and contracts
         detection_result = self._detect_current_setup()
@@ -1313,7 +1313,7 @@ class GenericStacksAutoDetector:
         }
 
         # Look for configuration files (including Conxian .env)
-        config_files = [".env", "config.env", ".stacksorbit.env"]
+        config_files = [".env", "config.env", ".conxius_orbit.env"]
 
         for config_file in config_files:
             config_path = directory / config_file
@@ -1762,7 +1762,7 @@ class GenericStacksAutoDetector:
 
     def _extract_address_from_config(self) -> Optional[str]:
         """Extract Stacks address from configuration"""
-        config_files = [".env", "config.env", ".stacksorbit.env"]
+        config_files = [".env", "config.env", ".conxius_orbit.env"]
 
         for config_file in config_files:
             config_path = self.project_root / config_file

@@ -7,7 +7,7 @@ import sys
 import argparse
 import toml
 from dotenv import dotenv_values
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     SECRET_KEYS,
     is_sensitive_key,
     is_placeholder,
@@ -81,7 +81,7 @@ class ConfigManager:
             ".git",
             "dist",
             "build",
-            ".stacksorbit",
+            ".conxius_orbit",
             "logs",
             "target",
             "__pycache__",

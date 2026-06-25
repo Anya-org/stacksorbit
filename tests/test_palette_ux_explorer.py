@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Button, DataTable
 from textual.widgets.data_table import RowKey
 
@@ -8,7 +8,7 @@ from textual.widgets.data_table import RowKey
 @pytest.mark.asyncio
 async def test_dashboard_navigation_from_metrics():
     """Verify that clicking dashboard metrics navigates to correct tabs."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         # Initial tab should be overview
         assert app.query_one("TabbedContent").active == "overview"
@@ -29,7 +29,7 @@ async def test_dashboard_navigation_from_metrics():
 @pytest.mark.asyncio
 async def test_buttons_enable_on_selection():
     """Verify that the buttons enable when a contract is highlighted."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     # Mock the monitor to avoid real API calls and provide valid data for UI
     app.monitor = MagicMock()
     app.monitor.check_api_status.return_value = {

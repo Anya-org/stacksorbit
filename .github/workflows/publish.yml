@@ -1,4 +1,4 @@
-name: Publish StacksOrbit
+name: Publish Conxius Orbit
 
 # Secure Publish workflow with pinned actions and explicit permissions.
 # Includes tag-to-version validation to ensure release integrity.
@@ -66,7 +66,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       
       - name: Run Python tests
-        run: pytest tests/ -v --cov=stacksorbit --cov-report=xml
+        run: pytest tests/ -v --cov=conxius_orbit --cov-report=xml
       
       - name: Run GUI tests (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
@@ -202,7 +202,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@de2c90c00ffc7c041036972f1b8c1b9aed1140d2 # v1
         with:
-          name: StacksOrbit v${{ steps.get_version.outputs.VERSION }}
+          name: Conxius Orbit v${{ steps.get_version.outputs.VERSION }}
           body: |
             ## What's New in v${{ steps.get_version.outputs.VERSION }}
             
@@ -212,18 +212,18 @@ jobs:
             
             ### npm
             ```bash
-            npm install -g stacksorbit@${{ steps.get_version.outputs.VERSION }}
+            npm install -g conxius_orbit@${{ steps.get_version.outputs.VERSION }}
             ```
             
             ### PyPI
             ```bash
-            pip install stacksorbit==${{ steps.get_version.outputs.VERSION }}
+            pip install conxius_orbit==${{ steps.get_version.outputs.VERSION }}
             ```
             
             ## Links
-            - [Documentation](https://conxian.github.io/stacksorbit/)
-            - [npm Package](https://www.npmjs.com/package/stacksorbit)
-            - [PyPI Package](https://pypi.org/project/stacksorbit/)
+            - [Documentation](https://conxian.github.io/conxius_orbit/)
+            - [npm Package](https://www.npmjs.com/package/conxius_orbit)
+            - [PyPI Package](https://pypi.org/project/conxius_orbit/)
           draft: false
           prerelease: false
         env:

@@ -1,7 +1,7 @@
-# StacksOrbit v1.0.0 - Release Checklist
+# Conxius Orbit v1.0.0 - Release Checklist
 
 **Release Date**: 2025-10-04  
-**Repository**: <https://github.com/Conxian/stacksorbit>  
+**Repository**: <https://github.com/Conxian/conxius_orbit>
 **Status**: ✅ **READY TO PUBLISH**
 
 **Note**: This checklist was created for v1.0.0; update version references for newer releases.
@@ -26,7 +26,7 @@
 - [x] package.json configured
 - [x] setup.py configured
 - [x] requirements.txt added
-- [x] bin/stacksorbit.js entry point
+- [x] bin/conxius_orbit.js entry point
 - [x] Version: 1.0.0 in all files
 
 ### CI/CD
@@ -54,12 +54,12 @@
 1. **NPM_TOKEN**
    - Go to: <https://www.npmjs.com/settings/[username]/tokens>
    - Generate "Automation" token
-   - Add to: <https://github.com/Conxian/stacksorbit/settings/secrets/actions>
+   - Add to: <https://github.com/Conxian/conxius_orbit/settings/secrets/actions>
 
 2. **PYPI_API_TOKEN**
    - Go to: <https://pypi.org/manage/account/token/>
-   - Generate token for stacksorbit
-   - Add to: <https://github.com/Conxian/stacksorbit/settings/secrets/actions>
+   - Generate token for conxius_orbit
+   - Add to: <https://github.com/Conxian/conxius_orbit/settings/secrets/actions>
 
 ### Step 2: Tag Release ✅
 
@@ -73,8 +73,8 @@ git push origin v1.0.0
 
 ### Step 3: Verify GitHub Actions ⏳
 
-- Go to: <https://github.com/Conxian/stacksorbit/actions>
-- Check "Publish StacksOrbit" workflow
+- Go to: <https://github.com/Conxian/conxius_orbit/actions>
+- Check "Publish Conxius Orbit" workflow
 - Verify tests pass
 - Confirm publishing (after tokens configured)
 
@@ -83,24 +83,24 @@ git push origin v1.0.0
 **npm**:
 
 ```bash
-npm view stacksorbit
-npm install -g stacksorbit
-stacksorbit --version
+npm view conxius_orbit
+npm install -g conxius_orbit
+conxius_orbit --version
 ```
 
 **PyPI**:
 
 ```bash
-pip install stacksorbit
-python -c "import stacksorbit; print('OK')"
-stacksorbit --version
+pip install conxius_orbit
+python -c "import conxius_orbit; print('OK')"
+conxius_orbit --version
 ```
 
 ### Step 5: Create GitHub Release ⏳
 
-- Go to: <https://github.com/Conxian/stacksorbit/releases/new>
+- Go to: <https://github.com/Conxian/conxius_orbit/releases/new>
 - Tag: v1.0.0
-- Title: "StacksOrbit v1.0.0 - Initial Release"
+- Title: "Conxius Orbit v1.0.0 - Initial Release"
 - Description: See template below
 - Publish release
 
@@ -109,7 +109,7 @@ stacksorbit --version
 ## 📝 GitHub Release Template
 
 ```markdown
-# StacksOrbit v1.0.0 🚀
+# Conxius Orbit v1.0.0 🚀
 
 Professional GUI deployment tool for Stacks blockchain smart contracts.
 
@@ -126,20 +126,20 @@ Professional GUI deployment tool for Stacks blockchain smart contracts.
 
 ### npm
 ```bash
-npm install -g stacksorbit
+npm install -g conxius_orbit
 ```
 
 ### PyPI
 
 ```bash
-pip install stacksorbit
+pip install conxius_orbit
 ```
 
 ## 🚀 Quick Start
 
 ```bash
 # Launch GUI
-stacksorbit
+conxius_orbit
 
 # Follow the steps:
 # 1. Click "Run Pre-Checks"
@@ -156,9 +156,9 @@ stacksorbit
 
 ## 🔗 Links
 
-- **Repository**: <https://github.com/Conxian/stacksorbit>
-- **npm**: <https://www.npmjs.com/package/stacksorbit>
-- **PyPI**: <https://pypi.org/project/stacksorbit/>
+- **Repository**: <https://github.com/Conxian/conxius_orbit>
+- **npm**: <https://www.npmjs.com/package/conxius_orbit>
+- **PyPI**: <https://pypi.org/project/conxius_orbit/>
 
 ## 🙏 Credits
 
@@ -200,12 +200,12 @@ See our [roadmap](README.md#roadmap) for planned features in v1.2.0 and v2.0.0.
 
 When complete, verify:
 
-1. ✅ GitHub tag: https://github.com/Conxian/stacksorbit/releases/tag/v1.0.0
-2. ⏳ npm package: https://www.npmjs.com/package/stacksorbit
-3. ⏳ PyPI package: https://pypi.org/project/stacksorbit/
-4. ⏳ `npm install -g stacksorbit` works globally
-5. ⏳ `pip install stacksorbit` works in virtual env
-6. ⏳ `stacksorbit` command launches GUI
+1. ✅ GitHub tag: https://github.com/Conxian/conxius_orbit/releases/tag/v1.0.0
+2. ⏳ npm package: https://www.npmjs.com/package/conxius_orbit
+3. ⏳ PyPI package: https://pypi.org/project/conxius_orbit/
+4. ⏳ `npm install -g conxius_orbit` works globally
+5. ⏳ `pip install conxius_orbit` works in virtual env
+6. ⏳ `conxius_orbit` command launches GUI
 7. ⏳ All platforms tested (Windows/Mac/Linux)
 
 ---

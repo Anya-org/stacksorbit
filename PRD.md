@@ -1,14 +1,14 @@
-# StacksOrbit Product Requirements Document (PRD)
+# Conxius Orbit Product Requirements Document (PRD)
 
 ## 1. Overview
 
-StacksOrbit is a comprehensive deployment and management tool for the Stacks blockchain. This document outlines the project's migration to a modern, efficient, and synchronized development environment using the Clarinet SDK, Vitest, and Chainhooks. This "Root-Up" methodology ensures that documentation and implementation are always aligned.
+Conxius Orbit is a comprehensive deployment and management tool for the Stacks blockchain. This document outlines the project's migration to a modern, efficient, and synchronized development environment using the Clarinet SDK, Vitest, and Chainhooks. This "Root-Up" methodology ensures that documentation and implementation are always aligned.
 
 ## 2. Current Architecture & Dependencies
 
 ### 2.1. Core Architecture
-StacksOrbit is built with a high-fidelity hybrid architecture optimized for the Stacks ecosystem:
-*   **Orchestration Layer:** Python-based CLI (`stacksorbit_cli.py`) and Textual TUI (`stacksorbit_gui.py`) providing a unified interface for the entire lifecycle.
+Conxius Orbit is built with a high-fidelity hybrid architecture optimized for the Stacks ecosystem:
+*   **Orchestration Layer:** Python-based CLI (`conxius_orbit_cli.py`) and Textual TUI (`conxius_orbit_gui.py`) providing a unified interface for the entire lifecycle.
 *   **Blockchain Logic:** Clarity 2 smart contracts integrated with the native Clarinet toolchain.
 *   **Modern Test Suite:** Native Vitest environment utilizing `@stacks/clarinet-sdk` and `vitest-environment-clarinet` for zero-latency WASM Simnet simulation.
 *   **Event Infrastructure:** Chainhook predicates for multi-network (Devnet, Testnet, Mainnet) event monitoring and webhook integration.
@@ -21,7 +21,7 @@ StacksOrbit is built with a high-fidelity hybrid architecture optimized for the 
 
 ## 3. Migration Roadmap (Vitest & Clarinet SDK)
 
-The modernization roadmap ensures StacksOrbit remains at the forefront of Stacks developer tooling.
+The modernization roadmap ensures Conxius Orbit remains at the forefront of Stacks developer tooling.
 
 *   **Phase 1: Foundation Modernization (Current)**
     *   [x] Standardize `package.json` with Clarinet SDK and Vitest 4.x.
@@ -35,7 +35,7 @@ The modernization roadmap ensures StacksOrbit remains at the forefront of Stacks
     *   [x] Verify event monitoring triggers for primary contracts.
 *   **Phase 4: Full Lifecycle Tooling (Complete)**
     *   [x] Consolidate CLI operations (Setup, Test, Deploy, Monitor, Verify).
-    *   [x] Integrate Vitest as the primary engine for `stacksorbit test`.
+    *   [x] Integrate Vitest as the primary engine for `conxius_orbit test`.
 *   **Phase 5: Nakamoto & Clarity 4 (Future)**
     *   [ ] Research and implement support for Nakamoto-era Clarity features.
 
@@ -56,7 +56,7 @@ The modernization roadmap ensures StacksOrbit remains at the forefront of Stacks
 ## 4. Feature Alignment
 
 ### 4.1. Full Development Cycle
-StacksOrbit handles the entire development lifecycle:
+Conxius Orbit handles the entire development lifecycle:
 *   **Setup:** Interactive wizard for rapid environment configuration.
 *   **Detect:** Automatic discovery of contracts and project structure.
 *   **Test:** Native integration with Vitest and Clarinet SDK for robust unit and integration testing.
@@ -70,7 +70,7 @@ StacksOrbit handles the entire development lifecycle:
 *   **Mainnet:** Secure production deployment with error masking and sentinel security hardening.
 
 ### 4.3. Clarity 4 Native Support
-StacksOrbit is committed to supporting the latest Clarity language features.
+Conxius Orbit is committed to supporting the latest Clarity language features.
 *   **Current:** Full support for Clarity 1 and Clarity 2.
 *   **Upcoming:** Native support for Clarity 4 (Nakamoto) is on the roadmap to enable developers to leverage the latest Stacks blockchain innovations.
 
@@ -98,7 +98,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 ### Session 48: Foundation Modernization & Vitest Transition (Jules)
 
-*   **Objective:** Modernize the StacksOrbit foundation by transitioning to the Clarinet SDK and Vitest architecture, establishing a foundation for multi-network event tracking.
+*   **Objective:** Modernize the Conxius Orbit foundation by transitioning to the Clarinet SDK and Vitest architecture, establishing a foundation for multi-network event tracking.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
     *   **Chainhook Reconciliation:** Corrected drift in `/chainhooks` JSON predicates for Devnet, Testnet, and Mainnet. Replaced legacy `stake` method monitoring with the correct `issue-bond` method for the `dlc-bond` contract.
@@ -110,7 +110,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 ### Session 44: Foundation Alignment & Root-Up Reinforcement (Jules)
 
-*   **Objective:** Modernize the StacksOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed alignment between `PRD.md`, `Clarinet.toml`, and the codebase across all networks.
     *   **Technical Modernization:** Updated `package.json` with latest dependencies: `@stacks/network` (^7.3.1), `@stacks/transactions` (^7.4.0), `@stacks/clarinet-sdk` (^3.16.0), `vitest` (^4.1.4).
@@ -168,8 +168,8 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 *   **Objective:** Harden the local wallet connection server against XSS and unify secret placeholder logic across all configuration loaders.
 *   **Changes:**
     *   Mitigated XSS vulnerability in `wallet_connect.py` by replacing `innerHTML` with `textContent` for displaying Stacks addresses and error messages in the frontend template.
-    *   Centralized secret placeholder logic in `stacksorbit_secrets.py` via the `is_placeholder` utility, ensuring consistent, case-insensitive handling of safe defaults (e.g., `your_private_key_here`).
-    *   Standardized all configuration loaders (`EnhancedConfigManager`, `StacksOrbitGUI`, `DeploymentMonitor`, and `DeploymentVerifier`) to utilize `is_placeholder` for security enforcement.
+    *   Centralized secret placeholder logic in `conxius_orbit_secrets.py` via the `is_placeholder` utility, ensuring consistent, case-insensitive handling of safe defaults (e.g., `your_private_key_here`).
+    *   Standardized all configuration loaders (`EnhancedConfigManager`, `Conxius OrbitGUI`, `DeploymentMonitor`, and `DeploymentVerifier`) to utilize `is_placeholder` for security enforcement.
     *   Hardened file persistence in `EnhancedConfigManager` by using `save_secure_config` for default configuration creation, eliminating world-readable race conditions.
     *   Enhanced `DeploymentVerifier` to use `save_secure_config` with recursive redaction for restricted `0600` permissions on verification artifact output.
     *   Verified the XSS fix with a targeted Playwright script and confirmed system integrity via full pytest and vitest suites.
@@ -188,8 +188,8 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Standardize the toolchain and improve configuration robustness.
 *   **Changes:**
-    *   Improved `stacksorbit_gui.py` configuration loader to handle quoted values and whitespace correctly.
-    *   Created `stacksorbit.py` wrapper to fix package installation and sanity tests.
+    *   Improved `conxius_orbit_gui.py` configuration loader to handle quoted values and whitespace correctly.
+    *   Created `conxius_orbit.py` wrapper to fix package installation and sanity tests.
     *   Verified all system tests (including sanity) pass locally.
 *   **Status:** Complete.
 
@@ -206,7 +206,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Align the project with the full development cycle and establish a roadmap for Clarity 4 support.
 *   **Changes:**
-    *   Fixed `stacksorbit_cli.py` import bugs (colorama) and missing module dependencies for the `test` command.
+    *   Fixed `conxius_orbit_cli.py` import bugs (colorama) and missing module dependencies for the `test` command.
     *   Standardized the CLI `test` command to use Vitest and Clarinet SDK.
     *   Updated `PRD.md` and `AGENTS.md` to reflect full lifecycle support (Setup, Detect, Test, Deploy, Monitor, Verify) across all networks.
     *   Formally added Clarity 4 support to the project roadmap.
@@ -217,7 +217,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 *   **Objective:** Enhance the security posture of the application by securing secret persistence and preventing sensitive information disclosure in error messages.
 *   **Changes:**
     *   Hardened `EnhancedConfigManager.save_config` to filter out `SECRET_KEYS` and potential sensitive keys (using substrings like TOKEN, KEY, SECRET) when persisting configuration to disk.
-    *   Implemented comprehensive error masking across `stacksorbit_cli.py`, `enhanced_conxian_deployment.py`, `deployment_verifier.py`, `conxian_testnet_deploy.py`, `deployment_monitor.py`, and `stacksorbit_gui.py` to prevent leaking internal details.
+    *   Implemented comprehensive error masking across `conxius_orbit_cli.py`, `enhanced_conxian_deployment.py`, `deployment_verifier.py`, `conxian_testnet_deploy.py`, `deployment_monitor.py`, and `conxius_orbit_gui.py` to prevent leaking internal details.
     *   Added regression tests for secure secret persistence in `tests/unit/test_sentinel_config.py`.
     *   Updated the Sentinel security journal with new learnings regarding secret persistence.
 *   **Status:** Complete.
@@ -248,7 +248,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Unify secret detection patterns across all configuration loaders to prevent information disclosure.
 *   **Changes:**
-    *   Standardized secret detection in `stacksorbit_config_manager.py`, `enhanced_conxian_deployment.py`, and `deployment_verifier.py` using the centralized `is_sensitive_key` utility.
+    *   Standardized secret detection in `conxius_orbit_config_manager.py`, `enhanced_conxian_deployment.py`, and `deployment_verifier.py` using the centralized `is_sensitive_key` utility.
     *   Hardened the configuration loader in `deployment_verifier.py` to block sensitive keys in `.env` files.
     *   Unified placeholder handling and error messaging across all configuration loaders.
     *   Verified the fix with a custom security hardening test script and existing test suites.
@@ -271,7 +271,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
     *   Enhanced the `@cache_api_call` decorator in `deployment_monitor.py` to support explicit cache bypassing via the `bypass_cache` keyword argument.
     *   Optimized `wait_for_transaction` to bypass the 5-minute cache during polling, reducing transaction confirmation detection latency by up to 96%.
     *   Updated the monitoring loop (`_check_for_new_deployments`) and verification logic (`verify_deployment`) to use fresh data for critical state checks.
-    *   Enhanced `StacksOrbitGUI` to support cache-bypassing refreshes, ensuring manual "Refresh" button clicks always provide the latest blockchain state.
+    *   Enhanced `Conxius OrbitGUI` to support cache-bypassing refreshes, ensuring manual "Refresh" button clicks always provide the latest blockchain state.
     *   Refactored `tests/test_bolt_performance.py` to eliminate race conditions in automated GUI testing.
     *   Added `tests/unit/test_bolt_cache_bypass.py` for comprehensive validation of the new caching logic.
 *   **Status:** Complete.
@@ -280,7 +280,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Implement a micro-UX improvement to the TUI to provide better user feedback during configuration.
 *   **Changes:**
-    *   Added inline validation error labels to the Settings tab in `stacksorbit_gui.py`.
+    *   Added inline validation error labels to the Settings tab in `conxius_orbit_gui.py`.
     *   Updated `on_address_changed` and `on_privkey_changed` handlers to display specific error messages (prefix and length requirements) using Rich markup.
     *   Added automated tests in `tests/test_gui.py` to verify the validation logic and UI feedback.
     *   Ensured adherence to Palette persona constraints: no custom CSS, micro-UX focus (<50 lines).
@@ -312,7 +312,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the contract management experience in the TUI by providing direct access to source code and external explorer links.
 *   **Changes:**
-    *   Added "Copy Source" (📄) and "View on Explorer" (🌐) buttons to the Contract Details pane in `stacksorbit_gui.py`.
+    *   Added "Copy Source" (📄) and "View on Explorer" (🌐) buttons to the Contract Details pane in `conxius_orbit_gui.py`.
     *   Implemented visual feedback for all copy actions, providing immediate icon-level confirmation (✅).
     *   Integrated `webbrowser` to open Hiro Explorer links directly from the TUI, with network-aware URL generation and devnet safety checks.
     *   Fixed a critical bug in `fetch_contract_details` where a synchronous monitor call was being mistakenly awaited, which would have caused UI freezes.
@@ -323,7 +323,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the transaction history experience in the TUI by providing contextual actions and consistent deep-linking.
 *   **Changes:**
-    *   Added a "Transaction Actions" bar to the Transactions tab in `stacksorbit_gui.py`.
+    *   Added a "Transaction Actions" bar to the Transactions tab in `conxius_orbit_gui.py`.
     *   Implemented "Copy Full TX ID" (📋) and "View on Explorer" (🌐) buttons for selected transactions.
     *   Added a real-time status label (`#tx-status-label`) to confirm the selected transaction ID.
     *   Standardized visual feedback for transaction copy actions (✅).
@@ -346,7 +346,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Implement high-performance Stacks address and private key validation to reduce latency in real-time UI event handlers.
 *   **Changes:**
-    *   Optimized `validate_stacks_address` in `stacksorbit_secrets.py` by using pre-compiled, network-aware regexes (`MAINNET_ADDR_RE`, `TESTNET_ADDR_RE`, `GENERIC_ADDR_RE`) that combine prefix, length, and charset checks into a single pass.
+    *   Optimized `validate_stacks_address` in `conxius_orbit_secrets.py` by using pre-compiled, network-aware regexes (`MAINNET_ADDR_RE`, `TESTNET_ADDR_RE`, `GENERIC_ADDR_RE`) that combine prefix, length, and charset checks into a single pass.
     *   Implemented a mapping for O(1) regex selection based on the network parameter.
     *   Added a fast-fail minimum length check to avoid redundant string operations on clearly invalid inputs.
     *   Removed redundant placeholder checks in `validate_private_key` as they are inherently caught by the strict 64/66-character length check.
@@ -369,9 +369,9 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the developer experience by providing immediate, context-aware access to the Stacks Testnet Faucet from the TUI.
 *   **Changes:**
-    *   Added a "🚰 Faucet" button to both the Dashboard and Settings tabs in `stacksorbit_gui.py`.
+    *   Added a "🚰 Faucet" button to both the Dashboard and Settings tabs in `conxius_orbit_gui.py`.
     *   Implemented dynamic visibility logic to ensure the Faucet buttons are only displayed when the network is set to `testnet`.
-    *   Introduced a `.warning` button variant (orange) in `stacksorbit_gui.tcss` to provide visual hierarchy for external links.
+    *   Introduced a `.warning` button variant (orange) in `conxius_orbit_gui.tcss` to provide visual hierarchy for external links.
     *   Added descriptive tooltips and notification feedback for faucet link activation.
     *   Verified the implementation with a custom TUI verification script and existing GUI test suites.
 *   **Status:** Complete.
@@ -380,10 +380,10 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the intuitiveness and accessibility of the TUI by making labels interactive and metrics more functional.
 *   **Changes:**
-    *   Implemented click-to-focus behavior for "Private Key" and "Stacks Address" labels in the Settings tab of `stacksorbit_gui.py`.
+    *   Implemented click-to-focus behavior for "Private Key" and "Stacks Address" labels in the Settings tab of `conxius_orbit_gui.py`.
     *   Added IDs (`privkey-label`, `address-label`, `system-address-label`) and the `.clickable-label` class to key text labels.
     *   Added an interactive `@on(Click, "#metric-network")` handler to allow triggering a data refresh by clicking the Network Status card.
-    *   Implemented visual hover feedback (color change and underline) for all interactive labels in `stacksorbit_gui.tcss`.
+    *   Implemented visual hover feedback (color change and underline) for all interactive labels in `conxius_orbit_gui.tcss`.
     *   Added descriptive tooltips to the "System Address" and Settings labels to improve discoverability of the new interactions.
     *   Verified the implementation with a new test suite (`tests/test_palette_clickable_labels.py`) and existing GUI tests.
 *   **Status:** Complete.
@@ -392,7 +392,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Improve the scannability of transaction history and the interactivity of the primary user identity on the dashboard.
 *   **Changes:**
-    *   Enhanced the Transactions table in `stacksorbit_gui.py` with a new "Time" column providing relative timestamps (e.g., "5m ago") via a robust `_format_relative_time` utility.
+    *   Enhanced the Transactions table in `conxius_orbit_gui.py` with a new "Time" column providing relative timestamps (e.g., "5m ago") via a robust `_format_relative_time` utility.
     *   Improved transaction type scannability by prepending high-fidelity emojis (📄, 📞, 💸, ⛏️) to labels (contract, call, transfer, coinbase).
     *   Implemented click-to-copy functionality for the Dashboard System Address by adding the `.clickable-label` class, a descriptive tooltip, and an asynchronous `Click` event handler.
     *   Added a permanent test suite `tests/test_palette_new_features.py` to verify relative time formatting, clickable address interactivity, and table column integrity.
@@ -412,7 +412,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance dashboard layout scannability and interaction efficiency through CSS modernization and context-aware focus management.
 *   **Changes:**
-    *   Implemented `#metrics-grid` in `stacksorbit_gui.tcss` using a multi-column grid layout, fixing a single-column display regression and improving visual hierarchy.
+    *   Implemented `#metrics-grid` in `conxius_orbit_gui.tcss` using a multi-column grid layout, fixing a single-column display regression and improving visual hierarchy.
     *   Enabled Rich markup support for dashboard `Static` widgets and implemented semantic balance colorization (Green/Yellow/Red) based on fund availability.
     *   Added an asynchronous focus handler for the Settings tab to automatically highlight the primary input field upon navigation.
     *   Hardened the `action_refresh` logic to be more defensive against unmounted widgets during tab transitions, preventing potential UI crashes.
@@ -423,7 +423,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Broaden the centralized secret detection logic and standardize safe placeholders to improve defense-in-depth across the application.
 *   **Changes:**
-    *   Expanded `SENSITIVE_SUBSTRINGS` in `stacksorbit_secrets.py` with additional keywords: `BEARER`, `PHRASE`, `RECOVERY`, `PEM`, `XPRV`, `ENCRYPTED`, `VAULT`, `COOKIE`, and `SESSID`.
+    *   Expanded `SENSITIVE_SUBSTRINGS` in `conxius_orbit_secrets.py` with additional keywords: `BEARER`, `PHRASE`, `RECOVERY`, `PEM`, `XPRV`, `ENCRYPTED`, `VAULT`, `COOKIE`, and `SESSID`.
     *   Standardized additional safe placeholders in `SAFE_PLACEHOLDERS`: `your_mnemonic_here`, `your_seed_phrase_here`, and `your_recovery_phrase_here`.
     *   Added regression tests in `tests/unit/test_sentinel_redaction.py` to verify the redaction of keys containing new keywords and the preservation of new placeholders.
     *   Verified system integrity via a full unit test suite (44 tests passed).
@@ -431,7 +431,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 ### Session 27: Root-Up Alignment & Foundation Verification
 
-*   **Objective:** Modernize the StacksOrbit repository using a "Root-Up" methodology and ensure the foundation is aligned with the Clarinet SDK and Vitest architecture.
+*   **Objective:** Modernize the Conxius Orbit repository using a "Root-Up" methodology and ensure the foundation is aligned with the Clarinet SDK and Vitest architecture.
 *   **Changes:**
     *   Performed a comprehensive "Root-Up" drift analysis and confirmed alignment between `PRD.md`, `Clarinet.toml`, and the codebase.
     *   Standardized all Node.js-related scripts and documentation to utilize `pnpm`, including `package.json`, `README.md`, `AGENTS.md`, and `deploy.sh`.
@@ -444,7 +444,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the configuration experience in the TUI by providing clear feedback for pending changes and interactive controls for sensitive data visibility.
 *   **Changes:**
-    *   Implemented a reactive `unsaved_changes` state in `StacksOrbitGUI` to track modifications to the account address and private key.
+    *   Implemented a reactive `unsaved_changes` state in `Conxius OrbitGUI` to track modifications to the account address and private key.
     *   Added dynamic visual feedback to the Settings Save button, which now updates its variant to `warning` (orange) and its label to `💾 Save Changes*` when modifications are pending.
     *   Implemented an interactive "Show/Hide" label toggle for the private key visibility switch, providing immediate textual feedback upon state changes.
     *   Enhanced `on_save_config_pressed` to reset the unsaved state and synchronize the internal configuration dictionary upon successful persistence.
@@ -454,9 +454,9 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 ### Session 29: Dashboard & Settings Explorer Integration (Palette)
 
-*   **Objective:** Enhance the StacksOrbit TUI by providing consistent, immediate access to external blockchain explorers for primary user addresses from both the Dashboard and Settings views.
+*   **Objective:** Enhance the Conxius Orbit TUI by providing consistent, immediate access to external blockchain explorers for primary user addresses from both the Dashboard and Settings views.
 *   **Changes:**
-    *   Added "View on Explorer" (🌐) buttons to the Dashboard and Settings address bars in `stacksorbit_gui.py`.
+    *   Added "View on Explorer" (🌐) buttons to the Dashboard and Settings address bars in `conxius_orbit_gui.py`.
     *   Implemented a network-aware explorer link handler with support for address-level deep-linking and devnet safety checks.
     *   Enhanced the "Network Status" metric card with an informative tooltip containing the active Hiro API URL and refresh hints.
     *   Implemented reactive button state management to ensure explorer buttons are disabled when no address is configured.
@@ -468,10 +468,10 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Implement a defense-in-depth mechanism to detect sensitive information by its value, protecting the application from secret leakage even when generic key names are used.
 *   **Changes:**
-    *   Implemented `is_sensitive_value` in `stacksorbit_secrets.py` to identify Stacks private keys (64/66 hex chars) and BIP39-style mnemonics.
+    *   Implemented `is_sensitive_value` in `conxius_orbit_secrets.py` to identify Stacks private keys (64/66 hex chars) and BIP39-style mnemonics.
     *   Hardened `redact_recursive` to automatically redact recognized sensitive values regardless of their parent key name.
     *   Enhanced `save_secure_config` to block the persistence of recognized secrets to disk, ensuring that even misnamed keys do not result in plaintext secret storage.
-    *   Standardized all configuration loaders (`ConfigManager`, `EnhancedConfigManager`, and `StacksOrbitGUI`) to enforce this new value-based security policy during initialization.
+    *   Standardized all configuration loaders (`ConfigManager`, `EnhancedConfigManager`, and `Conxius OrbitGUI`) to enforce this new value-based security policy during initialization.
     *   Unified secret placeholder handling across the project using the centralized `is_placeholder` utility.
     *   Added comprehensive security regression tests in `tests/unit/test_sentinel_value_redaction.py`.
     *   Verified system integrity with full unit test suite (55 passed).
@@ -494,7 +494,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Harden the centralized secret detection logic against newline-based bypasses and reinforce the security posture of the local wallet connection server.
 *   **Changes:**
-    *   Mitigated a security bypass in `stacksorbit_secrets.py` by modifying `is_sensitive_value` to strip whitespace and allow multiline secrets (like mnemonics) to be evaluated by the detection engine.
+    *   Mitigated a security bypass in `conxius_orbit_secrets.py` by modifying `is_sensitive_value` to strip whitespace and allow multiline secrets (like mnemonics) to be evaluated by the detection engine.
     *   Enhanced security headers in `wallet_connect.py` by adding `base-uri 'none'; form-action 'none';` to the Content-Security-Policy and implementing a restrictive `Permissions-Policy` to disable sensitive browser features.
     *   Added a regression test suite `tests/unit/test_sentinel_newline_bypass.py` to verify the detection and redaction of multiline secrets.
     *   Verified header enhancements and UI integrity using a custom Playwright script and screenshot validation.
@@ -503,7 +503,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 ### Session 33: Initialization & Alignment (Root-Up Reinforcement)
 
-*   **Objective:** Modernize the StacksOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   Upgraded `@stacks/clarinet-sdk` to `^3.14.1` in `package.json` to leverage latest Simnet features.
     *   Reinforced `PRD.md` with detailed **Architecture Overview**, a modernized **Migration Roadmap**, and a **Multi-Network Alignment** registry.
@@ -527,7 +527,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the application's security posture by expanding the centralized secret detection engine to include modern authentication and session patterns.
 *   **Changes:**
-    *   Expanded `SENSITIVE_SUBSTRINGS` and `HIGH_CONFIDENCE_SENSITIVE_WORDS` in `stacksorbit_secrets.py` to include `OAUTH`, `COOKIE`, `CSRF`, `SESSID`, `SESSIONID`, and `DECRYPT`.
+    *   Expanded `SENSITIVE_SUBSTRINGS` and `HIGH_CONFIDENCE_SENSITIVE_WORDS` in `conxius_orbit_secrets.py` to include `OAUTH`, `COOKIE`, `CSRF`, `SESSID`, `SESSIONID`, and `DECRYPT`.
     *   Standardized corresponding safe placeholders (`your_oauth_token_here`, `your_cookie_here`) in `SAFE_PLACEHOLDERS` to maintain developer experience for documentation and templates.
     *   Enhanced the security regression suite in `tests/unit/test_sentinel_redaction_expansion.py` to verify the detection of new high-confidence patterns and preservation of new placeholders.
     *   Verified system integrity via a full unit test suite (44 passed).
@@ -539,8 +539,8 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 *   **Changes:**
     *   **License Standardization:** Added MIT license headers to all major Python and TypeScript/JavaScript source files to ensure legal compliance and professional standards.
     *   **Documentation Alignment:** Updated `ISSUES.md` to reflect the resolved state of documentation issues (ambiguity, redundancy, and missing elements).
-    *   **Performance Verification:** Confirmed implementation of Bolt ⚡ optimizations, including pre-compiled regex in `stacksorbit_auto_detect.py` and hoisted bucketing in `stacksorbit_gui.py`.
-    *   **Security Reinforcement:** Verified Sentinel 🛡️ protections in `stacksorbit_secrets.py`, including input normalization before LRU caching and value-based secret detection.
+    *   **Performance Verification:** Confirmed implementation of Bolt ⚡ optimizations, including pre-compiled regex in `conxius_orbit_auto_detect.py` and hoisted bucketing in `conxius_orbit_gui.py`.
+    *   **Security Reinforcement:** Verified Sentinel 🛡️ protections in `conxius_orbit_secrets.py`, including input normalization before LRU caching and value-based secret detection.
     *   **Registry Sync:** Verified that the Multi-Network Alignment registry in `PRD.md` correctly reflects the Chainhook predicates and contract principals across Devnet, Testnet, and Mainnet.
 *   **Status:** Complete.
 
@@ -548,7 +548,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Implement a high-impact performance optimization to the secret detection engine to eliminate redundant memory allocations and CPU overhead during project redaction.
 *   **Changes:**
-    *   **Zero-Copy Fast-Fail:** Implemented a safe, zero-copy fast-fail check in `is_sensitive_value` (stacksorbit_secrets.py) that bypasses expensive `.strip()` allocations for strings > 1500 chars by inspecting leading/trailing characters.
+    *   **Zero-Copy Fast-Fail:** Implemented a safe, zero-copy fast-fail check in `is_sensitive_value` (conxius_orbit_secrets.py) that bypasses expensive `.strip()` allocations for strings > 1500 chars by inspecting leading/trailing characters.
     *   **Keyword Expansion:** Expanded `PUBLIC_SUBSTRINGS` to include "SOURCE", "CODE", "MANIFEST", and "METADATA", allowing the scanner to automatically skip value-based detection for common large data fields.
     *   **Short-Circuit Logic:** Optimized `redact_recursive` to skip `is_sensitive_value` checks for keys already identified as sensitive, reducing redundant processing for known secrets.
     *   **Benchmark Verification:** Created `tests/benchmark_bolt.py` and `tests/benchmark_is_sensitive.py` to document performance gains, achieving a ~2x speedup for large datasets and a >1000x speedup for unpadded large strings.
@@ -559,7 +559,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Reinforce the project's foundation by aligning documentation and technical infrastructure with the Clarinet SDK and Vitest architecture, following the Root-Up Protocol.
 *   **Changes:**
-    *   **Drift Analysis:** Identified significant discrepancies between `Clarinet.toml` and the filesystem. Reconciled `Clarinet.toml` by renaming the project to `StacksOrbit` and adding the missing `placeholder` contract definition.
+    *   **Drift Analysis:** Identified significant discrepancies between `Clarinet.toml` and the filesystem. Reconciled `Clarinet.toml` by renaming the project to `Conxius Orbit` and adding the missing `placeholder` contract definition.
     *   **Configuration Standardization:** Verified `package.json` dependencies and `vitest.config.ts` for native Simnet support and ESM compatibility.
     *   **Documentation Sync:** Updated `PRD.md` to reflect the latest foundation alignment and documented the drift reconciliation logic.
 *   **Status:** Complete.
@@ -576,7 +576,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 ### Session 40: Foundation Alignment & Root-Up Reinforcement (Jules)
 
-*   **Objective:** Modernize the StacksOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Reconciliation:** Aligned `Clarinet.toml` and `PRD.md` with the active contracts in the `contracts/` directory (`revenue-automation`, `dlc-orchestrator`, `dlc-bond`, `placeholder`).
     *   **Dependency Management:** Updated `package.json` with the latest versions of `@stacks/clarinet-sdk`, `vitest`, and `vitest-environment-clarinet`.
@@ -591,19 +591,19 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Enhance the application's security posture by hardening infrastructure logging and expanding the secret detection engine to cover major cloud and database providers.
 *   **Changes:**
-    *   **Logging Hardening:** Refactored `infrastructure_wiring.py` to utilize a structured logger (`stacksorbit_infra`) instead of standard `print` statements.
+    *   **Logging Hardening:** Refactored `infrastructure_wiring.py` to utilize a structured logger (`conxius_orbit_infra`) instead of standard `print` statements.
     *   **Automated Redaction:** Implemented mandatory `redact_recursive` processing for all infrastructure logs, URLs, and outgoing telemetry payloads to prevent accidental credential leakage.
     *   **Error Masking:** Standardized exception handling in `InfrastructureWiring` to use `logger.error` and `logger.warning` for operational failures, ensuring visibility without exposing internal details in standard output.
-    *   **Keyword Expansion:** Expanded `SENSITIVE_SUBSTRINGS` and `HIGH_CONFIDENCE_SENSITIVE_WORDS` in `stacksorbit_secrets.py` to include `SUPABASE`, `NEON`, `POSTGRES`, `MONGODB`, `REDIS`, `AWS`, `AZURE`, `GCP`, and `DIGITALOCEAN`.
+    *   **Keyword Expansion:** Expanded `SENSITIVE_SUBSTRINGS` and `HIGH_CONFIDENCE_SENSITIVE_WORDS` in `conxius_orbit_secrets.py` to include `SUPABASE`, `NEON`, `POSTGRES`, `MONGODB`, `REDIS`, `AWS`, `AZURE`, `GCP`, and `DIGITALOCEAN`.
     *   **Regression Testing:** Established a new security regression suite `tests/unit/test_sentinel_infra_hardening.py` and verified the identification and redaction of provider-specific credentials.
     *   **System Integrity:** Confirmed system stability via full Pytest (75 passed) and Vitest (5 passed) suites.
 
 ### Session 49: Foundation Alignment & Dependency Modernization (Jules)
 
-*   **Objective:** Modernize the StacksOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
-    *   **Dependency Modernization:** Updated `package.json` with latest stable versions: `@stacks/clarinet-sdk` (^3.17.0), `vitest` (^4.1.6), and `@vitest/coverage-v8` (^4.1.6). Bumped project version to 1.2.8.
+    *   **Dependency Modernization:** Updated `package.json` with latest stable versions: `@stacks/clarinet-sdk` (^3.17.0), `vitest` (^4.1.6), and `@vitest/coverage-v8` (^4.1.6). Bumped project version to 1.2.9.
     *   **Environment Setup:** Successfully configured the development environment, including Python `setuptools` and `requests` for the full system suite.
     *   **System Verification:** Confirmed full-system integrity via successful execution of Vitest Simnet tests (7 passed) and Pytest core suites (125 passed).
 *   **Status:** Complete.
@@ -624,7 +624,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 
 *   **Objective:** Audit the repository for Mainnet readiness and implement network-aware API orchestration to eliminate hardcoded testnet dependencies.
 *   **Changes:**
-    *   **Dynamic API Orchestration:** Refactored `wallet_connect.py`, `stacksorbit_cli.py`, and `deployment_monitor.py` to use a dynamic `NETWORK_API_MAP`, ensuring correct API endpoints are used for Mainnet (`api.mainnet.hiro.so`), Testnet, and Devnet.
+    *   **Dynamic API Orchestration:** Refactored `wallet_connect.py`, `conxius_orbit_cli.py`, and `deployment_monitor.py` to use a dynamic `NETWORK_API_MAP`, ensuring correct API endpoints are used for Mainnet (`api.mainnet.hiro.so`), Testnet, and Devnet.
     *   **Wallet Connect Hardening:** Enhanced `wallet_connect.py` to support network-specific Content-Security-Policy (CSP) and balance fetching, preventing cross-network data leakage.
     *   **Validation Reinforcement:** Updated `validate_stacks_address` calls in the wallet connection flow to be network-aware, preventing the use of testnet addresses on Mainnet and vice-versa.
     *   **Utility Alignment:** Synchronized `query_deployer.py` and `verify_address.py` with the global network state via environment variable detection.
@@ -632,7 +632,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 *   **Status:** Complete.
 ### Session 46: Foundation Modernization & Root-Up Reinforcement (Jules)
 
-*   **Objective:** Modernize the StacksOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
+*   **Objective:** Modernize the Conxius Orbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
     *   **Technical Modernization:** Explicitly re-initialized `vitest.config.ts` for native Clarinet SDK integration and Vitest 4 compatibility.
@@ -642,7 +642,7 @@ StacksOrbit is committed to supporting the latest Clarity language features.
 *   **Status:** Complete.
 
 ### Session Snapshot
-*   **Version:** 1.2.8
+*   **Version:** 1.2.9
 *   **License:** MIT (Standardized)
 *   **Documentation:** Root-Up Protocol Active
 *   **Tests:** Passed (Vitest Simnet & Pytest)

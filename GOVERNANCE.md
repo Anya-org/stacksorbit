@@ -1,6 +1,6 @@
 # Governance
 
-StacksOrbit is a deployment and operations toolkit for Stacks / Clarity smart contracts.
+Conxius Orbit is a deployment and operations toolkit for Stacks / Clarity smart contracts.
 
 This repository is maintained under the Conxian organization. Public-facing documentation should avoid embedding operational secrets, private infrastructure identifiers, or private key material.
 
@@ -14,7 +14,7 @@ This repository is maintained under the Conxian organization. Public-facing docu
 All changes land via pull request and should:
 
 - Keep `.env` and other secret-bearing files out of Git.
-- Avoid committing deployment artifacts (for example, `deployment/*.json`, `.stacksorbit/*`).
+- Avoid committing deployment artifacts (for example, `deployment/*.json`, `.conxius_orbit/*`).
 - Update `CHANGELOG.md` when user-facing behavior or security posture changes.
 
 ## Branches

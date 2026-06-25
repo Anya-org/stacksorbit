@@ -30,7 +30,7 @@ This repository is maintained by Conxian-Labs as ecosystem tooling supporting pu
 
 ```bash
 python -m pip install -r requirements.txt
-python stacksorbit_cli.py
+python conxius_orbit_cli.py
 ```
 
 ### Related documentation

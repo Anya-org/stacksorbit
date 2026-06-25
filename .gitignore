@@ -56,7 +56,7 @@ logs/
 *.log
 
 # Local state and deployment artifacts
-.stacksorbit/
+.conxius-orbit/
 deployment/*.json
 
 # Environment

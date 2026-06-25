@@ -1,7 +1,7 @@
 import time
 import sys
 import os
-from stacksorbit_secrets import redact_recursive
+from conxius_orbit_secrets import redact_recursive
 
 
 def generate_benchmark_data(num_contracts=50, source_size_kb=100):

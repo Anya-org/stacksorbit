@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 import os
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 
 
 async def main():
@@ -10,11 +10,11 @@ async def main():
     """
     # 🎨 Palette: This verification script tests the new "Saved!" button state.
     # It navigates to the Settings tab, clicks Save, and captures a screenshot.
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
 
     async with app.run_test() as pilot:
         # Ensure the CSS path is correct, as the script runs from the repo root
-        pilot.app.CSS_PATH = Path("stacksorbit_gui.tcss").resolve()
+        pilot.app.CSS_PATH = Path("conxius_orbit_gui.tcss").resolve()
 
         # Create a dummy .env file for the test
         with open(".env.test_palette", "w") as f:

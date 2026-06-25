@@ -1,5 +1,5 @@
 import pytest
-from stacksorbit_secrets import is_sensitive_key
+from conxius_orbit_secrets import is_sensitive_key
 
 
 def test_high_confidence_expansion():

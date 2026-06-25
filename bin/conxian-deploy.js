@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Enhanced StacksOrbit CLI with Conxian deployment support
+ * Enhanced Conxius Orbit CLI with Conxian deployment support
  * Deploy Conxian protocol to testnet with full monitoring
  */
 
@@ -16,7 +16,7 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0] || "help";
 
-  console.log("🚀 StacksOrbit - Enhanced Conxian Deployment Tool\n");
+  console.log("🚀 Conxius Orbit - Enhanced Conxian Deployment Tool\n");
 
   switch (command) {
     case "deploy":
@@ -90,7 +90,7 @@ async function deployConxian(args) {
       if (results.successful.length > 0) {
         console.log("✅ Ready for production verification");
         console.log(
-          '💡 Run "stacksorbit monitor" to track deployment confirmation',
+          '💡 Run "conxius_orbit monitor" to track deployment confirmation',
         );
       }
     }
@@ -105,7 +105,7 @@ async function deployConxian(args) {
     console.log("1. Check your .env configuration");
     console.log("2. Ensure sufficient STX balance");
     console.log("3. Verify network connectivity");
-    console.log('4. Run "stacksorbit check" for diagnostics');
+    console.log('4. Run "conxius_orbit check" for diagnostics');
 
     process.exit(1);
   }
@@ -279,7 +279,7 @@ async function verifyDeployment(args) {
 }
 
 async function initializeConfig(args) {
-  console.log("⚙️  Initializing StacksOrbit configuration...\n");
+  console.log("⚙️  Initializing Conxius Orbit configuration...\n");
 
   const options = parseArgs(args, {
     network: "network",
@@ -306,8 +306,8 @@ async function initializeConfig(args) {
     console.log("\n📝 Next steps:");
     console.log("1. Fund the address with STX tokens");
     console.log("2. Review and edit .env file as needed");
-    console.log('3. Run "stacksorbit check" to validate setup');
-    console.log('4. Run "stacksorbit deploy --dry-run" to test deployment');
+    console.log('3. Run "conxius_orbit check" to validate setup');
+    console.log('4. Run "conxius_orbit deploy --dry-run" to test deployment');
   } catch (error) {
     console.error("\n❌ Initialization failed:", error.message);
     process.exit(1);
@@ -315,10 +315,10 @@ async function initializeConfig(args) {
 }
 
 async function launchGUI(args) {
-  console.log("🖥️  Launching StacksOrbit GUI...\n");
+  console.log("🖥️  Launching Conxius Orbit GUI...\n");
 
   const { spawn } = require("child_process");
-  const pythonScript = path.join(__dirname, "..", "stacksorbit.py");
+  const pythonScript = path.join(__dirname, "..", "conxius_orbit.py");
 
   const python = spawn("python", [pythonScript], {
     stdio: "inherit",
@@ -356,10 +356,10 @@ function parseArgs(args, optionMap) {
 
 function showHelp() {
   console.log(`
-🚀 StacksOrbit - Enhanced CLI for Conxian Deployment
+🚀 Conxius Orbit - Enhanced CLI for Conxian Deployment
 
 Usage:
-  stacksorbit <command> [options]
+  conxius_orbit <command> [options]
 
 Commands:
   deploy          Deploy Conxian contracts to testnet
@@ -393,15 +393,15 @@ Global Options:
   --verbose            Enable verbose output
 
 Examples:
-  stacksorbit init --network testnet
-  stacksorbit check --verbose
-  stacksorbit deploy --dry-run
-  stacksorbit deploy --category core
-  stacksorbit deploy --batch-size 10 --parallel
-  stacksorbit monitor --follow
-  stacksorbit verify
+  conxius_orbit init --network testnet
+  conxius_orbit check --verbose
+  conxius_orbit deploy --dry-run
+  conxius_orbit deploy --category core
+  conxius_orbit deploy --batch-size 10 --parallel
+  conxius_orbit monitor --follow
+  conxius_orbit verify
 
-For more information, visit: https://github.com/Conxian/stacksorbit
+For more information, visit: https://github.com/Conxian/conxius_orbit
 `);
 }
 
@@ -412,7 +412,7 @@ process.on("unhandledRejection", (error) => {
 });
 
 process.on("SIGINT", () => {
-  console.log("\n🛑 StacksOrbit stopped by user");
+  console.log("\n🛑 Conxius Orbit stopped by user");
   process.exit(0);
 });
 

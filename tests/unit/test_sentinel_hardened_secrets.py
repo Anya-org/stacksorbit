@@ -1,7 +1,7 @@
 import unittest
 import os
 import json
-from stacksorbit_secrets import (
+from conxius_orbit_secrets import (
     redact_recursive,
     is_sensitive_key,
     save_secure_config,

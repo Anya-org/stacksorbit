@@ -4,7 +4,7 @@
 # See the LICENSE file in the project root for full license information.
 
 """
-StacksOrbit Setup Configuration
+ConxiusOrbit Setup Configuration
 Professional GUI deployment tool for Stacks blockchain smart contracts
 """
 
@@ -18,25 +18,25 @@ long_description = (
 )
 
 setup(
-    name="stacksorbit",
-    version="1.2.8",
+    name="conxius_orbit",
+    version="1.2.9",
     description="CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Conxian-Labs",
     author_email="dev@anyachainlabs.com",
-    url="https://github.com/Conxian/stacksorbit",
+    url="https://github.com/Conxian/conxius_orbit",
     project_urls={
-        "Bug Tracker": "https://github.com/Conxian/stacksorbit/issues",
-        "Documentation": "https://conxian.github.io/stacksorbit/",
-        "Source Code": "https://github.com/Conxian/stacksorbit",
-        "Discussions": "https://github.com/Conxian/stacksorbit/discussions",
+        "Bug Tracker": "https://github.com/Conxian/conxius_orbit/issues",
+        "Documentation": "https://conxian.github.io/conxius_orbit/",
+        "Source Code": "https://github.com/Conxian/conxius_orbit",
+        "Discussions": "https://github.com/Conxian/conxius_orbit/discussions",
     },
     packages=find_packages(exclude=["tests*", "docs*"]),
-    py_modules=["stacksorbit"],
+    py_modules=["conxius_orbit"],
     entry_points={
         "console_scripts": [
-            "stacksorbit=stacksorbit:main",
+            "conxius_orbit=conxius_orbit:main",
         ],
     },
     python_requires=">=3.8",
@@ -101,7 +101,7 @@ setup(
     platforms=["any"],
     include_package_data=True,
     package_data={
-        "stacksorbit": [
+        "conxius_orbit": [
             "*.md",
             "LICENSE",
             "requirements.txt",

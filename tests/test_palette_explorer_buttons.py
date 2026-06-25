@@ -1,5 +1,5 @@
 import pytest
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Button
 from unittest.mock import MagicMock
 
@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 @pytest.mark.asyncio
 async def test_address_explorer_buttons_exist():
     """Verify that the new address explorer buttons exist and have correct tooltips."""
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     # Mock monitor to avoid API calls during app startup
     app.monitor = MagicMock()
     app.monitor.api_url = "https://api.testnet.hiro.so"
@@ -42,7 +42,7 @@ async def test_address_explorer_buttons_exist():
 async def test_address_explorer_initial_state():
     """Verify the initial state of address explorer buttons."""
     # Test with configured address
-    app_with_addr = StacksOrbitGUI()
+    app_with_addr = ConxiusOrbitGUI()
     app_with_addr.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
     app_with_addr.monitor = MagicMock()
 
@@ -57,7 +57,7 @@ async def test_address_explorer_initial_state():
         )
 
     # Test with "Not configured" address
-    app_no_addr = StacksOrbitGUI()
+    app_no_addr = ConxiusOrbitGUI()
     app_no_addr.address = "Not configured"
     app_no_addr.monitor = MagicMock()
 

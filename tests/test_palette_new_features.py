@@ -1,6 +1,6 @@
 import os
 import pytest
-from stacksorbit_gui import StacksOrbitGUI
+from conxius_orbit_gui import ConxiusOrbitGUI
 from textual.widgets import Static, DataTable
 from datetime import datetime, timedelta
 
@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 async def test_relative_time_formatting():
     from datetime import timezone
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     now_utc = datetime.now(timezone.utc)
     now_bucket = int(now_utc.timestamp() / 10) * 10
 
@@ -44,7 +44,7 @@ async def test_relative_time_formatting():
 
 @pytest.mark.asyncio
 async def test_clickable_address():
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         display_address = app.query_one("#display-address", Static)
         assert "clickable-label" in display_address.classes
@@ -56,7 +56,7 @@ async def test_clickable_address():
 
 @pytest.mark.asyncio
 async def test_transactions_table_columns():
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         table = app.query_one("#transactions-table", DataTable)
         # Verify column count including new 'Time' column
@@ -67,7 +67,7 @@ async def test_transactions_table_columns():
 async def test_balance_colorization():
     from unittest.mock import MagicMock
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     # Set a dummy address so it attempts to fetch account info
     app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
 
@@ -107,7 +107,7 @@ async def test_balance_colorization():
 async def test_settings_focus_on_tab_change():
     from textual.widgets import TabbedContent, Tab
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         # Switch to settings tab via shortcut key which triggers action_switch_tab
         await pilot.press("f5")
@@ -126,10 +126,10 @@ async def test_unsaved_changes_feedback(monkeypatch):
 
     # Mock save_secure_config to avoid actual file IO
     monkeypatch.setattr(
-        "stacksorbit_gui.save_secure_config", lambda *args, **kwargs: None
+        "conxius_orbit_gui.save_secure_config", lambda *args, **kwargs: None
     )
 
-    app = StacksOrbitGUI(config_path=".env.test")
+    app = ConxiusOrbitGUI(config_path=".env.test")
     async with app.run_test() as pilot:
         save_btn = app.query_one("#save-config-btn", Button)
         address_input = app.query_one("#address-input", Input)
@@ -171,7 +171,7 @@ async def test_unsaved_changes_feedback(monkeypatch):
 async def test_show_hide_privkey_label_toggle():
     from textual.widgets import Switch, Label
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     async with app.run_test() as pilot:
         label = app.query_one("#show-privkey-label", Label)
         switch = app.query_one("#show-privkey", Switch)
@@ -192,7 +192,7 @@ async def test_show_hide_privkey_label_toggle():
 async def test_transaction_confirmations_and_highlighting():
     from unittest.mock import MagicMock
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
     app.address = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
 
     async with app.run_test() as pilot:
@@ -241,7 +241,7 @@ async def test_transaction_confirmations_and_highlighting():
 async def test_actionable_empty_states():
     from unittest.mock import MagicMock
 
-    app = StacksOrbitGUI()
+    app = ConxiusOrbitGUI()
 
     async with app.run_test() as pilot:
         # 1. Test Contracts Table empty-deploy
