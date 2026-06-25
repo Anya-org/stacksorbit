@@ -278,7 +278,9 @@ class ConxiusOrbitGUI(App):
         self._last_transactions = None
         self._last_metrics = {}
         self._deployment_log_lines = []
-        self.theme_name = self.config.get("UI_THEME", "standard")
+        self.set_reactive(
+            type(self).theme_name, self.config.get("UI_THEME", "standard")
+        )
         self.infra = InfrastructureWiring(self.config)
 
     def _load_config(self) -> Dict:
