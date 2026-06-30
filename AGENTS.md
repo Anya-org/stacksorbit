@@ -152,6 +152,17 @@ To check test coverage, you can use the following command:
 ```bash
 npx vitest --coverage
 ```
+### 3.4. CI/CD Validation
+
+ConxiusOrbit uses a set of validation scripts to ensure repository health and security:
+
+* `scripts/verify_knowledge_retention.py`: Ensures critical docs like `PRD.md` and `.jules/*.md` exist.
+* `scripts/verify_tracked_artifacts.py`: Prevents tracking of forbidden files like `node_modules` or `.env`.
+* `scripts/verify_contamination_safety.py`: Scans for potential secret contamination (keys/mnemonics).
+* `scripts/verify_compose_env_templates.py`: Validates `.env.example` completeness.
+* `scripts/verify_submodule_secret_filenames.py`: Checks for common secret filenames.
+* `scripts/verify_bos_production_boundary.py`: Ensures mock implementations don't leak into production entry points.
+
 
 ### 3.3. Code Style
 

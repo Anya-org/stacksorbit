@@ -28,6 +28,7 @@ async def _to_thread_compat(func, *args, **kwargs):
     bound = functools.partial(func, *args, **kwargs)
     return await loop.run_in_executor(None, bound)
 
+
 try:
     from textual.app import App, ComposeResult
     from textual.widgets import (
