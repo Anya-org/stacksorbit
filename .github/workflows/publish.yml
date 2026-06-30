@@ -2,6 +2,7 @@ name: Publish Conxius Orbit
 
 # Secure Publish workflow with pinned actions and explicit permissions.
 # Includes tag-to-version validation to ensure release integrity.
+# Updated to latest stable versions for Node 24 compatibility.
 
 on:
   push:
@@ -33,10 +34,10 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11']
     
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       
       - name: Set up Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
       
@@ -47,12 +48,12 @@ jobs:
           sudo apt-get install -y python3-tk
       
       - name: Set up Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
         with:
           version: '10'
       
@@ -86,7 +87,7 @@ jobs:
       
       - name: Upload coverage (optional)
         if: hashFiles('coverage.xml') != ''
-        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
         with:
           files: ./coverage.xml
           flags: unittests
@@ -103,7 +104,7 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_npm == 'true')
     
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       
       - name: Verify tag matches package version
         if: github.event_name == 'push'
@@ -116,18 +117,18 @@ jobs:
           fi
 
       - name: Set up Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
       
       - name: Set up Node.js
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
         with:
           version: '10'
       
@@ -151,7 +152,7 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_pypi == 'true')
     
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       
       - name: Verify tag matches setup.py version
         if: github.event_name == 'push'
@@ -164,7 +165,7 @@ jobs:
           fi
 
       - name: Set up Python
-        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
       
@@ -180,7 +181,7 @@ jobs:
         run: twine check dist/*
       
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@812844510e059f14c403f65e19995bf72a8894a0 # v1.8.11
+        uses: pypa/gh-action-pypi-publish@ec4db0b4ddc65acdf4bff5fa45ac92d78b56bdf0 # v1.9.0
         with:
           skip_existing: true
 
@@ -193,14 +194,14 @@ jobs:
     if: github.event_name == 'push'
     
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       
       - name: Extract version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
       
       - name: Create Release
-        uses: softprops/action-gh-release@de2c90c00ffc7c041036972f1b8c1b9aed1140d2 # v1
+        uses: softprops/action-gh-release@2bb465e97f322d3cb2a965294d483e0d26a67aa9 # v3.0.1
         with:
           name: Conxius Orbit v${{ steps.get_version.outputs.VERSION }}
           body: |
