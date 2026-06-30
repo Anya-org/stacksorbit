@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name="conxius_orbit",
-    version="1.2.8",
+    version="1.2.9",
     description="CLI-first deployment and operations toolkit for Stacks / Clarity smart contracts",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -142,6 +142,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.2.9] - 2026-06-30
+
+### Added
+
+- Missing CI validation scripts: `verify_knowledge_retention.py`, `verify_tracked_artifacts.py`, `verify_contamination_safety.py`, `verify_compose_env_templates.py`, `verify_submodule_secret_filenames.py`, `verify_bos_production_boundary.py`.
+- Enforced mandatory CI validation in `ci.yml`.
+- Hardened `dependency-review.yml` policy (removed `continue-on-error`).
+
+### Fixed
+
+- Project version alignment across `package.json`, `setup.py`, and `PRD.md` to v1.2.9.
+- Resolved "tracked artifacts" issue by verifying clean source control.
+
 ## [Unreleased]
 
 ### 🔄 **Development**
