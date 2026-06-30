@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 def main():
     # Verify that .env.example contains all keys used in the codebase
     if not os.path.exists(".env.example"):
@@ -18,6 +19,7 @@ def main():
         sys.exit(1)
 
     print("Success: .env.example is valid.")
+
 
 if __name__ == "__main__":
     main()

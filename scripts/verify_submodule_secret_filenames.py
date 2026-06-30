@@ -1,14 +1,9 @@
 import os
 import sys
 
+
 def main():
-    forbidden_filenames = [
-        "key.pem",
-        "cert.pem",
-        "id_rsa",
-        "id_ed25519",
-        "secret.key"
-    ]
+    forbidden_filenames = ["key.pem", "cert.pem", "id_rsa", "id_ed25519", "secret.key"]
 
     violations = []
     for root, dirs, files in os.walk("."):
@@ -28,6 +23,7 @@ def main():
         sys.exit(1)
 
     print("Success: No forbidden secret filenames found.")
+
 
 if __name__ == "__main__":
     main()

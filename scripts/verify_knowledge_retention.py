@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 def main():
     required_files = [
         "AGENTS.md",
@@ -9,7 +10,7 @@ def main():
         "README.md",
         ".jules/bolt.md",
         ".jules/palette.md",
-        ".jules/sentinel.md"
+        ".jules/sentinel.md",
     ]
 
     missing = []
@@ -24,6 +25,7 @@ def main():
         sys.exit(1)
 
     print("Success: All knowledge retention files present.")
+
 
 if __name__ == "__main__":
     main()

@@ -1,13 +1,11 @@
 import subprocess
 import sys
 
+
 def main():
     try:
         result = subprocess.run(
-            ["git", "ls-files"],
-            capture_output=True,
-            text=True,
-            check=True
+            ["git", "ls-files"], capture_output=True, text=True, check=True
         )
         tracked_files = result.stdout.splitlines()
 
@@ -16,7 +14,7 @@ def main():
             "node_modules/",
             "results.json",
             "coverage.xml",
-            "manifest-history"
+            "manifest-history",
         ]
 
         violations = []
@@ -41,6 +39,7 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

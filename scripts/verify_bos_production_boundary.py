@@ -1,12 +1,11 @@
 import os
+import sys
+
 
 def main():
     # Production boundary check: Ensure no "mock" or "simulated" implementations are used in production-intent modules
     # This is a basic check for demonstration.
-    production_intent_files = [
-        "conxius_orbit.py",
-        "conxius_orbit_cli.py"
-    ]
+    production_intent_files = ["conxius_orbit.py", "conxius_orbit_cli.py"]
 
     violations = []
     for f in production_intent_files:
@@ -24,6 +23,7 @@ def main():
         # Not exiting with 1 yet as some simulations might be legitimately used for fallback
 
     print("Success: Production boundary check complete.")
+
 
 if __name__ == "__main__":
     main()

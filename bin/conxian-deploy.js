@@ -310,7 +310,7 @@ async function initializeConfig(args) {
   }
 }
 
-async function launchGUI(args) {
+async function launchGUI() {
   console.log("🖥️  Launching ConxiusOrbit GUI...\n");
 
   const { spawn } = require("child_process");
