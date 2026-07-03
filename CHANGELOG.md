@@ -192,3 +192,17 @@ For each release, ensure:
 **Built with ❤️ by [Conxian-Labs](https://anyachainlabs.com)**
 
 *Deploy smart contracts to Stacks blockchain with confidence - now easier than ever!* 🚀
+
+## [1.2.10] - 2026-07-03
+
+### Added
+- Scheduled CI workflow (`scheduled-tests.yml`) for weekly full system validation (Sundays).
+- ADR 001: Established RGB protocol v0.11.1 ecosystem as the production target.
+- Knowledge retention journals in `.jules/` (`bolt.md`, `palette.md`, `sentinel.md`).
+
+### Changed
+- Standardized Node.js version to 22 across all workflows for modern environment compatibility.
+- Hardened dependency review workflow by enforcing strict policy gates (upstream aligned).
+
+### Fixed
+- Resolved repository hygiene gaps by synchronizing missing validation scripts and documentation placeholders.

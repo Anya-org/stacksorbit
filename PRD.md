@@ -666,3 +666,20 @@ ConxiusOrbit is committed to supporting the latest Clarity language features.
 *   **Artifacts:** JSON Schemas Standardized
 *   **Output:** Machine-Readable (JSON) Enabled
 *   **Tests:** Passed (Vitest Simnet & Pytest)
+
+### Session 51: CI Hardening & Protocol Alignment (Jules)
+
+*   **Objective:** Enhance CI periodicity and align protocol research with official ecosystem decisions.
+*   **Changes:**
+    *   **Scheduled CI:** Implemented `.github/workflows/scheduled-tests.yml` to execute the full system suite (Vitest + Pytest + GUI smoke tests) weekly.
+    *   **RGB Protocol ADR:** Created `docs/adr/001-rgb-protocol-target-version.md` establishing the `rgb-protocol / rgb-lib` v0.11.1 ecosystem as the production target, resolving fork ambiguity (CON-1338).
+    *   **Knowledge Retention:** Synchronized `.jules/` directory and critical journals (`bolt.md`, `palette.md`, `sentinel.md`) to satisfy repository hygiene gates.
+    *   **Version Synchronization:** Confirmed v1.2.9 alignment across `package.json`, `setup.py`, and `PRD.md`.
+    *   **Environment Hardening:** Verified full-system integrity with Python 3.12 and latest dependencies.
+*   **Status:** Complete.
+
+### Session Snapshot
+*   **Version:** 1.2.9
+*   **CI:** Scheduled Weekly (Sundays)
+*   **Protocol:** RGB v0.11.1 Targeted
+*   **Tests:** Passed (127 Pytest, 7 Vitest)
