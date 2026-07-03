@@ -78,7 +78,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         run: |
           pnpm audit
-          python -m safety scan
+          python -m safety check
 
       - name: Lint (JS + Python + TS)
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
