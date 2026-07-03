@@ -21,7 +21,7 @@ program
   .description(
     "Professional deployment tool for Stacks blockchain smart contracts",
   )
-  .version("1.2.0");
+  .version("1.2.10");
 
 // Global options
 program

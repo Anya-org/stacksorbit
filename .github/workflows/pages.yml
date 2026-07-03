@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 # Secure Pages deployment workflow with pinned actions and explicit permissions.
 # Pinned to commit SHAs to prevent supply chain attacks via mutable tags.
-# Updated to latest stable versions for Node 24 compatibility.
+# Updated to latest stable versions for Node 22 compatibility.
 
 on:
   push:

@@ -45,7 +45,7 @@ function main() {
       process.exit(1);
     });
   } else {
-    showHelp();
+    if (args.includes("--version") || args.includes("-v")) { console.log("1.2.10"); } else { showHelp(); }
   }
 }
 

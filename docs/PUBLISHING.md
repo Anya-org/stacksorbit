@@ -1,10 +1,10 @@
 # ConxiusOrbit Publishing Guide
 
-**Version**: 1.0.0  
+**Version**: 1.2.10
 **Status**: Ready to publish  
 **Repository**: https://github.com/Conxian/conxius_orbit
 
-**Note**: This guide was drafted for the initial v1.0.0 publish; update tag/version references for newer releases.
+**Note**: This guide was drafted for the initial v1.2.10 publish; update tag/version references for newer releases.
 
 ---
 
@@ -17,7 +17,7 @@
 - [x] Tests added (17-test validation suite)
 - [x] License added (MIT)
 - [x] CI/CD workflows configured (.github/workflows/)
-- [x] Version tagged (v1.0.0)
+- [x] Version tagged (v1.2.10)
 
 ### ⏳ Pending
 - [ ] Configure npm token (NPM_TOKEN secret)
@@ -81,7 +81,7 @@
 **GitHub Actions will automatically publish when you push a tag:**
 
 ```bash
-# Tag already pushed: v1.0.0
+# Tag already pushed: v1.2.10
 # GitHub Actions will:
 # 1. Run all tests on all platforms
 # 2. Publish to npm (if NPM_TOKEN configured)
@@ -205,18 +205,18 @@ conxius_orbit
 - **GitHub**: ✅ Published
   - URL: https://github.com/Conxian/conxius_orbit
   - Branch: main
-  - Tag: v1.0.0
+  - Tag: v1.2.10
   - Commits: 2
 
 ### Package Registries
 - **npm**: ⏳ Awaiting token configuration
   - Package name: `conxius_orbit`
-  - Version: 1.0.0
+  - Version: 1.2.10
   - Entry: `conxius_orbit` command
 
 - **PyPI**: ⏳ Awaiting token configuration
   - Package name: `conxius_orbit`
-  - Version: 1.0.0
+  - Version: 1.2.10
   - Entry: `conxius_orbit` command
 
 ### CI/CD

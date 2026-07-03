@@ -1752,6 +1752,7 @@ def main():
     )
 
     parser.add_argument("command", nargs="?", help="Command to execute")
+    parser.add_argument("--version", action="version", version="1.2.10")
     parser.add_argument("--config", default=".env", help="Configuration file path")
     parser.add_argument(
         "--network", choices=["devnet", "testnet", "mainnet"], default="testnet"
