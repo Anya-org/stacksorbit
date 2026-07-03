@@ -36,13 +36,29 @@ jobs:
         with:
           version: '10'
 
+      - name: Install tkinter (Ubuntu)
+        run: |
+          set -euo pipefail
+
+          install_tk() {
+            sudo apt-get update -o Acquire::Retries=3
+            sudo apt-get install -y python3-tk
+          }
+
+          if ! install_tk; then
+            echo "Initial apt install failed; removing problematic Microsoft apt sources and retrying..."
+            sudo rm -f /etc/apt/sources.list.d/*microsoft*.list /etc/apt/sources.list.d/*azure*.list /etc/apt/sources.list.d/vscode.list
+            sudo apt-get clean
+            sudo apt-get update -o Acquire::Retries=3
+            sudo apt-get install -y --fix-missing python3-tk
+          fi
+
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-tk
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
           pip install -e .[dev,test]
+          pip install safety
           pnpm install --frozen-lockfile
 
       - name: Run CI validation scripts

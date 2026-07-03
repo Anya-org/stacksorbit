@@ -23,7 +23,7 @@
     "test:gui": "pytest tests/test_gui.py",
     "test:enhanced": "pnpm run test:vitest",
     "test:vitest": "vitest run",
-    "audit": "pnpm audit && (python -m safety check || echo \"Safety check skipped or failed\")",
+    "audit": "pnpm audit && (python -m safety scan || echo \"Safety check skipped or failed\")",
     "lint": "eslint bin/*.js scripts/*.ts --fix && pylint *.py scripts/*.py && mypy . --config-file mypy.ini && black .",
     "format": "prettier --write bin/*.js scripts/*.ts && black .",
     "ci": "pnpm install && python -m pip install --upgrade pip && python -m pip install -e .[dev,test] && pnpm run format && pnpm run lint && pnpm run audit && pnpm test",
