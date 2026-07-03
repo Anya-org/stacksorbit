@@ -603,7 +603,7 @@ ConxiusOrbit is committed to supporting the latest Clarity language features.
 *   **Objective:** Modernize the ConxiusOrbit foundation by aligning with the Clarinet SDK and Vitest architecture using the Root-Up protocol.
 *   **Changes:**
     *   **Drift Analysis:** Performed a comprehensive "Root-Up" drift analysis and confirmed full synchronization between `PRD.md`, `Clarinet.toml`, and the codebase.
-    *   **Dependency Modernization:** Updated `package.json` with latest stable versions: `@stacks/clarinet-sdk` (^3.17.0), `vitest` (^4.1.6), and `@vitest/coverage-v8` (^4.1.6). Bumped project version to 1.2.9.
+    *   **Dependency Modernization:** Updated `package.json` with latest stable versions: `@stacks/clarinet-sdk` (^3.17.0), `vitest` (^4.1.6), and `@vitest/coverage-v8` (^4.1.6). Bumped project version to 1.2.10.
     *   **Environment Setup:** Successfully configured the development environment, including Python `setuptools` and `requests` for the full system suite.
     *   **System Verification:** Confirmed full-system integrity via successful execution of Vitest Simnet tests (7 passed) and Pytest core suites (125 passed).
 *   **Status:** Complete.
@@ -642,7 +642,7 @@ ConxiusOrbit is committed to supporting the latest Clarity language features.
 *   **Status:** Complete.
 
 ### Session Snapshot
-*   **Version:** 1.2.9
+*   **Version:** 1.2.10
 *   **License:** MIT (Standardized)
 *   **Documentation:** Root-Up Protocol Active
 *   **Tests:** Passed (Vitest Simnet & Pytest)
@@ -661,7 +661,7 @@ ConxiusOrbit is committed to supporting the latest Clarity language features.
 *   **Status:** Complete.
 
 ### Session Snapshot
-*   **Version:** 1.2.8
+*   **Version:** 1.2.10
 *   **Name:** ConxiusOrbit
 *   **Artifacts:** JSON Schemas Standardized
 *   **Output:** Machine-Readable (JSON) Enabled
@@ -674,12 +674,12 @@ ConxiusOrbit is committed to supporting the latest Clarity language features.
     *   **Scheduled CI:** Implemented `.github/workflows/scheduled-tests.yml` to execute the full system suite (Vitest + Pytest + GUI smoke tests) weekly.
     *   **RGB Protocol ADR:** Created `docs/adr/001-rgb-protocol-target-version.md` establishing the `rgb-protocol / rgb-lib` v0.11.1 ecosystem as the production target, resolving fork ambiguity (CON-1338).
     *   **Knowledge Retention:** Synchronized `.jules/` directory and critical journals (`bolt.md`, `palette.md`, `sentinel.md`) to satisfy repository hygiene gates.
-    *   **Version Synchronization:** Confirmed v1.2.9 alignment across `package.json`, `setup.py`, and `PRD.md`.
+    *   **Version Synchronization:** Confirmed v1.2.10 alignment across `package.json`, `setup.py`, and `PRD.md`.
     *   **Environment Hardening:** Verified full-system integrity with Python 3.12 and latest dependencies.
 *   **Status:** Complete.
 
 ### Session Snapshot
-*   **Version:** 1.2.9
+*   **Version:** 1.2.10
 *   **CI:** Scheduled Weekly (Sundays)
 *   **Protocol:** RGB v0.11.1 Targeted
 *   **Tests:** Passed (127 Pytest, 7 Vitest)

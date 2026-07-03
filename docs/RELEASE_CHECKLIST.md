@@ -1,10 +1,10 @@
-# ConxiusOrbit v1.0.0 - Release Checklist
+# ConxiusOrbit v1.2.10 - Release Checklist
 
 **Release Date**: 2025-10-04  
 **Repository**: <https://github.com/Conxian/conxius_orbit>
 **Status**: ✅ **READY TO PUBLISH**
 
-**Note**: This checklist was created for v1.0.0; update version references for newer releases.
+**Note**: This checklist was created for v1.2.10; update version references for newer releases.
 
 ---
 
@@ -27,7 +27,7 @@
 - [x] setup.py configured
 - [x] requirements.txt added
 - [x] bin/conxius_orbit.js entry point
-- [x] Version: 1.0.0 in all files
+- [x] Version: 1.2.10 in all files
 
 ### CI/CD
 
@@ -65,8 +65,8 @@
 
 ```bash
 # Tag created
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.2.10
+git push origin v1.2.10
 ```
 
 **Status**: ✅ Tagged and pushed
@@ -99,8 +99,8 @@ conxius_orbit --version
 ### Step 5: Create GitHub Release ⏳
 
 - Go to: <https://github.com/Conxian/conxius_orbit/releases/new>
-- Tag: v1.0.0
-- Title: "ConxiusOrbit v1.0.0 - Initial Release"
+- Tag: v1.2.10
+- Title: "ConxiusOrbit v1.2.10 - Initial Release"
 - Description: See template below
 - Publish release
 
@@ -109,7 +109,7 @@ conxius_orbit --version
 ## 📝 GitHub Release Template
 
 ```markdown
-# ConxiusOrbit v1.0.0 🚀
+# ConxiusOrbit v1.2.10 🚀
 
 Professional GUI deployment tool for Stacks blockchain smart contracts.
 
@@ -182,7 +182,7 @@ See our [roadmap](README.md#roadmap) for planned features in v1.2.0 and v2.0.0.
 - [x] Tests added (17-test suite)
 - [x] Documentation complete
 - [x] Publishing guide created
-- [x] Version tagged (v1.0.0)
+- [x] Version tagged (v1.2.10)
 - [x] Tag pushed to GitHub
 
 ### ⏳ Pending
@@ -200,7 +200,7 @@ See our [roadmap](README.md#roadmap) for planned features in v1.2.0 and v2.0.0.
 
 When complete, verify:
 
-1. ✅ GitHub tag: https://github.com/Conxian/conxius_orbit/releases/tag/v1.0.0
+1. ✅ GitHub tag: https://github.com/Conxian/conxius_orbit/releases/tag/v1.2.10
 2. ⏳ npm package: https://www.npmjs.com/package/conxius_orbit
 3. ⏳ PyPI package: https://pypi.org/project/conxius_orbit/
 4. ⏳ `npm install -g conxius_orbit` works globally
@@ -216,7 +216,7 @@ When complete, verify:
 1. Configure npm token in GitHub secrets
 2. Configure PyPI token in GitHub secrets
 3. Verify GitHub Actions workflow runs
-4. Create GitHub release with v1.0.0
+4. Create GitHub release with v1.2.10
 
 ### Short-term (This Week):
 1. Test installation on all platforms
