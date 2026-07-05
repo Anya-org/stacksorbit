@@ -31,8 +31,7 @@ jobs:
           # Note: 'enablement: true' requires administration:write permission.
           # If this step fails with 'Resource not accessible', ensure Pages is
           # manually enabled in the repository settings (Build and deployment > Source: GitHub Actions).
-          enablement: true
-
+          
       - name: Sync docs source
         run: bash ./scripts/sync-pages-includes.sh
 
