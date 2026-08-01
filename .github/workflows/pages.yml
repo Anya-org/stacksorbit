@@ -5,8 +5,10 @@ name: Deploy GitHub Pages
 # Updated to latest stable versions for Node 22 compatibility.
 
 on:
-  push:
-    branches: [ main ]
+  # Pages is not yet enabled for this repository. The `github-pages` environment
+  # does not exist, and `configure-pages` fails without it. Restore `push` trigger
+  # once an admin enables Pages in Settings → Pages → Source: GitHub Actions.
+  # See: https://github.com/Conxian/conxian-business/issues/933
   workflow_dispatch:
 
 permissions:
