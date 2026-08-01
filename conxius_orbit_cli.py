@@ -564,7 +564,44 @@ class SetupWizard:
 
         print()
         print(f"{Fore.GREEN}🎉 Setup complete! Happy deploying!{Style.RESET_ALL}")
+
+        # Generate canonical DeploymentPlan for lib-conxian-core compatibility
+        self._emit_deployment_plan()
         return True
+
+    def _emit_deployment_plan(self) -> None:
+        """Emit a canonical DeploymentPlan aligned with lib-conxian-core.
+
+        The Rust crate lib-conxian-core::deployment::DeploymentPlan is the
+        canonical deployment model. This method generates a JSON plan and
+        agent-readable summary from the wizard's collected config, ensuring
+        orbit's deploy output is compatible with core verifiers.
+        """
+        try:
+            from scripts.deployment_plan import DeploymentPlan
+
+            project = self.config.get("project_name", "conxian")
+            version = self.config.get("version", "0.1.0")
+            plan = DeploymentPlan(
+                project=project,
+                version=version,
+                network=self.config.get("network", "testnet"),
+            )
+            for c in self.config.get("contracts", []):
+                # Try to read source for integrity hash
+                source = c.get("source", "") or f"// contract: {c.get('name', 'unknown')}"
+                plan.add_contract(c.get("name", "unknown"), source)
+
+            plan_path = Path(".conxius_orbit") / "deployment_plan"
+            plan_path.mkdir(parents=True, exist_ok=True)
+            plan.save(plan_path / "deployment_plan.json")
+
+            print()
+            print(f"{Fore.CYAN}📋 Canonical Deployment Plan{Style.RESET_ALL}")
+            print(plan.to_agent_readable())
+            print(f"\nSaved to: {plan_path / 'deployment_plan.json'}")
+        except Exception:
+            pass  # Non-critical: deployment works without plan file
 
     def _analyze_clarinet_contracts(self, clarinet_path: Path) -> List[Dict]:
         """Analyze contracts from Clarinet.toml"""
