@@ -13,13 +13,9 @@ permissions:
 jobs:
   dependency-review:
     # Use the reusable workflow from the Conxian/.github repo.
-    # The shared workflow is the source of truth for org-wide dependency policy.
+    # The shared workflow is the source of truth for org-wide dependency policy
+    # and already hardcodes fail-on-severity: high.
     uses: Conxian/.github/.github/workflows/dependency-review.yml@f6df6b138136b979653e8451f6f41076686732b3 # main
     permissions:
       contents: read
       pull-requests: write
-    with:
-      # Ensure vulnerable changes fail the check (CON-1325 alignment)
-      fail-on-vulnerabilities: true
-      # Restrict to production-critical severities
-      fail-on-severity: high
